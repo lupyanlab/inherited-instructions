@@ -1,0 +1,23 @@
+---
+instructions: |
+  Imagine you just rode one of SpaceX's Falcon Heavy rockets to another planet. You traveled to this planet to collect previous gems. Some of these gems are worth more than others. Your job is to learn which gems are worth the most, so that you can make the most money to bring back home. After arriving on the planet, you seek out a trainer who can teach you which gems are worth more than others.
+
+  {trainer_instructions}
+
+  The trainer offers to take you to a nearby quarry to find some gems.
+
+  {response_text}
+
+orientation: The trainer tells you that the orientation of the stripes on the gems is the most important for determining it's value.
+
+frequency: The trainer tells you that the width of the stripes on the gems is the most important for determining it's value.
+
+test: |
+  After completing the training, you are now ready to strike out on your own.
+
+  {response_text}
+
+end: |
+  You've reached the end of the experiment! After you exit this screen, a survey will open in the browser. Please complete the survey. After you complete the survey you can leave.
+
+  Press the SPACEBAR to exit this screen, and open the survey.
