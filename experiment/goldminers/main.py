@@ -18,10 +18,4 @@ def run(**condition_vars):
     """Run an experiment given a dict of condition vars."""
     condition_vars = parse_condition_vars(condition_vars)
     experiment = Experiment(**condition_vars)
-
-    experiment.show_training_instructions()
-    experiment.run_training_trials()
-    experiment.show_test_instructions()
-    experiment.run_test_trials()
-    experiment.show_end_of_experiment()
-    experiment.quit()
+    experiment.run()

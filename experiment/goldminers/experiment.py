@@ -16,6 +16,14 @@ class Experiment:
         self.condition_vars = condition_vars
         self.texts = yaml.load(open(path.join(PKG_ROOT, 'texts.yaml')))
 
+    def run(self):
+        self.show_training_instructions()
+        self.run_training_trials()
+        self.show_test_instructions()
+        self.run_test_trials()
+        self.show_end_of_experiment()
+        self.quit()
+
     @property
     def window(self):
         if self._window is None:
@@ -26,12 +34,11 @@ class Experiment:
         welcome = self.make_text_stim('Welcome to the experiment!', pos=(0, 250),
                                       bold=True, height=30)
 
-        instructions = self.make_text_stim(
-            self.texts['instructions'].format(
-                trainer_instructions=self.texts[self.condition_vars['instructions_condition']],
-                response_text=self.response_text
-            )
-        )
+        trainer_instructions = self.texts[self.condition_vars['instructions_condition']]
+        instructions = self.make_text_stim(self.texts['instructions'].format(
+            trainer_instructions=trainer_instructions,
+            response_text=self.response_text
+        ))
 
         welcome.draw()
         instructions.draw()
@@ -64,6 +71,9 @@ class Experiment:
         kwargs = TEXT_KWARGS.copy()
         kwargs.update(custom_kwargs)
         return visual.TextStim(self.window, text=text, **kwargs)
+
+    def run_trial(self):
+
 
 
 class ExperimentQuitException(Exception):
