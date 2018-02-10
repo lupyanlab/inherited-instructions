@@ -10,7 +10,8 @@ from goldminers.score_funcs import simple_hill
 def run_trial(ctx):
     """Run a single trial."""
     experiment = Experiment()
-    experiment.run_trial()
+    trial_data = experiment.run_trial()
+    print(trial_data)
     experiment.quit()
 
 
@@ -54,8 +55,9 @@ def draw_gabors(ctx, grid_size=10, win_size=None, output='landscape.png',
                                            win_size=win.size,
                                            stim_size=gabor_size)
 
-    for (gabor, pos) in zip(gabors, stim_positions):
-        gabor.pos = pos
+    for (grid_pos, screen_pos) in zip(gabors.keys(), stim_positions):
+        gabor = gabors[grid_pos]
+        gabor.pos = screen_pos
         gabor.draw()
 
     win.flip()

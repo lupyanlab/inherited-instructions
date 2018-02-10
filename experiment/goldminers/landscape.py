@@ -57,18 +57,18 @@ class Landscape(object):
         tidy_data.to_csv(filename, index=False)
 
     def make_gabors(self, grid_positions):
-        gabors = []
+        gabors = {}
         for grid_pos in grid_positions:
             gabor = self.get_gabor(grid_pos)
-            gabors.append(visual.GratingStim(ori=gabor.ori, sf=gabor.sf,
-                                             mask='circle', **self.grating_stim_kwargs))
+            gabors[grid_pos] = visual.GratingStim(ori=gabor.ori, sf=gabor.sf,
+                                                  mask='circle',  **self.grating_stim_kwargs)
         return gabors
 
     def get_neighborhood(self, grid_pos, radius, n_sampled=None):
         """Return a list of positions adjacent to the given position."""
         grid_x, grid_y = grid_pos
-        x_positions = linspace(grid_x-radius, grid_x+radius, 2*radius+1)
-        y_positions = linspace(grid_y-radius, grid_y+radius, 2*radius+1)
+        x_positions = linspace(grid_x-radius, grid_x+radius, 2*radius+1, dtype='int')
+        y_positions = linspace(grid_y-radius, grid_y+radius, 2*radius+1, dtype='int')
 
         positions = []
         for pos in product(x_positions, y_positions):
@@ -97,17 +97,15 @@ class SimpleHill(Landscape):
 
 
 def create_stim_positions(n_rows, n_cols, win_size, stim_size=0):
-    indices = create_grid(n_rows, n_cols)
-
     win_width, win_height = win_size
     win_left, win_right = -win_width/2, win_width/2
     win_bottom, win_top = -win_height/2, win_height/2
 
     # Sample row and column positions with stim sized buffer
-    x_positions = linspace(win_left+stim_size, win_right-stim_size, num=n_cols)
-    y_positions = linspace(win_bottom+stim_size, win_top-stim_size, num=n_rows)
+    x_positions = linspace(win_left+stim_size, win_right-stim_size, num=n_cols, dtype='int')
+    y_positions = linspace(win_bottom+stim_size, win_top-stim_size, num=n_rows, dtype='int')
 
-    return product(x_positions, y_positions)
+    return list(product(x_positions, y_positions))
 
 
 def create_grid(n_rows, n_cols):

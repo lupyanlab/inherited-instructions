@@ -15,6 +15,7 @@ class Experiment(object):
     search_radius = 8
     n_search_items = 9
     gabor_size = 60
+    ITI = 1.0
     _win = None
     _mouse = None
 
@@ -33,6 +34,8 @@ class Experiment(object):
             win=self.win,
             size=self.gabor_size
         )
+
+        self.score = 0
 
     def run(self):
         self.show_training_instructions()
@@ -54,7 +57,6 @@ class Experiment(object):
             self.win  # ensure window has been created
             self._mouse = event.Mouse()
         return self._mouse
-
 
     def show_training_instructions(self):
         welcome = self.make_text_stim('Welcome to the experiment!', pos=(0, 250),
@@ -105,10 +107,18 @@ class Experiment(object):
             self.n_search_items
         )
 
-        for pos, gabor in zip(self.stim_positions, gabors):
-            gabor.pos = pos
+        trial_data = dict(
+            pos=pos_to_str(self.pos),
+            search_radius=self.search_radius,
+            n_search_items=self.n_search_items,
+            options=pos_list_to_str(gabors.keys()),
+            positions=pos_list_to_str(self.stim_positions),
+            score=self.score
+        )
 
-        for gabor in gabors:
+        for pos, grid_pos in zip(self.stim_positions, gabors.keys()):
+            gabor = gabors[grid_pos]
+            gabor.pos = pos
             gabor.draw()
 
         self.win.flip()
@@ -118,23 +128,46 @@ class Experiment(object):
         while not is_clicked:
             (left, _, _), (time, _, _) = self.mouse.getPressed(getTime=True)
             if left:
-                print(time)
-
                 pos = self.mouse.getPos()
-                for gabor in gabors:
+                for grid_pos, gabor in gabors.items():
                     if gabor.contains(pos):
-                        print('clicked a gabor!')
                         is_clicked = True
+                        trial_data['selected'] = pos_to_str(grid_pos)
+
+                        score = self.landscape.get_score(grid_pos)
+                        trial_data['delta'] = score
+                        self.score += score
+                        trial_data['score'] = self.score
                         break
-                else:
-                    print('missed')
+
+            keys = event.getKeys(keyList=['q'])
+            if len(keys) > 0:
+                key = keys[0]
+                core.quit()
 
             core.wait(0.05)
 
-    def sample_screen_positions(self, n_gabors):
-        pass
+        feedback_pos = (gabor.pos[0], gabor.pos[1]+(self.gabor_size/2))
+        feedback = visual.TextStim(self.win, text='+'+str(score), pos=feedback_pos, height=24, color='green', bold=True, font='Consolas', alignVert='bottom')
+
+        for gabor in gabors.values():
+            gabor.draw()
+
+        feedback.draw()
+        self.win.flip()
+        core.wait(self.ITI)
+
+        return trial_data
 
 
 
 class ExperimentQuitException(Exception):
     pass
+
+
+def pos_to_str(pos):
+    x, y = pos
+    return '{x},{y}'.format(x=x, y=y)
+
+def pos_list_to_str(pos_list):
+    return ';'.join([pos_to_str(pos) for pos in pos_list])
