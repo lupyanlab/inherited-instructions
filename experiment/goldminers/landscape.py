@@ -20,6 +20,10 @@ class Landscape(object):
 
     def __init__(self, n_rows, n_cols, score_func, seed=None):
         self.dims = (n_rows, n_cols)
+
+        self.min_x, self.min_y = 0, 0
+        self.max_x, self.max_y = self.dims
+
         self.get_score = score_func
 
         self.orientations = linspace(self.min_ori, self.max_ori,
@@ -79,7 +83,8 @@ class Landscape(object):
         x, y = pos
         min_x, min_y = 0, 0
         max_x, max_y = self.dims
-        return x >= min_x and x < max_x and y >= min_y and y < max_y
+        return (x >= self.min_x and x < self.max_x and
+                y >= self.min_y and y < self.max_y)
 
     def sample_gabors(self, grid_pos, radius, n_sampled):
         grid_positions = self.get_neighborhood(grid_pos, radius, n_sampled)

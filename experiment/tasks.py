@@ -71,11 +71,6 @@ def draw_gabors(ctx, grid_size=10, win_size=None, output='landscape.png',
 def draw_landscape(ctx, landscape_data='simple_hill.csv',
                    output='simple_hill.pdf'):
     """Draw the landscape as a 3D plot."""
-    R_commands = """
-    landscape_data <- readr::read_csv({landscape_data!r})
-    pdf({output!r})
-    lattice::wireframe(score ~ x * y, data = landscape_data)
-    dev.off()
-    """.format(landscape_data=landscape_data, output=output)
-    R_commands = ";".join(R_commands.splitlines())
-    ctx.run('Rscript -e "{R_commands}"'.format(R_commands=R_commands), echo=True)
+    R_command = 'Rscript draw_landscape.R {landscape_data} {output}'
+    ctx.run(R_command.format(landscape_data=landscape_data, output=output),
+            echo=True)
