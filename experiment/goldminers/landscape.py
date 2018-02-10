@@ -7,7 +7,31 @@ def create_grid(n_rows, n_cols):
     return product(range(n_rows), range(n_cols))
 
 
-def create_positions(n_rows, n_cols, win_size, stim_size=0):
+Coords = namedtuple('x', 'y', 'score')
+
+class Landscape:
+    min_ori, max_ori = 180, 0
+    min_sf, max_sf = 0.01, 0.05
+
+    def __init__(self, n_rows, n_cols, eval_func):
+        self.grid = create_grid(n_rows, n_cols)
+        self.orientations = linspace(self.min_ori, self.max_ori,
+                                     num=n_cols, endpoint=False)
+        self.spatial_frequencies = linspace(self.min_sf, self.max_sf, num=n_rows)
+
+        self.score_cache = {}
+        self.eval_func = eval_func
+
+    def score(self, grid_pos):
+        return self.score_cache.setdefault(grid_pos, self.eval_func(grid_pos))
+
+    def export(self, filename):
+        coords = [Coords(x, y, self.score(x, y)) for x, y in self.grid]
+        tidy_data = pandas.DataFrame.from_records(coords)
+        tidy_data.to_csv(filename)
+
+
+def create_stim_positions(self, n_rows, n_cols, win_size, stim_size=0):
     indices = create_grid(n_rows, n_cols)
 
     win_width, win_height = win_size
