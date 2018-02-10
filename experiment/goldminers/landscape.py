@@ -16,7 +16,7 @@ class Landscape(object):
     A landscape is a grid of Gems.
     """
     min_ori, max_ori = 180, 0
-    min_sf, max_sf = 0.01, 0.05
+    min_sf, max_sf = 0.05, 0.2
 
     def __init__(self, n_rows, n_cols, score_func):
         self.dims = (n_rows, n_cols)
@@ -49,6 +49,14 @@ class Landscape(object):
     def export(self, filename):
         tidy_data = self.to_tidy_data()
         tidy_data.to_csv(filename, index=False)
+
+    def make_gabors(self, grid_positions, **grating_stim_kwargs):
+        gabors = []
+        for grid_pos in grid_positions:
+            gabor = self.get_gabor(grid_pos)
+            gabors.append(visual.GratingStim(ori=gabor.ori, sf=gabor.sf,
+                                             mask='circle', **grating_stim_kwargs))
+        return gabors
 
 
 class SimpleHill(Landscape):
