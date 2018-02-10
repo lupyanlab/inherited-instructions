@@ -7,7 +7,7 @@ from .config import PKG_ROOT
 
 TEXT_KWARGS = dict(font='Consolas')
 
-class Experiment:
+class Experiment(object):
     response_keys = ['space']
     response_text = 'Press SPACEBAR to continue'
     _window = None
@@ -73,6 +73,7 @@ class Experiment:
         return visual.TextStim(self.window, text=text, **kwargs)
 
     def run_trial(self):
+        pass
 
 
 
