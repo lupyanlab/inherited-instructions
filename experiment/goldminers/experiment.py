@@ -4,19 +4,35 @@ import yaml
 from psychopy import visual, core, event
 
 from .config import PKG_ROOT
+from .landscape import create_stim_positions, SimpleHill
 
 TEXT_KWARGS = dict(font='Consolas')
-STARTING_POS = (0, 0)
+STARTING_POS = (10, 10)
 
 class Experiment(object):
     response_keys = ['space']
     response_text = 'Press SPACEBAR to continue'
-    _window = None
+    search_radius = 8
+    n_search_items = 9
+    gabor_size = 60
+    _win = None
+    _mouse = None
 
     def __init__(self, **condition_vars):
         self.condition_vars = condition_vars
         self.pos = condition_vars.get('starting_pos', STARTING_POS)
         self.texts = yaml.load(open(path.join(PKG_ROOT, 'texts.yaml')))
+
+        n_rows, n_cols = 3, 3
+        assert n_rows * n_cols == self.n_search_items
+        self.stim_positions = create_stim_positions(n_rows=3, n_cols=3,
+            win_size=self.win.size, stim_size=self.gabor_size)
+
+        self.landscape = SimpleHill()
+        self.landscape.grating_stim_kwargs = dict(
+            win=self.win,
+            size=self.gabor_size
+        )
 
     def run(self):
         self.show_training_instructions()
@@ -27,10 +43,18 @@ class Experiment(object):
         self.quit()
 
     @property
-    def window(self):
-        if self._window is None:
-            self._window = visual.Window(units='pix')
-        return self._window
+    def win(self):
+        if self._win is None:
+            self._win = visual.Window(units='pix')
+        return self._win
+
+    @property
+    def mouse(self):
+        if self._mouse is None:
+            self.win  # ensure window has been created
+            self._mouse = event.Mouse()
+        return self._mouse
+
 
     def show_training_instructions(self):
         welcome = self.make_text_stim('Welcome to the experiment!', pos=(0, 250),
@@ -44,7 +68,7 @@ class Experiment(object):
 
         welcome.draw()
         instructions.draw()
-        self.window.flip()
+        self.win.flip()
         event.waitKeys(keyList=['space'])
 
     def run_training_trials(self):
@@ -63,7 +87,7 @@ class Experiment(object):
 
         end.draw()
         instructions.draw()
-        self.window.flip()
+        self.win.flip()
         event.waitKeys(keyList=self.response_keys)
 
     def quit(self):
@@ -72,17 +96,40 @@ class Experiment(object):
     def make_text_stim(self, text, **custom_kwargs):
         kwargs = TEXT_KWARGS.copy()
         kwargs.update(custom_kwargs)
-        return visual.TextStim(self.window, text=text, **kwargs)
+        return visual.TextStim(self.win, text=text, **kwargs)
 
     def run_trial(self):
-        gabors = landscape.sample_gabors(radius, n_gabors)
-        positions = self.sample_screen_positions(n_gabors)
-        for pos, gabor in zip(positions, gabors):
+        gabors = self.landscape.sample_gabors(
+            self.pos,
+            self.search_radius,
+            self.n_search_items
+        )
+
+        for pos, gabor in zip(self.stim_positions, gabors):
             gabor.pos = pos
 
         for gabor in gabors:
             gabor.draw()
-        self.window.flip()
+
+        self.win.flip()
+        self.mouse.clickReset()
+
+        is_clicked = False
+        while not is_clicked:
+            (left, _, _), (time, _, _) = self.mouse.getPressed(getTime=True)
+            if left:
+                print(time)
+
+                pos = self.mouse.getPos()
+                for gabor in gabors:
+                    if gabor.contains(pos):
+                        print('clicked a gabor!')
+                        is_clicked = True
+                        break
+                else:
+                    print('missed')
+
+            core.wait(0.05)
 
     def sample_screen_positions(self, n_gabors):
         pass

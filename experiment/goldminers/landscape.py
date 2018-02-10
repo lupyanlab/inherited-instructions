@@ -1,7 +1,7 @@
 from collections import namedtuple
 from psychopy import visual
 from itertools import product
-from numpy import linspace
+from numpy import linspace, random
 from pandas import DataFrame
 
 from goldminers.score_funcs import simple_hill
@@ -18,7 +18,7 @@ class Landscape(object):
     min_ori, max_ori = 180, 0
     min_sf, max_sf = 0.05, 0.2
 
-    def __init__(self, n_rows, n_cols, score_func):
+    def __init__(self, n_rows, n_cols, score_func, seed=None):
         self.dims = (n_rows, n_cols)
         self.get_score = score_func
 
@@ -27,6 +27,8 @@ class Landscape(object):
         self.spatial_frequencies = linspace(self.min_sf, self.max_sf, num=n_rows)
 
         self._gems = {}
+
+        self.prng = random.RandomState(seed)
 
     def get(self, grid_pos):
         """Get the Gem at this position, creating it if necessary."""
@@ -39,7 +41,7 @@ class Landscape(object):
 
     def get_gabor(self, grid_pos):
         """Get the features for the stimuli at grid position."""
-        ori_ix, sf_ix = grid_pos
+        ori_ix, sf_ix = map(int, grid_pos)
         return Gabor(self.orientations[ori_ix], self.spatial_frequencies[sf_ix])
 
     def to_tidy_data(self):
@@ -50,13 +52,27 @@ class Landscape(object):
         tidy_data = self.to_tidy_data()
         tidy_data.to_csv(filename, index=False)
 
-    def make_gabors(self, grid_positions, **grating_stim_kwargs):
+    def make_gabors(self, grid_positions):
         gabors = []
         for grid_pos in grid_positions:
             gabor = self.get_gabor(grid_pos)
             gabors.append(visual.GratingStim(ori=gabor.ori, sf=gabor.sf,
-                                             mask='circle', **grating_stim_kwargs))
+                                             mask='circle', **self.grating_stim_kwargs))
         return gabors
+
+    def get_neighborhood(self, grid_pos, radius, n_sampled=None):
+        """Return a list of positions adjacent to the given position."""
+        grid_x, grid_y = grid_pos
+        x_positions = linspace(grid_x-radius, grid_x+radius, 2*radius+1)
+        y_positions = linspace(grid_y-radius, grid_y+radius, 2*radius+1)
+        positions = list(product(x_positions, y_positions))
+        self.prng.shuffle(positions)
+        n_sampled = n_sampled or len(positions)
+        return positions[:n_sampled]
+
+    def sample_gabors(self, grid_pos, radius, n_sampled):
+        grid_positions = self.get_neighborhood(grid_pos, radius, n_sampled)
+        return self.make_gabors(grid_positions)
 
 
 class SimpleHill(Landscape):
@@ -76,21 +92,6 @@ def create_stim_positions(n_rows, n_cols, win_size, stim_size=0):
     y_positions = linspace(win_bottom+stim_size, win_top-stim_size, num=n_rows)
 
     return product(x_positions, y_positions)
-
-
-def create_gabors(window, coords, x_positions, y_positions, **grating_stim_kwargs):
-
-    gabors = []
-    for row, col in coords:
-        pos = (x_positions[col], y_positions[row])
-        ori = orientations[col]
-        sf = spatial_frequencies[row]
-        gabor = visual.GratingStim(window, mask='circle',
-                                   pos=pos, ori=ori, sf=sf,
-                                   **grating_stim_kwargs)
-        gabors.append(gabor)
-
-    return gabors
 
 
 def create_grid(n_rows, n_cols):

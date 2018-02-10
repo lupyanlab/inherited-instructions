@@ -1,5 +1,6 @@
 from goldminers import Landscape, SimpleHill
 
+
 def test_convert_landscape_to_tidy_data():
     landscape = Landscape(n_rows=2, n_cols=2, score_func=lambda (x,y): 1)
     tidy_data = landscape.to_tidy_data()
@@ -9,3 +10,13 @@ def test_convert_landscape_to_tidy_data():
 def test_get_score_on_simple_hill():
     simple_hill = SimpleHill()
     assert simple_hill.get_score((50, 50)) == 5000
+
+def test_get_gabors_surrounding_grid_pos():
+    landscape = Landscape(n_rows=3, n_cols=3, score_func=lambda (x,y): 1)
+    neighbors = landscape.get_neighborhood((1, 1), radius=1)
+    assert len(neighbors) == 9
+
+def test_sample_neighborhood():
+    landscape = Landscape(n_rows=10, n_cols=10, score_func=lambda (x,y): 1)
+    sampled_neighbors = landscape.get_neighborhood((5, 5), radius=4, n_sampled=9)
+    assert len(sampled_neighbors) == 9
