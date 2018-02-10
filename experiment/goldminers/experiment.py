@@ -6,6 +6,7 @@ from psychopy import visual, core, event
 from .config import PKG_ROOT
 
 TEXT_KWARGS = dict(font='Consolas')
+STARTING_POS = (0, 0)
 
 class Experiment(object):
     response_keys = ['space']
@@ -14,6 +15,7 @@ class Experiment(object):
 
     def __init__(self, **condition_vars):
         self.condition_vars = condition_vars
+        self.pos = condition_vars.get('starting_pos', STARTING_POS)
         self.texts = yaml.load(open(path.join(PKG_ROOT, 'texts.yaml')))
 
     def run(self):
@@ -73,6 +75,16 @@ class Experiment(object):
         return visual.TextStim(self.window, text=text, **kwargs)
 
     def run_trial(self):
+        gabors = landscape.sample_gabors(radius, n_gabors)
+        positions = self.sample_screen_positions(n_gabors)
+        for pos, gabor in zip(positions, gabors):
+            gabor.pos = pos
+
+        for gabor in gabors:
+            gabor.draw()
+        self.window.flip()
+
+    def sample_screen_positions(self, n_gabors):
         pass
 
 

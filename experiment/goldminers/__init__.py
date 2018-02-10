@@ -1,3 +1,2 @@
 from main import run
-from positions import create_positions
-from gabors import create_gabors
+from landscape import create_grid, create_positions, create_gabors
