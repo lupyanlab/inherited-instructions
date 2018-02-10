@@ -2,6 +2,8 @@
 from psychopy import visual, event, core
 from numpy import linspace
 
-from goldminers import create_grid
+from goldminers import Landscape
+from goldminers.score_funcs import simple_hill
 
-coords = create_grid(500, 500)
+landscape = Landscape(n_rows=100, n_cols=100, score_func=simple_hill)
+landscape.export('simple_hill.csv')
