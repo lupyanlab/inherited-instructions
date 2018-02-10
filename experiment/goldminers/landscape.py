@@ -65,10 +65,21 @@ class Landscape(object):
         grid_x, grid_y = grid_pos
         x_positions = linspace(grid_x-radius, grid_x+radius, 2*radius+1)
         y_positions = linspace(grid_y-radius, grid_y+radius, 2*radius+1)
-        positions = list(product(x_positions, y_positions))
+
+        positions = []
+        for pos in product(x_positions, y_positions):
+            if self.is_position_on_map(pos):
+                positions.append(pos)
+
         self.prng.shuffle(positions)
         n_sampled = n_sampled or len(positions)
         return positions[:n_sampled]
+
+    def is_position_on_map(self, pos):
+        x, y = pos
+        min_x, min_y = 0, 0
+        max_x, max_y = self.dims
+        return x >= min_x and x < max_x and y >= min_y and y < max_y
 
     def sample_gabors(self, grid_pos, radius, n_sampled):
         grid_positions = self.get_neighborhood(grid_pos, radius, n_sampled)

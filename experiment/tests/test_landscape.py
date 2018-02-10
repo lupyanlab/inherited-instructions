@@ -20,3 +20,9 @@ def test_sample_neighborhood():
     landscape = Landscape(n_rows=10, n_cols=10, score_func=lambda (x,y): 1)
     sampled_neighbors = landscape.get_neighborhood((5, 5), radius=4, n_sampled=9)
     assert len(sampled_neighbors) == 9
+
+def test_get_neighbors_ignorse_those_off_map():
+    landscape = Landscape(n_rows=3, n_cols=3, score_func=lambda (x,y): 1)
+    neighbors = landscape.get_neighborhood((0, 0), radius=1)
+    assert len(neighbors) == 4
+    assert set(neighbors) == set([(0,0), (0,1), (1,1), (1,0)])

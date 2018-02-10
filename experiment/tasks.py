@@ -77,5 +77,5 @@ def draw_landscape(ctx, landscape_data='simple_hill.csv',
     lattice::wireframe(score ~ x * y, data = landscape_data)
     dev.off()
     """.format(landscape_data=landscape_data, output=output)
-    ";".join(R_commands.splitlines())
+    R_commands = ";".join(R_commands.splitlines())
     ctx.run('Rscript -e "{R_commands}"'.format(R_commands=R_commands), echo=True)
