@@ -100,7 +100,7 @@ class Experiment(object):
         kwargs.update(custom_kwargs)
         return visual.TextStim(self.win, text=text, **kwargs)
 
-    def run_trial(self):
+    def run_trial(self, feedback=False):
         gabors = self.landscape.sample_gabors(
             self.pos,
             self.search_radius,
@@ -122,23 +122,50 @@ class Experiment(object):
             gabor.draw()
 
         self.win.flip()
-        self.mouse.clickReset()
+        grid_pos, gabor_pos, time = self.get_mouse_click(gabors)
+        score = self.landscape.get_score(grid_pos)
+        self.score += score
 
-        is_clicked = False
-        while not is_clicked:
+        trial_data['selected'] = pos_to_str(grid_pos)
+        trial_data['rt'] = time * 1000
+        trial_data['delta'] = score
+        trial_data['score'] = self.score
+
+        # Draw gabors again, this time with scores overlayed
+        for gabor in gabors.values():
+            gabor.draw()
+
+        selected_label = self.label_gabor_score(score, gabor_pos, color='green', bold=True)
+        selected_label.draw()
+
+        if feedback:
+            for other_grid_pos, gabor in gabors.items():
+                if grid_pos == other_grid_pos:
+                    continue
+                self.label_gabor_score(self.landscape.get_score(grid_pos), gabor.pos).draw()
+
+            self.win.flip()
+
+            while True:
+                (left, _, _) = self.mouse.getPressed()
+                if left:
+                    break
+
+        else:
+            self.win.flip()
+            core.wait(self.ITI)
+
+        return trial_data
+
+    def get_mouse_click(self, gabors):
+        self.mouse.clickReset()
+        while True:
             (left, _, _), (time, _, _) = self.mouse.getPressed(getTime=True)
             if left:
                 pos = self.mouse.getPos()
                 for grid_pos, gabor in gabors.items():
                     if gabor.contains(pos):
-                        is_clicked = True
-                        trial_data['selected'] = pos_to_str(grid_pos)
-
-                        score = self.landscape.get_score(grid_pos)
-                        trial_data['delta'] = score
-                        self.score += score
-                        trial_data['score'] = self.score
-                        break
+                        return grid_pos, gabor.pos, time
 
             keys = event.getKeys(keyList=['q'])
             if len(keys) > 0:
@@ -147,18 +174,10 @@ class Experiment(object):
 
             core.wait(0.05)
 
-        feedback_pos = (gabor.pos[0], gabor.pos[1]+(self.gabor_size/2))
-        feedback = visual.TextStim(self.win, text='+'+str(score), pos=feedback_pos, height=24, color='green', bold=True, font='Consolas', alignVert='bottom')
-
-        for gabor in gabors.values():
-            gabor.draw()
-
-        feedback.draw()
-        self.win.flip()
-        core.wait(self.ITI)
-
-        return trial_data
-
+    def label_gabor_score(self, score, gabor_pos, **kwargs):
+        feedback_pos = (gabor_pos[0], gabor_pos[1]+(self.gabor_size/2))
+        feedback = visual.TextStim(self.win, text='+'+str(score), pos=feedback_pos, height=24, font='Consolas', alignVert='bottom', **kwargs)
+        return feedback
 
 
 class ExperimentQuitException(Exception):

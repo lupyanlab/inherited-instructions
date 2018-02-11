@@ -19,7 +19,7 @@ def run_trial(ctx):
 def run_training_trial(ctx):
     """Run a training trial."""
     experiment = Experiment()
-    experiment.run_training_trial()
+    experiment.run_trial(feedback=True)
     experiment.quit()
 
 
