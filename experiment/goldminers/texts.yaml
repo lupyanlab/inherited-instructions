@@ -1,23 +1,34 @@
 ---
+welcome: |
+  Welcome to Planet Teeb!
+  You're here to collect precious gems.
 instructions: |
-  Imagine you just rode one of SpaceX's Falcon Heavy rockets to another planet. You traveled to this planet to collect previous gems. Some of these gems are worth more than others. Your job is to learn which gems are worth the most, so that you can make the most money to bring back home. After arriving on the planet, you seek out a trainer who can teach you which gems are worth more than others.
-
-  {trainer_instructions}
-
-  The trainer offers to take you to a nearby quarry to find some gems.
+  Congratulations! You've just arrived on Planet Teeb. You're here to collect precious gems, but you do not yet know which gems are more valuable than others. After arriving, you seek out a trainer who can teach you which gems are worth more than others. Pay close attention to the instructions you receive from your trainer, as it will help you to find the most valuable gems in the game.
 
   {response_text}
 
-orientation: The trainer tells you that the orientation of the stripes on the gems is the most important for determining it's value.
+training_title: Here is how to tell the difference between cheap and expensive gems.
+training: |
+  {trainer_instructions}
 
-frequency: The trainer tells you that the width of the stripes on the gems is the most important for determining it's value.
+  The trainer offers to take you to a nearby quarry to find some gems. The trainer will give you a few of gems to look at. You have to click on the one you think is the most valuable. The trainer will show you the value of the one you clicked, and the values of the ones you did not click. Your goal is to learn to select the most valuable gem on each trial.
+
+  {response_text}
+
+training_instructions:
+  orientation: |
+    The trainer tells you that the difference between cheap and expensive gems is determined by the orientation of the stripes. Look at the two gems pictured below and see if you can tell their difference in orientation. The gem on the right is the more valuable gem.
+  frequency: |
+    The trainer tells you that the difference between cheap and expensive gems is determined by the width of the stripes. Look at the two gems pictured below and see if you can tell their difference in stripe width. The gem on the right is the more valuable gem.
 
 test: |
-  After completing the training, you are now ready to strike out on your own.
+  Your training is complete! Now you are ready to strike out on your own, to different quarries all over the planet. Without your trainer to help you, you will only know the value of the gem you select, and not the values of the gems you do not select. But your goal is the same: to select the most valuable gem on each trial.
 
   {response_text}
 
 end: |
-  You've reached the end of the experiment! After you exit this screen, a survey will open in the browser. Please complete the survey. After you complete the survey you can leave.
+  Your ship is full of gems and you are ready to fly home. Thanks for visiting Planet Teeb!
+
+  You've completed the experiment. After you exit this screen, a survey will open in the web browser. Please complete the survey. After you complete the survey you can leave.
 
   Press the SPACEBAR to exit this screen, and open the survey.

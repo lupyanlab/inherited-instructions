@@ -6,22 +6,27 @@ from psychopy import visual, core, event
 from .config import PKG_ROOT
 from .landscape import create_stim_positions, SimpleHill
 
-TEXT_KWARGS = dict(font='Consolas')
-STARTING_POS = (10, 10)
 
 class Experiment(object):
     response_keys = ['space']
     response_text = 'Press SPACEBAR to continue'
-    search_radius = 8
-    n_search_items = 9
+    text_kwargs = dict(font='Consolas')
+
+    # Duration of scoring feedback given on test trials.
+    feedback_duration = 1.0
+
     gabor_size = 60
-    ITI = 1.0
+    n_search_items = 9
+
+    search_radius = 8
+    starting_pos = (10, 10)
+
     _win = None
     _mouse = None
 
     def __init__(self, **condition_vars):
         self.condition_vars = condition_vars
-        self.pos = condition_vars.get('starting_pos', STARTING_POS)
+        self.pos = condition_vars.get('starting_pos', self.starting_pos)
         self.texts = yaml.load(open(path.join(PKG_ROOT, 'texts.yaml')))
 
         n_rows, n_cols = 3, 3
@@ -38,6 +43,7 @@ class Experiment(object):
         self.score = 0
 
     def run(self):
+        self.show_welcome_page()
         self.show_training_instructions()
         self.run_training_trials()
         self.show_test_instructions()
@@ -58,19 +64,36 @@ class Experiment(object):
             self._mouse = event.Mouse()
         return self._mouse
 
-    def show_training_instructions(self):
-        welcome = self.make_text_stim('Welcome to the experiment!', pos=(0, 250),
+    def show_welcome_page(self):
+        welcome = self.make_text_stim(self.texts['welcome'], pos=(0, 225),
                                       bold=True, height=30)
-
-        trainer_instructions = self.texts[self.condition_vars['instructions_condition']]
         instructions = self.make_text_stim(self.texts['instructions'].format(
-            trainer_instructions=trainer_instructions,
             response_text=self.response_text
         ))
 
+        explorer_png = path.join(PKG_ROOT, 'img', 'explorer.png')
+        explorer = visual.ImageStim(self.win, explorer_png, pos=(0, -300), size=200)
+
         welcome.draw()
         instructions.draw()
+        explorer.draw()
         self.win.flip()
+
+        event.waitKeys(keyList=['space'])
+
+    def show_training_instructions(self):
+        title = self.make_text_stim(self.texts['training_title'], pos=(0, 250),
+                                    bold=True, height=30)
+
+        instructions_condition = self.condition_vars['instructions_condition']
+        training_instructions = self.texts['training_instructions'][instructions_condition]
+
+        instructions_text_stim = self.make_text_stim(training_instructions)
+
+        title.draw()
+        instructions_text_stim.draw()
+        self.win.flip()
+
         event.waitKeys(keyList=['space'])
 
     def run_training_trials(self):
@@ -96,7 +119,7 @@ class Experiment(object):
         core.quit()
 
     def make_text_stim(self, text, **custom_kwargs):
-        kwargs = TEXT_KWARGS.copy()
+        kwargs = self.text_kwargs.copy()
         kwargs.update(custom_kwargs)
         return visual.TextStim(self.win, text=text, **kwargs)
 
