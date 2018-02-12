@@ -72,9 +72,7 @@ class Experiment(object):
     @property
     def win(self):
         if self._win is None:
-            print('creating window')
             if self.win_size is None:
-                print('no win size')
                 fullscr = True
                 self.win_size = (1, 1)
             else:

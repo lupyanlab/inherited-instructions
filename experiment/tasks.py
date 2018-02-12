@@ -1,10 +1,12 @@
 import subprocess
+from os import path
 from itertools import product
 from numpy import linspace
 
 from invoke import task
 
 from goldminers import Experiment, Landscape, SimpleHill, create_stim_positions
+from goldminers.util import get_subj_info
 from goldminers.score_funcs import simple_hill
 
 
@@ -16,6 +18,12 @@ def show_instructions(ctx, instructions_condition='orientation'):
     experiment.show_welcome_page()
     experiment.show_training_instructions()
     experiment.quit()
+
+
+@task
+def gui(ctx):
+    subj_info = get_subj_info('gui.yml', check_exists=lambda subj_info: path.exists('%s.txt' % (subj_info['subj_id'])))
+    print(subj_info)
 
 @task
 def run_trial(ctx):

@@ -1,21 +1,15 @@
 from psychopy import visual, gui, core
 
 from .experiment import Experiment
+from .util import get_subj_info
 
-def parse_condition_vars(condition_vars):
-    # Search for any missing vars
-    for value in condition_vars.values():
-        if not value:
-            dlg = gui.DlgFromDict(condition_vars, title='Miners Experiment')
-            if dlg.OK:
-                break
-            else:
-                core.quit()
+def check_exists(subj_info):
+    subj_path = path.join('data', '%s.txt' % (subj_info['subj_id']))
+    return path.exists(subj_path)
 
-    return condition_vars
 
 def run(**condition_vars):
     """Run an experiment given a dict of condition vars."""
-    condition_vars = parse_condition_vars(condition_vars)
-    experiment = Experiment(**condition_vars)
+    subj_info = get_subj_info('gui.yaml', check_exists, save_order=True)
+    experiment = Experiment(**subj_info)
     experiment.run()

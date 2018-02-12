@@ -1,0 +1,15 @@
+---
+1:
+  name: subj_id
+  prompt: Subject identifier
+  default: GM100
+2:
+  name: instructions_condition
+  prompt: Condition
+  default:
+    - orientation
+    - spatial_frequency
+3:
+  name: experimenter
+  prompt: Experimenter initials
+  default: XXX
