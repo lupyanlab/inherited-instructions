@@ -11,18 +11,20 @@ from .display import create_stim_positions
 class Experiment(object):
     response_keys = ['space']
     response_text = 'Press SPACEBAR to continue'
-    text_kwargs = dict(font='Consolas')
+    text_kwargs = dict(font='Consolas', color='black')
 
     # Duration of scoring feedback given on test trials.
     feedback_duration = 1.0
 
+    _win = None
+    win_size = None
+    win_color = (.6, .6, .6)
     gabor_size = 60
     n_search_items = 9
 
     search_radius = 8
     starting_pos = (10, 10)
 
-    _win = None
     _mouse = None
 
     def __init__(self, **condition_vars):
@@ -55,7 +57,17 @@ class Experiment(object):
     @property
     def win(self):
         if self._win is None:
-            self._win = visual.Window(units='pix')
+            print('creating window')
+            if self.win_size is None:
+                print('no win size')
+                fullscr = True
+                self.win_size = (1, 1)
+            else:
+                fullscr = False
+            self._win = visual.Window(self.win_size, fullscr=fullscr, units='pix',
+                                      color=self.win_color)
+
+            self.text_kwargs['wrapWidth'] = self._win.size[0] * 0.7
         return self._win
 
     @property
@@ -66,14 +78,24 @@ class Experiment(object):
         return self._mouse
 
     def show_welcome_page(self):
-        welcome = self.make_text_stim(self.texts['welcome'], pos=(0, 225),
+        welcome = self.make_text_stim(self.texts['welcome'], pos=(0, 200),
                                       bold=True, height=30)
-        instructions = self.make_text_stim(self.texts['instructions'].format(
+
+        instructions_text = self.texts['instructions'].format(
             response_text=self.response_text
-        ))
+        )
+        instructions = self.make_text_stim(instructions_text)
 
         explorer_png = path.join(PKG_ROOT, 'img', 'explorer.png')
-        explorer = visual.ImageStim(self.win, explorer_png, pos=(0, -300), size=200)
+        explorer = visual.ImageStim(self.win, explorer_png, pos=(0, -200), size=200)
+
+        left_gabor = self.landscape.get_grating_stim((10, 10))
+        left_gabor.pos = (-100, -200)
+        left_gabor.draw()
+
+        right_gabor = self.landscape.get_grating_stim((20, 20))
+        right_gabor.pos = (100, -200)
+        right_gabor.draw()
 
         welcome.draw()
         instructions.draw()
@@ -88,14 +110,31 @@ class Experiment(object):
 
         instructions_condition = self.condition_vars['instructions_condition']
         training_instructions = self.texts['training_instructions'][instructions_condition]
+        instructions_text = self.texts['training'].format(
+            training_instructions=training_instructions,
+        )
+        instructions = self.make_text_stim(instructions_text)
 
-        instructions_text_stim = self.make_text_stim(training_instructions)
+        left_gabor = self.landscape.get_grating_stim((10, 10))
+        left_gabor.pos = (-100, -200)
+        left_gabor.draw()
+
+        right_gabor = self.landscape.get_grating_stim((20, 20))
+        right_gabor.pos = (100, -200)
+        right_gabor.draw()
 
         title.draw()
-        instructions_text_stim.draw()
+        instructions.draw()
         self.win.flip()
 
-        event.waitKeys(keyList=['space'])
+        while True:
+            (left, _, _) = self.mouse.getPressed()
+            if left:
+                pos = self.mouse.getPos()
+                if right_gabor.contains(pos):
+                    break
+
+            core.wait(0.05)
 
     def run_training_trials(self):
         pass

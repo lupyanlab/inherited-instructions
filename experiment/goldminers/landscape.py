@@ -78,19 +78,21 @@ class Landscape(object):
         n_sampled = n_sampled or len(positions)
         return positions[:n_sampled]
 
-    def get_gabors(self, grid_positions):
+    def get_grating_stims(self, grid_positions):
         """Returns a list of visual.GratingStim objects at these positions."""
         gabors = {}
         for grid_pos in grid_positions:
-            gabor = self.get_gabor(grid_pos)
-            gabors[grid_pos] = visual.GratingStim(ori=gabor.ori, sf=gabor.sf,
-                                                  mask='circle',  **self.grating_stim_kwargs)
+            gabors[grid_pos] = self.get_grating_stim(grid_pos)
         return gabors
+
+    def get_grating_stim(self, grid_pos):
+        gabor = self.get_gabor(grid_pos)
+        return visual.GratingStim(ori=gabor.ori, sf=gabor.sf, mask='circle', **self.grating_stim_kwargs)
 
     def sample_gabors(self, n_sampled, grid_pos, radius):
         """Returns a sample of the number of gabors in the neighborhood."""
         grid_positions = self.sample_neighborhood(n_sampled, grid_pos, radius)
-        return self.make_gabors(grid_positions)
+        return self.get_gabors(grid_positions)
 
     def is_position_on_grid(self, grid_pos):
         x, y = grid_pos

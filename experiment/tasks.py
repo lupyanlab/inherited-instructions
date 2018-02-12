@@ -11,6 +11,7 @@ from goldminers.score_funcs import simple_hill
 @task
 def show_instructions(ctx, instructions_condition='orientation'):
     """Show the instructions for the experiment."""
+    Experiment.win_size = (600 * 2, 400 * 2)
     experiment = Experiment(instructions_condition=instructions_condition)
     experiment.show_welcome_page()
     experiment.show_training_instructions()
