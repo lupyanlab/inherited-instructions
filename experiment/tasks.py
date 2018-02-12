@@ -1,8 +1,10 @@
 import subprocess
+from itertools import product
+from numpy import linspace
 
 from invoke import task
 
-from goldminers import Experiment, Landscape
+from goldminers import Experiment, Landscape, SimpleHill, create_stim_positions
 from goldminers.score_funcs import simple_hill
 
 
@@ -41,32 +43,49 @@ def print_landscape(ctx):
 @task
 def draw_gabors(ctx, grid_size=10, win_size=None, output='landscape.png',
                 open_after=False):
-    """Draw gabors sampled from the landscape."""
+    """Draw gabors sampled from the landscape.
+
+    Examples:
+    $ inv draw-gabors -w 800 -p
+    """
+    from psychopy import visual
 
     if win_size is None:
         fullscr = True
         size = (1, 1)  # Ignored when full screen
     else:
         fullscr = False
-        size = win_size
+        size = map(int, win_size.split(','))
+        if len(size) == 1:
+            size = (size, size)
 
     win = visual.Window(size=size, units='pix', color=(0.6, 0.6, 0.6),
                         fullscr=fullscr)
 
-    positions = range(0, 100, 100/grid_size)
-    grid_positions = product(positions, positions)
+    positions = linspace(0, 100, grid_size, endpoint=False, dtype='int')
+    grid_positions = list(product(positions, positions))
+
+    gabor_size = 60
 
     landscape = SimpleHill()
-    gabors = landscape.make_gabors(grid_positions, win=win, size=gabor_size)
+    landscape.grating_stim_kwargs = {'win': win, 'size': gabor_size}
+
+    # Get gabors for each point in the grid
+    positions = linspace(0, 100, grid_size, endpoint=False, dtype='int')
+    grid_positions = list(product(positions, positions))
+    gabors = landscape.get_gabors(grid_positions)
 
     stim_positions = create_stim_positions(n_rows=grid_size, n_cols=grid_size,
                                            win_size=win.size,
                                            stim_size=gabor_size)
 
-    for (grid_pos, screen_pos) in zip(gabors.keys(), stim_positions):
+    for (grid_pos, stim_pos) in zip(grid_positions, stim_positions):
         gabor = gabors[grid_pos]
-        gabor.pos = screen_pos
+        gabor.pos = stim_pos
         gabor.draw()
+
+        label = visual.TextStim(win, '%s' % (grid_pos, ), pos=(stim_pos[0], stim_pos[1]+gabor_size/2), alignVert='bottom')
+        label.draw()
 
     win.flip()
     win.getMovieFrame()

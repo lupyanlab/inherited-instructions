@@ -4,7 +4,8 @@ import yaml
 from psychopy import visual, core, event
 
 from .config import PKG_ROOT
-from .landscape import create_stim_positions, SimpleHill
+from .landscape import SimpleHill
+from .display import create_stim_positions
 
 
 class Experiment(object):

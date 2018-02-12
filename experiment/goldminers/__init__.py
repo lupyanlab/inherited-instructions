@@ -1,3 +1,5 @@
 from main import run
 from experiment import Experiment
-from landscape import create_grid, create_stim_positions, Landscape, SimpleHill
+from landscape import Landscape, SimpleHill
+from display import create_stim_positions
+from util import create_grid

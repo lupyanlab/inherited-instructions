@@ -56,7 +56,30 @@ class Landscape(object):
         tidy_data = self.to_tidy_data()
         tidy_data.to_csv(filename, index=False)
 
-    def make_gabors(self, grid_positions):
+    def get_neighborhood(self, grid_pos, radius):
+        """Return a list of positions adjacent to the given position."""
+        # TODO: Refactor create_grid to take optional parameter "center"
+        # neighborhood = create_grid(radius, radius, center=grid_pos)
+        grid_x, grid_y = grid_pos
+        x_positions = range(grid_x-radius, grid_x+radius+1)
+        y_positions = range(grid_y-radius, grid_y+radius+1)
+
+        positions = []
+        for pos in product(x_positions, y_positions):
+            if self.is_position_on_grid(pos):
+                positions.append(pos)
+
+        return positions
+
+    def sample_neighborhood(self, grid_pos, radius, n_sampled=None):
+        """Sample positions from the neighborhood."""
+        positions = self.get_neighborhood(grid_pos, radius)
+        self.prng.shuffle(positions)
+        n_sampled = n_sampled or len(positions)
+        return positions[:n_sampled]
+
+    def get_gabors(self, grid_positions):
+        """Returns a list of visual.GratingStim objects at these positions."""
         gabors = {}
         for grid_pos in grid_positions:
             gabor = self.get_gabor(grid_pos)
@@ -64,55 +87,16 @@ class Landscape(object):
                                                   mask='circle',  **self.grating_stim_kwargs)
         return gabors
 
-    def get_neighborhood(self, grid_pos, radius, n_sampled=None):
-        """Return a list of positions adjacent to the given position."""
-        grid_x, grid_y = grid_pos
-        x_positions = linspace(grid_x-radius, grid_x+radius, 2*radius+1, dtype='int')
-        y_positions = linspace(grid_y-radius, grid_y+radius, 2*radius+1, dtype='int')
-
-        positions = []
-        for pos in product(x_positions, y_positions):
-            if self.is_position_on_map(pos):
-                positions.append(pos)
-
-        self.prng.shuffle(positions)
-        n_sampled = n_sampled or len(positions)
-        return positions[:n_sampled]
-
-    def is_position_on_map(self, pos):
-        x, y = pos
-        min_x, min_y = 0, 0
-        max_x, max_y = self.dims
-        return (x >= self.min_x and x < self.max_x and
-                y >= self.min_y and y < self.max_y)
-
-    def sample_gabors(self, grid_pos, radius, n_sampled):
-        grid_positions = self.get_neighborhood(grid_pos, radius, n_sampled)
+    def sample_gabors(self, n_sampled, grid_pos, radius):
+        """Returns a sample of the number of gabors in the neighborhood."""
+        grid_positions = self.sample_neighborhood(n_sampled, grid_pos, radius)
         return self.make_gabors(grid_positions)
 
+    def is_position_on_grid(self, grid_pos):
+        x, y = grid_pos
+        return (x >= self.min_x and x < self.max_x and
+                y >= self.min_y and y < self.max_y)
 
 class SimpleHill(Landscape):
     def __init__(self):
         return super(SimpleHill, self).__init__(n_rows=100, n_cols=100, score_func=simple_hill)
-
-
-def create_stim_positions(n_rows, n_cols, win_size, stim_size=0):
-    win_width, win_height = win_size
-    win_left, win_right = -win_width/2, win_width/2
-    win_bottom, win_top = -win_height/2, win_height/2
-
-    # Sample row and column positions with stim sized buffer
-    x_positions = linspace(win_left+stim_size, win_right-stim_size, num=n_cols, dtype='int')
-    y_positions = linspace(win_bottom+stim_size, win_top-stim_size, num=n_rows, dtype='int')
-
-    return list(product(x_positions, y_positions))
-
-
-def create_grid(n_rows, n_cols):
-    """Create all row, col grid positions.
-
-    Grid positions are given as positive indices starting at 0.
-    Rows range from 0 to (n_rows-1).
-    Columns range from 0 to (n_cols-1).
-    """
-    return product(range(n_rows), range(n_cols))
