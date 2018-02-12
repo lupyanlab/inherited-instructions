@@ -14,7 +14,7 @@ class Experiment(object):
     text_kwargs = dict(font='Consolas', color='black')
 
     # Duration of scoring feedback given on test trials.
-    feedback_duration = 1.0
+    feedback_duration = 1.5
 
     _win = None
     win_size = None
@@ -35,7 +35,7 @@ class Experiment(object):
         n_rows, n_cols = 3, 3
         assert n_rows * n_cols == self.n_search_items
         self.stim_positions = create_stim_positions(n_rows=3, n_cols=3,
-            win_size=self.win.size, stim_size=self.gabor_size)
+            win_size=(self.win.size[1], self.win.size[1]), stim_size=(self.gabor_size * 4))
 
         self.landscape = SimpleHill()
         self.landscape.grating_stim_kwargs = dict(
@@ -44,6 +44,21 @@ class Experiment(object):
         )
 
         self.score = 0
+
+        self.trial_header = self.make_text_stim('',
+            pos=(0, self.win.size[1]/2 - 10),
+            alignVert='top',
+            height=30,
+            bold=True
+        )
+
+        self.score_text = self.make_text_stim('',
+            pos=(-self.win.size[0]/2 + 10, self.win.size[1]/2 - 10),
+            alignVert='top',
+            alignHoriz='left',
+            height=30,
+            bold=True
+        )
 
     def run(self):
         self.show_welcome_page()
@@ -163,7 +178,12 @@ class Experiment(object):
         kwargs.update(custom_kwargs)
         return visual.TextStim(self.win, text=text, **kwargs)
 
-    def run_trial(self, feedback=False):
+    def run_trial(self, training=False):
+        self.draw_score()
+
+        self.trial_header.text = 'Click on the gem you think is most valuable.'
+        self.trial_header.draw()
+
         gabors = self.landscape.sample_gabors(
             self.pos,
             self.search_radius,
@@ -187,25 +207,35 @@ class Experiment(object):
         self.win.flip()
         grid_pos, gabor_pos, time = self.get_mouse_click(gabors)
         score = self.landscape.get_score(grid_pos)
-        self.score += score
+        self.pos = grid_pos      # update current pos
+        prev_score = self.score
+        self.score += score      # update current score
 
         trial_data['selected'] = pos_to_str(grid_pos)
         trial_data['rt'] = time * 1000
         trial_data['delta'] = score
         trial_data['score'] = self.score
 
-        # Draw gabors again, this time with scores overlayed
         for gabor in gabors.values():
             gabor.draw()
 
         selected_label = self.label_gabor_score(score, gabor_pos, color='green', bold=True)
         selected_label.draw()
 
-        if feedback:
+        self.draw_score(prev_score, score)
+
+        if training:
+            # Draw gabors again, this time with scores overlayed
+            self.trial_header.text = 'Compare the score for the gem you selected to the scores of other gems. Click anywhere to continue.'
+
             for other_grid_pos, gabor in gabors.items():
                 if grid_pos == other_grid_pos:
                     continue
-                self.label_gabor_score(self.landscape.get_score(grid_pos), gabor.pos).draw()
+                other_score = self.landscape.get_score(other_grid_pos)
+                other_label = self.label_gabor_score(other_score, gabor.pos)
+                if other_score > score:
+                    other_label.color = 'red'
+                other_label.draw()
 
             self.win.flip()
 
@@ -216,7 +246,7 @@ class Experiment(object):
 
         else:
             self.win.flip()
-            core.wait(self.ITI)
+            core.wait(self.feedback_duration)
 
         return trial_data
 
@@ -239,9 +269,15 @@ class Experiment(object):
 
     def label_gabor_score(self, score, gabor_pos, **kwargs):
         feedback_pos = (gabor_pos[0], gabor_pos[1]+(self.gabor_size/2))
-        feedback = visual.TextStim(self.win, text='+'+str(score), pos=feedback_pos, height=24, font='Consolas', alignVert='bottom', **kwargs)
+        feedback = self.make_text_stim('+'+str(score), pos=feedback_pos, height=24, alignVert='bottom', **kwargs)
         return feedback
 
+    def draw_score(self, prev_score=None, delta=None):
+        if prev_score is not None and delta:
+            self.score_text.text = 'Your score:\n%s\n+%s\n----------\n%s' % (prev_score, delta, self.score)
+        else:
+            self.score_text.text = 'Your score:\n%s' % (self.score)
+        self.score_text.draw()
 
 class ExperimentQuitException(Exception):
     pass

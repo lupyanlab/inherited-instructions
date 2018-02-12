@@ -20,6 +20,7 @@ def show_instructions(ctx, instructions_condition='orientation'):
 @task
 def run_trial(ctx):
     """Run a single trial."""
+    Experiment.win_size = (600 * 2, 400 * 2)
     experiment = Experiment()
     trial_data = experiment.run_trial()
     print(trial_data)
@@ -29,8 +30,9 @@ def run_trial(ctx):
 @task
 def run_training_trial(ctx):
     """Run a training trial."""
+    Experiment.win_size = (600 * 2, 400 * 2)
     experiment = Experiment()
-    experiment.run_trial(feedback=True)
+    experiment.run_trial(training=True)
     experiment.quit()
 
 

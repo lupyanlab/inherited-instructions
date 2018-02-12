@@ -1,4 +1,4 @@
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 from psychopy import visual
 from itertools import product
 from numpy import linspace, random
@@ -80,7 +80,7 @@ class Landscape(object):
 
     def get_grating_stims(self, grid_positions):
         """Returns a list of visual.GratingStim objects at these positions."""
-        gabors = {}
+        gabors = OrderedDict()
         for grid_pos in grid_positions:
             gabors[grid_pos] = self.get_grating_stim(grid_pos)
         return gabors
@@ -92,7 +92,7 @@ class Landscape(object):
     def sample_gabors(self, n_sampled, grid_pos, radius):
         """Returns a sample of the number of gabors in the neighborhood."""
         grid_positions = self.sample_neighborhood(n_sampled, grid_pos, radius)
-        return self.get_gabors(grid_positions)
+        return self.get_grating_stims(grid_positions)
 
     def is_position_on_grid(self, grid_pos):
         x, y = grid_pos
