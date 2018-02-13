@@ -16,21 +16,28 @@ Gem = namedtuple('Gem', 'x y ori sf score')
 class Landscape(object):
     """
     A landscape is a grid of Gems.
+
+    Landscapes must implement a get_score method that accepts a grid position,
+    and returns a value.
     """
     min_ori, max_ori = 180, 0
     min_sf, max_sf = 0.05, 0.2
+    n_rows, n_cols = None, None
 
-    def __init__(self, n_rows, n_cols, score_func, seed=None):
-        self.dims = (n_rows, n_cols)
+    def __init__(self, n_rows=None, n_cols=None, score_func=None, seed=None):
+        self.n_rows = n_rows or self.n_rows
+        self.n_cols = n_cols or self.n_cols
+        assert self.n_rows and self.n_cols
+
+        self.score_func = score_func
+        self.dims = (self.n_rows, self.n_cols)
 
         self.min_x, self.min_y = 0, 0
         self.max_x, self.max_y = self.dims
 
-        self.get_score = score_func
-
         self.orientations = linspace(self.min_ori, self.max_ori,
-                                     num=n_cols, endpoint=False)
-        self.spatial_frequencies = linspace(self.min_sf, self.max_sf, num=n_rows)
+                                     num=self.n_cols, endpoint=False)
+        self.spatial_frequencies = linspace(self.min_sf, self.max_sf, num=self.n_rows)
 
         self._gems = {}
 
@@ -49,6 +56,11 @@ class Landscape(object):
         """Get the features for the stimuli at grid position."""
         ori_ix, sf_ix = map(int, grid_pos)
         return Gabor(self.orientations[ori_ix], self.spatial_frequencies[sf_ix])
+
+    def get_score(self, grid_pos):
+        if self.score_func is None:
+            raise NotImplementedError
+        return self.score_func(grid_pos)
 
     def to_tidy_data(self):
         coords = [self.get((x, y)) for x, y in create_grid(*self.dims)]
@@ -102,5 +114,8 @@ class Landscape(object):
                 y >= self.min_y and y < self.max_y)
 
 class SimpleHill(Landscape):
-    def __init__(self):
-        return super(SimpleHill, self).__init__(n_rows=100, n_cols=100, score_func=simple_hill)
+    n_rows = 100
+    n_cols = 100
+
+    def get_score(self, grid_pos):
+        return simple_hill(grid_pos)
