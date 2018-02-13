@@ -117,5 +117,15 @@ class SimpleHill(Landscape):
     n_rows = 100
     n_cols = 100
 
+    def __init__(self, seed=5978, **kwargs):
+        super(SimpleHill, self).__init__(**kwargs)
+
+        self.jitters = {}
+        self.prng = random.RandomState(seed)
+        for x, y in create_grid(*self.dims):
+            self.jitters[(x, y)] = self.prng.randint(-2, 2)
+
     def get_score(self, grid_pos):
-        return simple_hill(grid_pos)
+        base = simple_hill(grid_pos)
+        jitter = self.jitters[grid_pos]
+        return base + jitter
