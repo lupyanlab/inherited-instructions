@@ -4,7 +4,9 @@ from itertools import product
 from numpy import linspace, random
 from pandas import DataFrame
 
-from goldminers.score_funcs import simple_hill
+from .util import create_grid
+from .score_funcs import simple_hill
+
 
 
 Gabor = namedtuple('Gabor', 'ori sf')

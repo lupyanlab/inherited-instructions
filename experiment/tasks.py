@@ -5,9 +5,8 @@ from numpy import linspace
 
 from invoke import task
 
-from goldminers import Experiment, Landscape, SimpleHill, create_stim_positions
-from goldminers.util import get_subj_info
-from goldminers.score_funcs import simple_hill
+from gems import Experiment, SimpleHill
+from gems.display import create_stim_positions
 
 
 @task
@@ -22,6 +21,7 @@ def show_instructions(ctx, instructions_condition='orientation'):
 
 @task
 def gui(ctx):
+    """Open the subject info GUI and print the results."""
     experiment = Experiment.from_gui('gui.yml')
     print(experiment.condition_vars)
 
@@ -47,7 +47,7 @@ def run_training_trials(ctx, n_training_trials=1):
 @task
 def print_landscape(ctx):
     """Print the landscape to a tidy csv."""
-    landscape = Landscape(n_rows=100, n_cols=100, score_func=simple_hill)
+    landscape = SimpleHill()
     landscape.export('simple_hill.csv')
 
 

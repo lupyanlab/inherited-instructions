@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import goldminers
+import gems
 
 if __name__ == '__main__':
     import argparse
@@ -7,4 +7,4 @@ if __name__ == '__main__':
     parser.add_argument('--subject-id', '-s', default='')
     parser.add_argument('--instructions-condition', '-i', default='')
     args = parser.parse_args()
-    goldminers.run(**args.__dict__)
+    gems.run(**args.__dict__)

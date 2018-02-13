@@ -1,4 +1,4 @@
-from goldminers import Landscape, SimpleHill
+from gems import Landscape, SimpleHill
 
 
 def test_convert_landscape_to_tidy_data():
@@ -18,7 +18,7 @@ def test_get_gabors_surrounding_grid_pos():
 
 def test_sample_neighborhood():
     landscape = Landscape(n_rows=10, n_cols=10, score_func=lambda (x,y): 1)
-    sampled_neighbors = landscape.get_neighborhood((5, 5), radius=4, n_sampled=9)
+    sampled_neighbors = landscape.sample_neighborhood((5, 5), radius=4, n_sampled=9)
     assert len(sampled_neighbors) == 9
 
 def test_get_neighbors_ignorse_those_off_map():

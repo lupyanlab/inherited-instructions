@@ -1,6 +1,6 @@
 import pytest
 
-from goldminers import create_stim_positions
+from gems import create_stim_positions
 
 def test_create_single_position():
     positions = create_stim_positions(n_rows=1, n_cols=1, win_size=(100, 100))
