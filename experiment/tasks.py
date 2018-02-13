@@ -22,8 +22,8 @@ def show_instructions(ctx, instructions_condition='orientation'):
 
 @task
 def gui(ctx):
-    subj_info = get_subj_info('gui.yml', check_exists=lambda subj_info: path.exists('%s.txt' % (subj_info['subj_id'])))
-    print(subj_info)
+    experiment = Experiment.from_gui('gui.yml')
+    print(experiment.condition_vars)
 
 @task
 def run_trial(ctx):
@@ -36,11 +36,11 @@ def run_trial(ctx):
 
 
 @task
-def run_training_trial(ctx):
+def run_training_trials(ctx, n_training_trials=1):
     """Run a training trial."""
     Experiment.win_size = (600 * 2, 400 * 2)
-    experiment = Experiment()
-    experiment.run_trial(training=True)
+    experiment = Experiment(subj_id='pierce')
+    experiment.run_training_trials(n_training_trials)
     experiment.quit()
 
 

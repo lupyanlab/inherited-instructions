@@ -1,4 +1,3 @@
-from main import run
 from experiment import Experiment
 from landscape import Landscape, SimpleHill
 from display import create_stim_positions

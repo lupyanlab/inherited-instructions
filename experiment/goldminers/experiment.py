@@ -1,11 +1,21 @@
+import subprocess
 from os import path
 
 import yaml
+
 from psychopy import visual, core, event
 
 from .config import PKG_ROOT
 from .landscape import SimpleHill
 from .display import create_stim_positions
+from .util import get_subj_info
+
+DATA_COLUMNS = [
+    'subj_id', 'date', 'computer', 'experimenter',
+    'instructions',
+    'quarry', 'starting_pos', 'pos',
+    'stims', 'selected', 'rt', 'score', 'total'
+]
 
 
 class Experiment(object):
@@ -15,8 +25,12 @@ class Experiment(object):
 
     # Duration of scoring feedback given on test trials.
     feedback_duration = 1.5
+    iti = 1.0
 
     _win = None
+    _mouse = None
+    _output_file = None
+
     win_size = None
     win_color = (.6, .6, .6)
     gabor_size = 60
@@ -25,7 +39,22 @@ class Experiment(object):
     search_radius = 8
     starting_pos = (10, 10)
 
-    _mouse = None
+
+    data_col_names = ['subj_id']
+
+    @classmethod
+    def from_gui(cls, gui_yaml):
+        def check_exists(subj_info):
+            filepath = cls.output_filepath(subj_info)
+            return path.exists(filepath)
+
+        subj_info = get_subj_info(gui_yaml, check_exists, save_order=True)
+        subj_info['output_file'] = cls.output_filepath(subj_info)
+        return cls(**subj_info)
+
+    @staticmethod
+    def output_filepath(subj_info):
+        return path.join('data', '%s.txt' % (subj_info['subj_id'], ))
 
     def __init__(self, **condition_vars):
         self.condition_vars = condition_vars
@@ -40,13 +69,12 @@ class Experiment(object):
         self.landscape = SimpleHill()
         self.landscape.grating_stim_kwargs = dict(
             win=self.win,
-            size=self.gabor_size
-        )
+            size=self.gabor_size)
 
         self.score = 0
 
         self.trial_header = self.make_text_stim('',
-            pos=(0, self.win.size[1]/2 - 10),
+            pos=(0, self.win.size[1]/2-10),
             alignVert='top',
             height=30,
             bold=True
@@ -71,16 +99,18 @@ class Experiment(object):
 
     @property
     def win(self):
-        if self._win is None:
-            if self.win_size is None:
-                fullscr = True
-                self.win_size = (1, 1)
-            else:
-                fullscr = False
-            self._win = visual.Window(self.win_size, fullscr=fullscr, units='pix',
-                                      color=self.win_color)
+        if self._win is not None:
+            return self._win
 
-            self.text_kwargs['wrapWidth'] = self._win.size[0] * 0.7
+        if self.win_size is None:
+            fullscr = True
+            self.win_size = (1, 1)  # irrelevant
+        else:
+            fullscr = False
+        self._win = visual.Window(self.win_size, fullscr=fullscr, units='pix',
+                                  color=self.win_color)
+
+        self.text_kwargs['wrapWidth'] = self._win.size[0] * 0.7
         return self._win
 
     @property
@@ -90,13 +120,20 @@ class Experiment(object):
             self._mouse = event.Mouse()
         return self._mouse
 
+    @property
+    def output_file(self):
+        if self._output_file is not None:
+            return self._output_file
+
+        self._output_file = open(self.output_filepath(self.condition_vars), 'w', 1)
+        self.write_line(DATA_COLUMNS)
+        return self.output_file
+
     def show_welcome_page(self):
-        welcome = self.make_text_stim(self.texts['welcome'], pos=(0, 200),
-                                      bold=True, height=30)
+        welcome = self.make_title(self.texts['welcome'])
 
         instructions_text = self.texts['instructions'].format(
-            response_text=self.response_text
-        )
+            response_text=self.response_text)
         instructions = self.make_text_stim(instructions_text)
 
         explorer_png = path.join(PKG_ROOT, 'img', 'explorer.png')
@@ -118,14 +155,12 @@ class Experiment(object):
         event.waitKeys(keyList=['space'])
 
     def show_training_instructions(self):
-        title = self.make_text_stim(self.texts['training_title'], pos=(0, 250),
-                                    bold=True, height=30)
+        title = self.make_title(self.texts['training_title'])
 
         instructions_condition = self.condition_vars['instructions_condition']
         training_instructions = self.texts['training_instructions'][instructions_condition]
         instructions_text = self.texts['training'].format(
-            training_instructions=training_instructions,
-        )
+            training_instructions=training_instructions)
         instructions = self.make_text_stim(instructions_text)
 
         left_gabor = self.landscape.get_grating_stim((10, 10))
@@ -149,8 +184,21 @@ class Experiment(object):
 
             core.wait(0.05)
 
-    def run_training_trials(self):
-        pass
+    def run_training_trials(self, n_training_trials=10):
+        self.pos = (0, 0)
+        for _ in range(n_training_trials):
+            trial_data = self.run_trial(training=True)
+            self.write_trial(trial_data)
+
+    def write_trial(self, trial_data):
+        trial_strings = []
+        for col_name in DATA_COLUMNS:
+            datum = trial_data.get(col_name, '')
+            trial_strings.append(str(datum))
+        self.write_line(trial_strings)
+
+    def write_line(self, list_of_strings):
+        self.output_file.write(','.join(list_of_strings)+'\n')
 
     def show_test_instructions(self):
         pass
@@ -159,22 +207,28 @@ class Experiment(object):
         pass
 
     def show_end_of_experiment(self):
-        end = self.make_text_stim('You have completed the experiment!', pos=(0, 250),
+        end_title = self.make_title(self.texts['end_title'])
+        end = self.make_text_stim(self.texts['end'], pos=(0, 250),
                                   bold=True, height=30)
-        instructions = self.make_text_stim(self.texts['end'])
 
+        end_title.draw()
         end.draw()
-        instructions.draw()
         self.win.flip()
         event.waitKeys(keyList=self.response_keys)
 
     def quit(self):
         core.quit()
+        self.output_file.close()
 
-    def make_text_stim(self, text, **custom_kwargs):
-        kwargs = self.text_kwargs.copy()
-        kwargs.update(custom_kwargs)
-        return visual.TextStim(self.win, text=text, **kwargs)
+    def make_text_stim(self, text, **kwargs):
+        kw = self.text_kwargs.copy()
+        kw.update(kwargs)
+        return visual.TextStim(self.win, text=text, **kw)
+
+    def make_title(self, text, **kwargs):
+        kw = dict(bold=True, height=30, pos=(0, 250))
+        kw.update(kwargs)
+        return self.make_text_stim(text, **kw)
 
     def run_trial(self, training=False):
         self.draw_score()
@@ -236,6 +290,7 @@ class Experiment(object):
                 other_label.draw()
 
             self.win.flip()
+            self.mouse.clickReset()
 
             while True:
                 (left, _, _) = self.mouse.getPressed()
@@ -246,6 +301,10 @@ class Experiment(object):
             self.win.flip()
             core.wait(self.feedback_duration)
 
+        self.draw_score()
+        self.win.flip()
+
+        core.wait(self.iti)
         return trial_data
 
     def get_mouse_click(self, gabors):
