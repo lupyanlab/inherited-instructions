@@ -10,12 +10,15 @@ from gems.display import create_stim_positions
 
 
 @task
-def show_instructions(ctx, instructions_condition='orientation'):
+def show_texts(ctx, instructions_condition='orientation'):
     """Show the instructions for the experiment."""
     Experiment.win_size = (600 * 2, 400 * 2)
     experiment = Experiment(instructions_condition=instructions_condition)
-    experiment.show_welcome_page()
-    experiment.show_training_instructions()
+    experiment.show_welcome()
+    experiment.show_training()
+    experiment.show_test()
+    experiment.show_break()
+    experiment.show_end()
     experiment.quit()
 
 

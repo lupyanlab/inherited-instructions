@@ -9,23 +9,19 @@ from .config import PKG_ROOT
 from .landscape import SimpleHill
 from .display import create_stim_positions
 from .util import get_subj_info
-
-DATA_COLUMNS = [
-    'subj_id', 'date', 'computer', 'experimenter',
-    'instructions',
-    'quarry', 'starting_pos', 'pos',
-    'stims', 'selected', 'rt', 'score', 'total'
-]
+from .data import output_filepath_from_subj_info, DATA_COLUMNS
+from .validation import check_output_filepath_exists, verify_subj_info_strings
 
 
 class Experiment(object):
     response_keys = ['space']
     response_text = 'Press SPACEBAR to continue'
-    text_kwargs = dict(font='Consolas', color='black')
+    text_kwargs = dict(font='Consolas', color='black', pos=(0,50))
 
     # Duration of scoring feedback given on test trials.
     feedback_duration = 1.5
     iti = 1.0
+    break_minimum = 5  # breaks must be 5 seconds long
 
     _win = None
     _mouse = None
@@ -34,31 +30,24 @@ class Experiment(object):
     win_size = None
     win_color = (.6, .6, .6)
     gabor_size = 60
+
     n_search_items = 9
-
     search_radius = 8
+    training_pos = (10, 10)
     starting_pos = (10, 10)
-
-
-    data_col_names = ['subj_id']
 
     @classmethod
     def from_gui(cls, gui_yaml):
-        def check_exists(subj_info):
-            filepath = cls.output_filepath(subj_info)
-            return path.exists(filepath)
-
-        subj_info = get_subj_info(gui_yaml, check_exists, save_order=True)
-        subj_info['output_file'] = cls.output_filepath(subj_info)
+        subj_info = get_subj_info(gui_yaml,
+            check_exists=check_output_filepath_exists,
+            verify=verify_subj_info_strings,
+            save_order=True)
+        subj_info = parse_subj_info_strings(subj_info)
         return cls(**subj_info)
-
-    @staticmethod
-    def output_filepath(subj_info):
-        return path.join('data', '%s.txt' % (subj_info['subj_id'], ))
 
     def __init__(self, **condition_vars):
         self.condition_vars = condition_vars
-        self.pos = condition_vars.get('starting_pos', self.starting_pos)
+
         self.texts = yaml.load(open(path.join(PKG_ROOT, 'texts.yaml')))
 
         n_rows, n_cols = 3, 3
@@ -73,14 +62,14 @@ class Experiment(object):
 
         self.score = 0
 
-        self.trial_header = self.make_text_stim('',
+        self.trial_header = self.make_text('',
             pos=(0, self.win.size[1]/2-10),
             alignVert='top',
             height=30,
             bold=True
         )
 
-        self.score_text = self.make_text_stim('',
+        self.score_text = self.make_text('',
             pos=(-self.win.size[0]/2 + 10, self.win.size[1]/2 - 10),
             alignVert='top',
             alignHoriz='left',
@@ -89,12 +78,12 @@ class Experiment(object):
         )
 
     def run(self):
-        self.show_welcome_page()
-        self.show_training_instructions()
+        self.show_welcome()
+        self.show_training()
         self.run_training_trials()
-        self.show_test_instructions()
+        self.show_test()
         self.run_test_trials()
-        self.show_end_of_experiment()
+        self.show_end()
         self.quit()
 
     @property
@@ -125,115 +114,39 @@ class Experiment(object):
         if self._output_file is not None:
             return self._output_file
 
-        self._output_file = open(self.output_filepath(self.condition_vars), 'w', 1)
+        output_filepath = output_filepath_from_subj_info(self.condition_vars)
+        self._output_file = open(output_filepath, 'w', 1)
+
+        # Write CSV header
         self.write_line(DATA_COLUMNS)
+
         return self.output_file
 
-    def show_welcome_page(self):
-        welcome = self.make_title(self.texts['welcome'])
-
-        instructions_text = self.texts['instructions'].format(
-            response_text=self.response_text)
-        instructions = self.make_text_stim(instructions_text)
-
-        explorer_png = path.join(PKG_ROOT, 'img', 'explorer.png')
-        explorer = visual.ImageStim(self.win, explorer_png, pos=(0, -200), size=200)
-
-        left_gabor = self.landscape.get_grating_stim((10, 10))
-        left_gabor.pos = (-100, -200)
-        left_gabor.draw()
-
-        right_gabor = self.landscape.get_grating_stim((20, 20))
-        right_gabor.pos = (100, -200)
-        right_gabor.draw()
-
-        welcome.draw()
-        instructions.draw()
-        explorer.draw()
-        self.win.flip()
-
-        event.waitKeys(keyList=['space'])
-
-    def show_training_instructions(self):
-        title = self.make_title(self.texts['training_title'])
-
-        instructions_condition = self.condition_vars['instructions_condition']
-        training_instructions = self.texts['training_instructions'][instructions_condition]
-        instructions_text = self.texts['training'].format(
-            training_instructions=training_instructions)
-        instructions = self.make_text_stim(instructions_text)
-
-        left_gabor = self.landscape.get_grating_stim((10, 10))
-        left_gabor.pos = (-100, -200)
-        left_gabor.draw()
-
-        right_gabor = self.landscape.get_grating_stim((20, 20))
-        right_gabor.pos = (100, -200)
-        right_gabor.draw()
-
-        title.draw()
-        instructions.draw()
-        self.win.flip()
-
-        while True:
-            (left, _, _) = self.mouse.getPressed()
-            if left:
-                pos = self.mouse.getPos()
-                if right_gabor.contains(pos):
-                    break
-
-            core.wait(0.05)
-
     def run_training_trials(self, n_training_trials=10):
-        self.pos = (0, 0)
-        for _ in range(n_training_trials):
+        # Set pos to training pos
+        quarry_start_pos = condition_vars.get('training_pos', self.training_pos)
+        self.pos = quarry_start_pos
+        for trial in range(n_training_trials):
             trial_data = self.run_trial(training=True)
+            trial_data['quarry'] = 0
+            trial_data['starting_pos'] = pos_to_str(quarry_start_pos)
+            trial_data['feedback'] = 'all'
+            trial_data['trial'] = trial
+
             self.write_trial(trial_data)
 
-    def write_trial(self, trial_data):
-        trial_strings = []
-        for col_name in DATA_COLUMNS:
-            datum = trial_data.get(col_name, '')
-            trial_strings.append(str(datum))
-        self.write_line(trial_strings)
-
-    def write_line(self, list_of_strings):
-        self.output_file.write(','.join(list_of_strings)+'\n')
-
-    def show_test_instructions(self):
-        pass
-
-    def run_test_trials(self):
-        pass
-
-    def show_end_of_experiment(self):
-        end_title = self.make_title(self.texts['end_title'])
-        end = self.make_text_stim(self.texts['end'], pos=(0, 250),
-                                  bold=True, height=30)
-
-        end_title.draw()
-        end.draw()
-        self.win.flip()
-        event.waitKeys(keyList=self.response_keys)
-
-    def quit(self):
-        core.quit()
-        self.output_file.close()
-
-    def make_text_stim(self, text, **kwargs):
-        kw = self.text_kwargs.copy()
-        kw.update(kwargs)
-        return visual.TextStim(self.win, text=text, **kw)
-
-    def make_title(self, text, **kwargs):
-        kw = dict(bold=True, height=30, pos=(0, 250))
-        kw.update(kwargs)
-        return self.make_text_stim(text, **kw)
+    def run_test_trials(self, n_test_trials=10):
+        # Set pos to training pos
+        self.pos = condition_vars.get('starting_pos', self.starting_pos)
+        for _ in range(n_test_trials):
+            trial_data = self.run_trial()
+            trial_data['feedback'] = 'selected'
+            self.write_trial(trial_data)
 
     def run_trial(self, training=False):
         self.draw_score()
 
-        self.trial_header.text = 'Click on the gem you think is most valuable.'
+        self.trial_header.text = self.texts['trial']['instructions']
         self.trial_header.draw()
 
         gabors = self.landscape.sample_gabors(
@@ -243,12 +156,15 @@ class Experiment(object):
         )
 
         trial_data = dict(
+            subj_id=self.condition_vars['subj_id'],
+            date=self.condition_vars['date'],
+            computer=self.condition_vars['computer'],
+            experimenter=self.condition_vars['experimenter'],
+            instructions=self.condition_vars['instructions_condition'],
+            search_radius=self.condition_vars['search_radius'],
+            n_search_items=self.condition_vars['n_search_items'],
             pos=pos_to_str(self.pos),
-            search_radius=self.search_radius,
-            n_search_items=self.n_search_items,
-            options=pos_list_to_str(gabors.keys()),
-            positions=pos_list_to_str(self.stim_positions),
-            score=self.score
+            stims=pos_list_to_str(gabors.keys()),
         )
 
         for pos, grid_pos in zip(self.stim_positions, gabors.keys()):
@@ -265,30 +181,33 @@ class Experiment(object):
 
         trial_data['selected'] = pos_to_str(grid_pos)
         trial_data['rt'] = time * 1000
-        trial_data['delta'] = score
-        trial_data['score'] = self.score
+        trial_data['score'] = score
+        trial_data['total'] = self.score
 
         for gabor in gabors.values():
             gabor.draw()
 
-        selected_label = self.label_gabor_score(score, gabor_pos, color='green', bold=True)
-        selected_label.draw()
-
+        selected_label = self.label_gabor_score(score, gabor_pos, bold=True)
         self.draw_score(prev_score, score)
 
         if training:
             # Draw gabors again, this time with scores overlayed
-            self.trial_header.text = 'Compare the score for the gem you selected to the scores of other gems. Click anywhere to continue.'
+            self.trial_header.text = self.texts['trial']['feedback']
+            self.trial_header.draw()
 
+            # Draw selected label as green unless another is higher score
+            selected_label.color = 'green'
             for other_grid_pos, gabor in gabors.items():
                 if grid_pos == other_grid_pos:
                     continue
                 other_score = self.landscape.get_score(other_grid_pos)
                 other_label = self.label_gabor_score(other_score, gabor.pos)
                 if other_score > score:
-                    other_label.color = 'red'
+                    other_label.color = 'green'
+                    selected_label.color = 'red'
                 other_label.draw()
 
+            selected_label.draw()
             self.win.flip()
             self.mouse.clickReset()
 
@@ -298,6 +217,7 @@ class Experiment(object):
                     break
 
         else:
+            selected_label.draw()
             self.win.flip()
             core.wait(self.feedback_duration)
 
@@ -326,7 +246,7 @@ class Experiment(object):
 
     def label_gabor_score(self, score, gabor_pos, **kwargs):
         feedback_pos = (gabor_pos[0], gabor_pos[1]+(self.gabor_size/2))
-        feedback = self.make_text_stim('+'+str(score), pos=feedback_pos, height=24, alignVert='bottom', **kwargs)
+        feedback = self.make_text('+'+str(score), pos=feedback_pos, height=24, alignVert='bottom', **kwargs)
         return feedback
 
     def draw_score(self, prev_score=None, delta=None):
@@ -336,13 +256,120 @@ class Experiment(object):
             self.score_text.text = 'Your score:\n%s' % (self.score)
         self.score_text.draw()
 
+    def show_welcome(self):
+        self.make_title(self.texts['welcome'])
+
+        instructions_text = self.texts['instructions'].format(
+            response_text=self.response_text)
+        self.make_text(instructions_text)
+
+        self.make_explorer()
+
+        left_gabor = self.landscape.get_grating_stim((10, 10))
+        left_gabor.pos = (-100, -200)
+        left_gabor.draw()
+
+        right_gabor = self.landscape.get_grating_stim((20, 20))
+        right_gabor.pos = (100, -200)
+        right_gabor.draw()
+
+        self.win.flip()
+        event.waitKeys(keyList=['space'])
+
+    def show_training(self):
+        self.make_title(self.texts['training_title'])
+
+        instructions_condition = self.condition_vars['instructions_condition']
+        training_instructions = self.texts['training_instructions'][instructions_condition]
+        instructions_text = self.texts['training'].format(
+            training_instructions=training_instructions)
+        self.make_text(instructions_text)
+
+        left_gabor = self.landscape.get_grating_stim((10, 10))
+        left_gabor.pos = (-100, -200)
+        left_gabor.draw()
+
+        right_gabor = self.landscape.get_grating_stim((20, 20))
+        right_gabor.pos = (100, -200)
+        right_gabor.draw()
+
+        self.win.flip()
+
+        self.mouse.clickReset()
+        while True:
+            (left, _, _) = self.mouse.getPressed()
+            if left:
+                pos = self.mouse.getPos()
+                if right_gabor.contains(pos):
+                    break
+
+            core.wait(0.05)
+
+    def show_test(self):
+        self.make_title(self.texts['test_title'])
+        self.make_text(self.texts['test'])
+        self.make_explorer()
+        self.win.flip()
+        event.waitKeys(['space'])
+
+    def show_break(self):
+        title = self.make_title(self.texts['break_title'])
+        text = self.make_text(self.texts['break'])
+        explorer = self.make_explorer()
+
+        self.win.flip()
+        core.wait(self.break_minimum)
+
+        title.draw()
+        text.draw()
+        explorer.draw()
+        self.make_text(self.texts['break_complete'], pos=(0, 0))
+        self.win.flip()
+        event.waitKeys(['space'])
+
+    def show_end(self):
+        end_title = self.make_title(self.texts['end_title'])
+        end = self.make_text(self.texts['end'])
+        self.make_explorer()
+        self.win.flip()
+        event.waitKeys(keyList=self.response_keys)
+
+    def make_text(self, text, draw=True, **kwargs):
+        kw = self.text_kwargs.copy()
+        kw.update(kwargs)
+        text = visual.TextStim(self.win, text=text, **kw)
+        if draw:
+            text.draw()
+        return text
+
+    def make_title(self, text, draw=True, **kwargs):
+        kw = dict(bold=True, height=30, pos=(0, 250))
+        kw.update(kwargs)
+        text = self.make_text(text, **kw)
+        if draw:
+            text.draw()
+        return text
+
+    def make_explorer(self, draw=True):
+        explorer_png = path.join(PKG_ROOT, 'img', 'explorer.png')
+        explorer = visual.ImageStim(self.win, explorer_png, pos=(0, -200), size=200)
+        if draw:
+            explorer.draw()
+        return explorer
+
+    def write_trial(self, trial_data):
+        trial_strings = []
+        for col_name in DATA_COLUMNS:
+            datum = trial_data.get(col_name, '')
+            trial_strings.append(str(datum))
+        self.write_line(trial_strings)
+
+    def write_line(self, list_of_strings):
+        self.output_file.write(','.join(list_of_strings)+'\n')
+
+    def quit(self):
+        core.quit()
+        self.output_file.close()
+
 class ExperimentQuitException(Exception):
     pass
-
-
-def pos_to_str(pos):
-    x, y = pos
-    return '{x},{y}'.format(x=x, y=y)
-
-def pos_list_to_str(pos_list):
-    return ';'.join([pos_to_str(pos) for pos in pos_list])

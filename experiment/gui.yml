@@ -2,14 +2,26 @@
 1:
   name: subj_id
   prompt: Subject identifier
-  default: GM100
+  default: GEMS100
 2:
   name: instructions_condition
-  prompt: Condition
+  prompt: Instructions condition
   default:
     - orientation
     - spatial_frequency
 3:
+  name: search_radius
+  prompt: Grid radius
+  default: 8
+4:
+  name: training_pos
+  prompt: Position for training
+  default: 10,10
+5:
+  name: starting_pos
+  prompt: Position for testing
+  default: 10,90
+6:
   name: experimenter
   prompt: Experimenter initials
   default: XXX

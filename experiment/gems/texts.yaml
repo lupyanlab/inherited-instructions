@@ -8,7 +8,6 @@ instructions: |
   After arriving, you seek out a teacher who can teach you which gems are worth more than others. Pay close attention to the instructions you get from your teacher, as it will help you to find the most valuable gems in the game.
 
   Press the SPACEBAR to read the teacher's instructions.
-
 training_title: The difference between cheap and expensive gems.
 training: |
   {training_instructions}
@@ -20,14 +19,22 @@ training_instructions:
     Your teacher tells you that the difference between cheap and expensive gems is determined by the orientation of the stripes. Look at the two gems pictured below and see if you can tell their difference in orientation. The gem on the right is the more valuable gem.
   frequency: |
     Your teacher tells you that the difference between cheap and expensive gems is determined by the width of the stripes. Look at the two gems pictured below and see if you can tell their difference in stripe width. The gem on the right is the more valuable gem.
+test_title: Your training is complete!
 test: |
-  Your training is complete! Now you are ready to strike out on your own, to different quarries all over the planet. Without your trainer to help you, you will only know the value of the gem you select, and not the values of the gems you do not select. But your goal is the same: to select the most valuable gem on each trial.
+  Now you are ready to strike out on your own, to collect gems at different quarries all over Planet Teeb. Without your teacher to help you, you will only learn the value of the gem you select, and not the values of the gems you did not select. But your goal is still to select the most valuable gem on each trial.
 
-  {response_text}
-
+  If you are confused about the task, or have a question you would like to ask the researcher, please do so now. When you are ready to begin collecting gems at the first quarry, press the SPACEBAR.
+break_title: You are finished at this quarry. On to the next one!
+break: |
+  You've finished collecting gems at this quarry. Take a short break before continuing to the next one. Please stay in the testing room.
+break_complete: When you are ready to continue, press the SPACEBAR.
+end_title: |
+  Your ship is full of gems and you are ready to fly home.
+  Thanks for visiting Planet Teeb!
 end: |
-  Your ship is full of gems and you are ready to fly home. Thanks for visiting Planet Teeb!
-
   You have completed the experiment. After you exit this screen, a survey will open in the web browser. Please complete the survey. After you complete the survey you can leave.
 
   Press the SPACEBAR to exit this screen, and open the survey.
+trial:
+  instructions: Click on the gem you think is most valuable.
+  feedback: Compare the score for the gem you selected to the scores of other gems. Click anywhere to continue.
