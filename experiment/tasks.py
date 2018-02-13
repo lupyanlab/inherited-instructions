@@ -107,13 +107,16 @@ def draw_gabors(ctx, grid_size=10, win_size=None, output='landscape.png',
     win.close()
 
     if open_after:
-        subprocess.call(['open', output])
+        ctx.run('open %s' % (output, ), echo=True)
 
 
 @task
 def draw_landscape(ctx, landscape_data='simple_hill.csv',
-                   output='simple_hill.pdf'):
+                   output='simple_hill.pdf', open_after=False):
     """Draw the landscape as a 3D plot."""
     R_command = 'Rscript draw_landscape.R {landscape_data} {output}'
     ctx.run(R_command.format(landscape_data=landscape_data, output=output),
             echo=True)
+
+    if open_after:
+        ctx.run('open %s' % (output, ), echo=True)
