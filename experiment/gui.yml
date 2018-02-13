@@ -14,14 +14,18 @@
   prompt: Grid radius
   default: 8
 4:
+  name: n_search_items
+  prompt: Items per trial
+  default: 9
+5:
   name: training_pos
   prompt: Position for training
   default: 10,10
-5:
+6:
   name: starting_pos
   prompt: Position for testing
   default: 10,90
-6:
+7:
   name: experimenter
   prompt: Experimenter initials
   default: XXX

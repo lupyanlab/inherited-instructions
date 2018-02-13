@@ -37,6 +37,12 @@ def run_trial(ctx):
     print(trial_data)
     experiment.quit()
 
+@task
+def run_test_trials(ctx, n_test_trials=1):
+    Experiment.win_size = (600 * 2, 400 * 2)
+    experiment = Experiment(subj_id='pierce')
+    experiment.run_test_trials(n_test_trials)
+
 
 @task
 def run_training_trials(ctx, n_training_trials=1):

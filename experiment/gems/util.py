@@ -8,7 +8,7 @@ from psychopy import gui, data, core
 
 def pos_to_str(pos):
     x, y = pos
-    return '{x},{y}'.format(x=x, y=y)
+    return '{x}-{y}'.format(x=x, y=y)
 
 def pos_list_to_str(pos_list):
     return ';'.join([pos_to_str(pos) for pos in pos_list])

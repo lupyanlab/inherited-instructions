@@ -8,9 +8,9 @@ from psychopy import visual, core, event
 from .config import PKG_ROOT
 from .landscape import SimpleHill
 from .display import create_stim_positions
-from .util import get_subj_info
+from .util import get_subj_info, pos_to_str, pos_list_to_str
 from .data import output_filepath_from_subj_info, DATA_COLUMNS
-from .validation import check_output_filepath_exists, verify_subj_info_strings
+from .validation import check_output_filepath_exists, verify_subj_info_strings, parse_subj_info_strings
 
 
 class Experiment(object):
@@ -35,6 +35,7 @@ class Experiment(object):
     search_radius = 8
     training_pos = (10, 10)
     starting_pos = (10, 10)
+    pos = (0, 0)
 
     @classmethod
     def from_gui(cls, gui_yaml):
@@ -124,7 +125,7 @@ class Experiment(object):
 
     def run_training_trials(self, n_training_trials=10):
         # Set pos to training pos
-        quarry_start_pos = condition_vars.get('training_pos', self.training_pos)
+        quarry_start_pos = self.condition_vars.get('training_pos', self.training_pos)
         self.pos = quarry_start_pos
         for trial in range(n_training_trials):
             trial_data = self.run_trial(training=True)
@@ -136,11 +137,15 @@ class Experiment(object):
             self.write_trial(trial_data)
 
     def run_test_trials(self, n_test_trials=10):
-        # Set pos to training pos
-        self.pos = condition_vars.get('starting_pos', self.starting_pos)
-        for _ in range(n_test_trials):
+        quarry_start_pos = self.condition_vars.get('starting_pos', self.starting_pos)
+        self.pos = quarry_start_pos
+        for trial in range(n_test_trials):
             trial_data = self.run_trial()
+            trial_data['quarry'] = 1
+            trial_data['starting_pos'] = pos_to_str(quarry_start_pos)
             trial_data['feedback'] = 'selected'
+            trial_data['trial'] = trial
+
             self.write_trial(trial_data)
 
     def run_trial(self, training=False):
@@ -156,13 +161,13 @@ class Experiment(object):
         )
 
         trial_data = dict(
-            subj_id=self.condition_vars['subj_id'],
-            date=self.condition_vars['date'],
-            computer=self.condition_vars['computer'],
-            experimenter=self.condition_vars['experimenter'],
-            instructions=self.condition_vars['instructions_condition'],
-            search_radius=self.condition_vars['search_radius'],
-            n_search_items=self.condition_vars['n_search_items'],
+            subj_id=self.condition_vars.get('subj_id', ''),
+            date=self.condition_vars.get('date', ''),
+            computer=self.condition_vars.get('computer', ''),
+            experimenter=self.condition_vars.get('experimenter', ''),
+            instructions=self.condition_vars.get('instructions_condition', ''),
+            search_radius=self.condition_vars.get('search_radius', ''),
+            n_search_items=self.condition_vars.get('n_search_items', ''),
             pos=pos_to_str(self.pos),
             stims=pos_list_to_str(gabors.keys()),
         )
@@ -180,7 +185,7 @@ class Experiment(object):
         self.score += score      # update current score
 
         trial_data['selected'] = pos_to_str(grid_pos)
-        trial_data['rt'] = time * 1000
+        trial_data['rt'] = time
         trial_data['score'] = score
         trial_data['total'] = self.score
 
@@ -370,6 +375,3 @@ class Experiment(object):
     def quit(self):
         core.quit()
         self.output_file.close()
-
-class ExperimentQuitException(Exception):
-    pass

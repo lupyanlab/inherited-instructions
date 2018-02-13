@@ -12,9 +12,9 @@ def verify_subj_info_strings(subj_info):
         parse_pos(subj_info['starting_pos'])
     except Exception as err:
         print('Error parsing pos: %s' % err)
-        return False
+        return str(err)
 
-    return True
+    return False
 
 def parse_subj_info_strings(subj_info):
     new_subj_info = subj_info.copy()
