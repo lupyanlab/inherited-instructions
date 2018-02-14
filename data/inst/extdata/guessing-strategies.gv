@@ -1,0 +1,12 @@
+digraph {
+  rankdir = LR;
+  fontname = Helvetica;
+  node[shape=none fontname=Helvetica];
+  edge[arrowhead=vee];
+  label = "Guessing efficiency";
+  labelloc = t;
+  totally_random -> humans -> omniscient;
+  totally_random[label="Random"];
+  humans[label="Humans?"];
+  omniscient[label="Omniscient"];
+}

@@ -1,4 +1,5 @@
 *.pyc
+*_cache/
 .pytest_cache/
 .Rproj.user
 *.html

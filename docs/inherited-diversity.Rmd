@@ -1,0 +1,27 @@
+---
+title: Teams of complementary problem solvers outperform equally skilled individuals
+---
+```{r inherited-diversity-config, include=FALSE}
+library(knitr)
+opts_chunk$set(echo=FALSE, cache=TRUE)
+chunks_dir <- "R"
+sapply(list.files(chunks_dir, "*.R", full.names = TRUE), read_chunk)
+```
+```{r inherited-diversity}
+```
+
+# Methods
+
+```{r gems}
+include_graphics("experiment/landscape.png")
+```
+
+```{r landscape}
+landscape <- readr::read_csv("experiment/simple_hill.csv")
+lattice::wireframe(score ~ x * y, data = landscape)
+```
+
+# Results
+
+```{r walk}
+```
