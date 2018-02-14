@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+export PYTHONPATH=~/PhD/gems/bots:$PYTHONPATH
+source ~/.venvs/peaks/bin/activate
