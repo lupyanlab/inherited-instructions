@@ -17,8 +17,8 @@ def show_texts(ctx, instructions_condition='orientation'):
     experiment.show_welcome()
     experiment.show_training()
     experiment.show_test()
-    experiment.show_break()
-    experiment.show_end()
+    # experiment.show_break()
+    # experiment.show_end()
     experiment.quit()
 
 
@@ -39,6 +39,7 @@ def run_trial(ctx):
 
 @task
 def run_test_trials(ctx, n_test_trials=1):
+    """Run test trials."""
     Experiment.win_size = (600 * 2, 400 * 2)
     experiment = Experiment(subj_id='pierce')
     experiment.run_test_trials(n_test_trials)
@@ -46,7 +47,7 @@ def run_test_trials(ctx, n_test_trials=1):
 
 @task
 def run_training_trials(ctx, n_training_trials=1):
-    """Run a training trial."""
+    """Run training trials."""
     Experiment.win_size = (600 * 2, 400 * 2)
     experiment = Experiment(subj_id='pierce')
     experiment.run_training_trials(n_training_trials)
@@ -114,6 +115,11 @@ def draw_gabors(ctx, grid_size=10, win_size=None, output='landscape.png',
 
     if open_after:
         ctx.run('open %s' % (output, ), echo=True)
+
+@task
+def draw_search_radius(ctx, grid_pos='10-10', search_radius=8):
+    grid_positions = create_grid(search_radius, search_radius, centroid=pos_from_str(grid_pos))
+
 
 
 @task
