@@ -1,2 +1,2 @@
 Jinja2==2.10
-invoke==0.22.1
+-r bots/requirements.txt
