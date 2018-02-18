@@ -30,7 +30,7 @@ def make(ctx, name, clear_cache=False, open_after=False, skip_prereqs=False):
 
     all_reports = [Path(report) for report in
                    glob(str(Path(report_dir, '**/*.Rmd')), recursive=True)
-                   if Path(report).isfile()]
+                   if Path(report).is_file()]
 
     if name == 'list':
         print('Reports:')

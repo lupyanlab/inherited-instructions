@@ -46,3 +46,7 @@ use_data(
   omniscient,
   overwrite = TRUE
 )
+
+
+SimpleHill <- read_csv("data-raw/simple-hill.csv")
+use_data(SimpleHill, overwrite = TRUE)

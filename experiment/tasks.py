@@ -8,6 +8,10 @@ from invoke import task
 from gems import Experiment, SimpleHill
 from gems.display import create_stim_positions
 
+EXPERIMENT = path.dirname(path.abspath(__file__))
+PROJ = path.dirname(EXPERIMENT)
+R_PKG = path.join(PROJ, 'data')
+
 
 @task
 def show_texts(ctx, instructions_condition='orientation'):
@@ -55,21 +59,31 @@ def run_training_trials(ctx, n_training_trials=1):
 
 
 @task
-def print_landscape(ctx):
+def print_landscape(ctx, save=False, output='simple-hill.csv'):
     """Print the landscape to a tidy csv."""
+    output_dir = '.'
+    if save:
+        output_dir = path.join(R_PKG, 'data-raw')
+    output = path.join(output_dir, output)
+
     landscape = SimpleHill()
-    landscape.export('simple_hill.csv')
+    landscape.export(output)
 
 
 @task
 def draw_gabors(ctx, grid_size=10, win_size=None, output='landscape.png',
-                open_after=False):
+                open_after=False, save=False):
     """Draw gabors sampled from the landscape.
 
     Examples:
     $ inv draw-gabors -w 800 -p
     """
     from psychopy import visual
+
+    output_dir = '.'
+    if save:
+        output_dir = path.join(R_PKG, 'inst', 'extdata')
+    output = path.join(output_dir, output)
 
     if win_size is None:
         fullscr = True
@@ -94,7 +108,7 @@ def draw_gabors(ctx, grid_size=10, win_size=None, output='landscape.png',
     # Get gabors for each point in the grid
     positions = linspace(0, 100, grid_size, endpoint=False, dtype='int')
     grid_positions = list(product(positions, positions))
-    gabors = landscape.get_gabors(grid_positions)
+    gabors = landscape.get_grid_of_grating_stims(grid_positions)
 
     stim_positions = create_stim_positions(n_rows=grid_size, n_cols=grid_size,
                                            win_size=win.size,
@@ -123,8 +137,8 @@ def draw_search_radius(ctx, grid_pos='10-10', search_radius=8):
 
 
 @task
-def draw_landscape(ctx, landscape_data='simple_hill.csv',
-                   output='simple_hill.pdf', open_after=False):
+def draw_landscape(ctx, landscape_data='simple-hill.csv',
+                   output='simple-hill.pdf', open_after=False):
     """Draw the landscape as a 3D plot."""
     R_command = 'Rscript draw_landscape.R {landscape_data} {output}'
     ctx.run(R_command.format(landscape_data=landscape_data, output=output),
