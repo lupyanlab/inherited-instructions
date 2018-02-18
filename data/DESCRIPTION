@@ -1,10 +1,10 @@
-Package: mountainclimbers
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Package: gems
+Title: Data From Gems Experiments
+Version: 0.1
+Authors@R: person("Pierce", "Edmiston", email = "pierce.edmiston@gmail.com", role = c("aut", "cre"))
+Description: The results of a cognitive psychology experiment on teamwork in problem solving.
 Depends: R (>= 3.3.2)
-License: What license is it under?
+License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1

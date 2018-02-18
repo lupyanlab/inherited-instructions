@@ -1,3 +1,6 @@
 [submodule "bots"]
 	path = bots
-	url = git@github.com:pedmiston/mountain-climbers.git
+	url = git@github.com:pedmiston/gems-bots.git
+[submodule "experiment"]
+	path = experiment
+	url = git@github.com:lupyanlab/gems-experiment.git
