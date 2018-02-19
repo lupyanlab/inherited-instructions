@@ -1,3 +1,5 @@
+import os
+from ansible_vault import Vault
 from glob import glob
 from pathlib import Path
 from invoke import Collection, task
@@ -12,8 +14,9 @@ def configure(ctx):
     template = jinja2.Template(open('environment.j2', 'r').read())
 
     venv = input("Path to venv: ")
+    password_file = input("Path to password file: ")
 
-    kwargs = dict(venv=venv)
+    kwargs = dict(venv=venv, password_file=password_file)
     with open(dst, 'w') as f:
         f.write(template.render(**kwargs))
 
@@ -69,8 +72,11 @@ def make(ctx, name, clear_cache=False, open_after=False, skip_prereqs=False):
 @task
 def get_subj_info(ctx):
     dst = 'gem-subj-info.csv'
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(
-            'lupyanlab.json',
+    password = open(os.environ['ANSIBLE_VAULT_PASSWORD_FILE']).read()
+    json_data = Vault(password).load(open('secrets/lupyanlab.json').read())
+
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+            json_data,
             ['https://spreadsheets.google.com/feeds'])
     gc = gspread.authorize(credentials)
     wks = gc.open('gem-subj-info').sheet1
