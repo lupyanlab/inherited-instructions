@@ -1,6 +1,8 @@
 from glob import glob
 from pathlib import Path
 from invoke import Collection, task
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 import jinja2
 
 @task
@@ -64,14 +66,27 @@ def make(ctx, name, clear_cache=False, open_after=False, skip_prereqs=False):
             output = Path(report.parent, report.stem + '.html')
             ctx.run('open {}'.format(output))
 
+@task
+def get_subj_info(ctx):
+    dst = 'gem-subj-info.csv'
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(
+            'lupyanlab.json',
+            ['https://spreadsheets.google.com/feeds'])
+    gc = gspread.authorize(credentials)
+    wks = gc.open('gem-subj-info').sheet1
+    with open(dst, 'wb') as f:
+        f.write(wks.export())
+
+
 
 from data import tasks as data_tasks
-from bots import tasks as bots_tasks
+# from bots import tasks as bots_tasks
 
 ns = Collection()
 ns.add_collection(data_tasks, 'R')
-ns.add_collection(bots_tasks, 'bots')
+# ns.add_collection(bots_tasks, 'bots')
 
 ns.add_task(configure)
 ns.add_task(clean)
 ns.add_task(make)
+ns.add_task(get_subj_info)
