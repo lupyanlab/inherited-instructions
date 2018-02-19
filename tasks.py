@@ -10,9 +10,8 @@ def configure(ctx):
     template = jinja2.Template(open('environment.j2', 'r').read())
 
     venv = input("Path to venv: ")
-    bots = input("Path to bots: ")
 
-    kwargs = dict(venv=venv, bots=bots)
+    kwargs = dict(venv=venv)
     with open(dst, 'w') as f:
         f.write(template.render(**kwargs))
 
