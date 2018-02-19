@@ -71,17 +71,29 @@ def make(ctx, name, clear_cache=False, open_after=False, skip_prereqs=False):
 
 @task
 def get_subj_info(ctx):
+    gc = connect_google_sheets()
     dst = 'gem-subj-info.csv'
-    password = open(os.environ['ANSIBLE_VAULT_PASSWORD_FILE']).read()
-    json_data = Vault(password).load(open('secrets/lupyanlab.json').read())
-
-    credentials = ServiceAccountCredentials.from_json_keyfile_dict(
-            json_data,
-            ['https://spreadsheets.google.com/feeds'])
-    gc = gspread.authorize(credentials)
     wks = gc.open('gem-subj-info').sheet1
     with open(dst, 'wb') as f:
         f.write(wks.export())
+
+
+@task
+def get_survey_responses(ctx):
+    gc = connect_google_sheets()
+    dst = 'gem-survey-responses.csv'
+    wks = gc.open('gem-survey-responses').sheet1
+    with open(dst, 'wb') as f:
+        f.write(wks.export())
+
+
+def connect_google_sheets():
+    password = open(os.environ['ANSIBLE_VAULT_PASSWORD_FILE']).read()
+    json_data = Vault(password).load(open('secrets/lupyanlab.json').read())
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+            json_data,
+            ['https://spreadsheets.google.com/feeds'])
+    return gspread.authorize(credentials)
 
 
 
@@ -96,3 +108,4 @@ ns.add_task(configure)
 ns.add_task(clean)
 ns.add_task(make)
 ns.add_task(get_subj_info)
+ns.add_task(get_survey_responses)
