@@ -4,3 +4,6 @@
 [submodule "experiment"]
 	path = experiment
 	url = git@github.com:lupyanlab/gems-experiment.git
+[submodule "data"]
+	path = data
+	url = git@gitlab.com:pedmiston/gems-data.git

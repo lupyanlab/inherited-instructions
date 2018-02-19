@@ -1,6 +1,10 @@
+import os
+from ansible_vault import Vault
 from glob import glob
 from pathlib import Path
 from invoke import Collection, task
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 import jinja2
 
 @task
@@ -10,9 +14,9 @@ def configure(ctx):
     template = jinja2.Template(open('environment.j2', 'r').read())
 
     venv = input("Path to venv: ")
-    bots = input("Path to bots: ")
+    password_file = input("Path to password file: ")
 
-    kwargs = dict(venv=venv, bots=bots)
+    kwargs = dict(venv=venv, password_file=password_file)
     with open(dst, 'w') as f:
         f.write(template.render(**kwargs))
 
@@ -65,14 +69,43 @@ def make(ctx, name, clear_cache=False, open_after=False, skip_prereqs=False):
             output = Path(report.parent, report.stem + '.html')
             ctx.run('open {}'.format(output))
 
+@task
+def get_subj_info(ctx):
+    gc = connect_google_sheets()
+    dst = 'gem-subj-info.csv'
+    wks = gc.open('gem-subj-info').sheet1
+    with open(dst, 'wb') as f:
+        f.write(wks.export())
+
+
+@task
+def get_survey_responses(ctx):
+    gc = connect_google_sheets()
+    dst = 'gem-survey-responses.csv'
+    wks = gc.open('gem-survey-responses').sheet1
+    with open(dst, 'wb') as f:
+        f.write(wks.export())
+
+
+def connect_google_sheets():
+    password = open(os.environ['ANSIBLE_VAULT_PASSWORD_FILE']).read()
+    json_data = Vault(password).load(open('secrets/lupyanlab.json').read())
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+            json_data,
+            ['https://spreadsheets.google.com/feeds'])
+    return gspread.authorize(credentials)
+
+
 
 from data import tasks as data_tasks
-from bots import tasks as bots_tasks
+# from bots import tasks as bots_tasks
 
 ns = Collection()
 ns.add_collection(data_tasks, 'R')
-ns.add_collection(bots_tasks, 'bots')
+# ns.add_collection(bots_tasks, 'bots')
 
 ns.add_task(configure)
 ns.add_task(clean)
 ns.add_task(make)
+ns.add_task(get_subj_info)
+ns.add_task(get_survey_responses)
