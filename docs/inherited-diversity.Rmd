@@ -6,23 +6,24 @@ library(knitr)
 library(crotchet)
 opts_chunk$set(echo=FALSE, cache=TRUE)
 chunks_dir <- "R"
-sapply(list.files(chunks_dir, "*.R", full.names = TRUE), read_chunk)
+read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
 ```
-```{r inherited-diversity}
+```{r inherited-diversity, include=FALSE}
 ```
 
 # Methods
 
 ```{r gems}
-draw_image("landscape", package = "mountainclimbers")
+draw_image("SimpleHillGems", package = "gems")
 ```
 
 ```{r landscape}
 data("SimpleHill")
-lattice::wireframe(score ~ x * y, data = SimpleHill)
+wireframe(score ~ x * y, data = SimpleHill)
 ```
 
 # Results
 
-```{r walk}
-```
+# Discussion
+
+# References
