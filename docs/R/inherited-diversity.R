@@ -1,3 +1,3 @@
 # ---- inherited-diversity
-library(gems)
 library(lattice)
+library(gems)

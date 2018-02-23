@@ -8,6 +8,19 @@ from oauth2client.service_account import ServiceAccountCredentials
 import jinja2
 
 @task
+def save(ctx):
+    """Save experiment data to R pkg."""
+    cmd = 'mv {experiment_dir}/*.csv {r_pkg_data_raw}'
+    experiment_dir = Path('experiment/data')
+    r_pkg_data_raw = Path('data/data-raw/experiment')
+    if not r_pkg_data_raw.is_dir():
+        os.mkdir(str(r_pkg_data_raw))
+    kwargs = dict(experiment_dir=experiment_dir,
+                  r_pkg_data_raw=r_pkg_data_raw)
+    ctx.run(cmd.format(**kwargs), echo=True)
+
+
+@task
 def configure(ctx):
     """Create environment file for working on this project."""
     dst = '.environment'
@@ -20,22 +33,16 @@ def configure(ctx):
     with open(dst, 'w') as f:
         f.write(template.render(**kwargs))
 
-@task
-def clean(ctx):
-    """Clean caches."""
-    ctx.run('find . -name "*.pyc" -exec rm {} \;', echo=True)
-
 @task(help={'clear-cache': 'Clear knitr cache and figs before rendering.',
             'open-after': 'Open the report after creating it.',
             'skip-prereqs': 'Don\'t try to update custom prereqs.'})
 def make(ctx, name, clear_cache=False, open_after=False, skip_prereqs=False):
     """Compile dynamic reports from the results of the experiments."""
-    report_dir = Path('docs')
+    docs = Path('docs')
+    render_cmd = 'cd {docs} && Rscript -e "rmarkdown::render({rmd.name!r})"'
+    clear_cmd = 'rm -rf {docs}/{rmd.stem}_cache/ {docs}/{rmd.stem}_files/'
 
-    all_reports = [Path(report) for report in
-                   glob(str(Path(report_dir, '**/*.Rmd')), recursive=True)
-                   if Path(report).is_file()]
-
+    all_reports = [Path(report) for report in glob('{docs}/*.Rmd'.format(docs=docs))]
     if name == 'list':
         print('Reports:')
         for report in all_reports:
@@ -53,21 +60,11 @@ def make(ctx, name, clear_cache=False, open_after=False, skip_prereqs=False):
         else:
             raise AssertionError('Report "{}" not found'.format(name))
 
-    if not skip_prereqs:
-        ctx.run('Rscript -e "devtools::install_github(\'pedmiston/crotchet\')"')
-
-    render_cmd = 'Rscript -e "rmarkdown::render(\'{}\')"'
-    for report in reports:
+    for rmd in reports:
         if clear_cache:
-            ctx.run('rm -rf {p}/{n}*cache/ {p}/{n}*figs/'.format(
-                        p=report.parent, n=name
-                    ), echo=True)
+            ctx.run(clear_cmd.format(docs=docs, rmd=rmd), echo=True)
 
-        ctx.run(render_cmd.format(report))
-
-        if open_after:
-            output = Path(report.parent, report.stem + '.html')
-            ctx.run('open {}'.format(output))
+        ctx.run(render_cmd.format(docs=docs, rmd=rmd))
 
 @task
 def get_subj_info(ctx):
@@ -105,7 +102,7 @@ ns.add_collection(data_tasks, 'R')
 # ns.add_collection(bots_tasks, 'bots')
 
 ns.add_task(configure)
-ns.add_task(clean)
 ns.add_task(make)
 ns.add_task(get_subj_info)
 ns.add_task(get_survey_responses)
+ns.add_task(save)
