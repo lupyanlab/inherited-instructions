@@ -3,25 +3,27 @@ title: Teams of complementary problem solvers outperform equally skilled individ
 ---
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
+library(crotchet)
 opts_chunk$set(echo=FALSE, cache=TRUE)
 chunks_dir <- "R"
-sapply(list.files(chunks_dir, "*.R", full.names = TRUE), read_chunk)
+read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
 ```
-```{r inherited-diversity}
+```{r inherited-diversity, include=FALSE}
 ```
 
 # Methods
 
 ```{r gems}
-include_graphics("experiment/landscape.png")
+draw_image("SimpleHillGems", package = "gems")
 ```
 
 ```{r landscape}
-landscape <- readr::read_csv("experiment/simple_hill.csv")
-lattice::wireframe(score ~ x * y, data = landscape)
+data("SimpleHill")
+wireframe(score ~ x * y, data = SimpleHill)
 ```
 
 # Results
 
-```{r walk}
-```
+# Discussion
+
+# References
