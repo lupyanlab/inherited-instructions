@@ -7,11 +7,17 @@ library(crotchet)
 opts_chunk$set(echo=FALSE, cache=TRUE)
 chunks_dir <- "R"
 read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
+read_graphviz_chunk("team-structures", package = "gems", new_name = "gems-team-strategies")
 ```
 ```{r inherited-diversity, include=FALSE}
 ```
 
-# Methods
+# Introduction {-}
+
+# Methods {-}
+
+```{r gems-team-strategies, engine="dot", fig.width=2}
+```
 
 ```{r gems}
 draw_image("SimpleHillGems", package = "gems")
@@ -22,7 +28,7 @@ data("SimpleHill")
 wireframe(score ~ x * y, data = SimpleHill, xlab = "Orientation", ylab = "Spatial frequency")
 ```
 
-# Pilot
+# Pilot {-}
 
 ```{r pilot, include=FALSE}
 ```
@@ -90,3 +96,23 @@ plot_ly(PilotSimpleHill, x = ~selected_x, y = ~selected_y, z = ~score, color = ~
       )
     )
 ```
+
+```{r}
+GemsTest <- PilotTest
+GemsIsolated <- GemsTest %>%
+  filter(trial %in% c(0, 20, 40))
+
+ggplot(GemsIsolated) +
+  aes(x = trial, y = score) +
+  geom_line(aes(group = subj_id, color = instructions)) +
+  scale_x_continuous(breaks = c(0, 20, 40)) +
+  facet_wrap("landscape_label", nrow = 1) +
+  t_$theme +
+  theme(
+    legend.position = "bottom"
+  )
+```
+
+# Results {-}
+
+# Discussion {-}
