@@ -1,5 +1,7 @@
 ---
 title: Teams of complementary problem solvers outperform equally skilled individuals
+output:
+  bookdown::pdf_document2: {}
 ---
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
@@ -16,7 +18,7 @@ read_graphviz_chunk("team-structures", package = "gems", new_name = "gems-team-s
 
 # Methods {-}
 
-```{r gems-team-strategies, engine="dot", fig.width=2}
+```{r gems-team-strategies, engine="dot", out.width="30%"}
 ```
 
 ```{r gems}
@@ -79,7 +81,7 @@ ggplot(PilotTest) +
   theme(legend.position = "bottom")
 ```
 
-```{r}
+```{r, eval=FALSE}
 PilotSimpleHill <- filter(PilotTest, landscape_ix == 1)
 
 custom_linetypes <- c(orientation='dot', spatial_frequency='solid')
