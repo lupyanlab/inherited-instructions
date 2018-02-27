@@ -10,7 +10,7 @@ import jinja2
 @task
 def save(ctx):
     """Save experiment data to R pkg."""
-    cmd = 'mv {experiment_dir}/*.csv {r_pkg_data_raw}'
+    cmd = 'cp {experiment_dir}/*.csv {r_pkg_data_raw}'
     experiment_dir = Path('experiment/data')
     r_pkg_data_raw = Path('data/data-raw/experiment')
     if not r_pkg_data_raw.is_dir():
