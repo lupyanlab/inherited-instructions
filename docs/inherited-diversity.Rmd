@@ -1,8 +1,8 @@
 ---
 title: Teams of complementary problem solvers outperform equally skilled individuals
 output:
-  bookdown::html_document2: {}
   bookdown::pdf_document2: {}
+  bookdown::html_document2: {}
 ---
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
@@ -209,6 +209,29 @@ test_plot <- (training_plot %+% GemsTest) +
   theme(legend.position = "bottom")
 
 gridExtra::grid.arrange(simple_hill, test_plot, nrow = 2)
+```
+
+### Walk {-}
+
+```{r trials-walk}
+library(gganimate)
+library(geomnet)
+
+Gems111 <- Gems %>%
+  filter(subj_id == "GEMS111", landscape_ix == 1) %>%
+  melt_trial_stims() %>%
+  mutate(
+    is_selected = (selected == gem_pos)
+  ) %>%
+  arrange(trial)
+
+trials_plot <- ggplot(Gems111) +
+  aes(gem_x, gem_y, frame = trial) +
+  geom_segment(aes(current_x, current_y, xend = selected_x, yend = selected_y, group = 1, cumulative = TRUE)) +
+  geom_circle(aes(x = current_x, y = current_y), radius = 0.35) +
+  geom_point(aes(color = factor(is_selected), frame = trial))
+
+gganimate(trials_plot)
 ```
 
 # Discussion {-}
