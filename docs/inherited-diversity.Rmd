@@ -1,66 +1,93 @@
 ---
 title: Teams of complementary problem solvers outperform equally skilled individuals
 output:
+  bookdown::html_document2: {}
   bookdown::pdf_document2: {}
 ---
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
 library(crotchet)
-opts_chunk$set(echo=FALSE, cache=TRUE)
+opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE, fig.height=4, fig.width=4)
 chunks_dir <- "R"
 read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
 read_graphviz_chunk("team-structures", package = "gems", new_name = "gems-team-strategies")
 ```
-```{r inherited-diversity, include=FALSE}
+```{r inherited-diversity}
 ```
 
 # Introduction {-}
 
 # Methods {-}
 
-```{r gems-team-strategies, engine="dot", out.width="30%"}
+```{r gems-team-strategies, engine="dot", out.width="40%"}
 ```
 
-```{r gems}
-draw_image("SimpleHillGems", package = "gems")
+# Version 1 {-}
+
+```{r pilot}
 ```
 
-```{r landscape}
-data("SimpleHill")
-wireframe(score ~ x * y, data = SimpleHill, xlab = "Orientation", ylab = "Spatial frequency")
+```{r gabors-v1, fig.cap="Gabor space for version 1 of the experiment."}
+draw_image("v1_SimpleHillGems", package = "gems")
 ```
 
-# Pilot {-}
-
-```{r pilot, include=FALSE}
+```{r training-v1, fig.width=10, fig.height=8}
+gridExtra::grid.arrange(
+  read_image("v1_welcome_orientation", package = "gems"),
+  read_image("v1_training_orientation", package = "gems"),
+  read_image("v1_welcome_spatial_frequency", package = "gems"),
+  read_image("v1_training_spatial_frequency", package = "gems"),
+  nrow = 2
+)
 ```
 
 ```{r pilot-scores, fig.width=6}
 ggplot(Pilot) +
-  aes(trial, score) +
+  aes(trial, score, color = instructions) +
   geom_line(aes(group = interaction(subj_id, run, landscape_ix)),
             size = 0.1) +
-  geom_line(stat = "summary", fun.y = "mean") +
+  geom_line(stat = "summary", fun.y = "mean", size = 1) +
   facet_wrap("training_label", scales = "free_x") +
-  t_$theme
+  t_$theme +
+  theme(legend.position = "bottom")
 ```
 
-```{r pilot-training, fig.width=6}
-PilotTraining <- Pilot %>%
-  filter(training == "training")
+```{r pilot-training, fig.width=8, fig.height=8}
+data("v1_OrientationBias")
+data("v1_SpatialFrequencyBias")
 
-ggplot(PilotTraining) +
-  aes(current_x, current_y, color = instructions, linetype = factor(run)) +
+orientation_bias <- wireframe(score ~ x * y, xlab = "ori", ylab = "sf", data = v1_OrientationBias)
+spatial_frequency_bias <- wireframe(score ~ x * y, xlab = "ori", ylab = "sf", data = v1_SpatialFrequencyBias)
+
+OrientationTraining <- Pilot %>%
+  filter(instructions == "orientation", landscape_name == "OrientationBias")
+SpatialFrequencyTraining <- Pilot %>%
+  filter(instructions == "spatial_frequency", landscape_name == "SpatialFrequencyBias")
+
+training_plot <- ggplot() +
+  aes(x = current_x, y = current_y, group = subj_id) +
+  geom_line() +
   geom_line(aes(group = interaction(subj_id, run))) +
   annotate("point", x = 5, y = 5, shape = 4) +
   annotate("point", x = 50, y = 50, shape = 4) +
-  facet_wrap("subj_id") +
-  t_$scale_x_orientation +
-  t_$scale_y_spatial_frequency +
-  t_$scale_color_instructions +
-  t_$coord_landscape +
-  t_$theme +
-  theme(legend.position = "bottom")
+  t_$theme
+
+gridExtra::grid.arrange(
+  orientation_bias,
+  (training_plot %+% OrientationTraining) +
+    aes(color = subj_id) +
+    ggtitle("Orientation Training"),
+  spatial_frequency_bias,
+  (training_plot %+% SpatialFrequencyTraining) +
+    aes(color = subj_id) +
+    ggtitle("Spatial Frequency Training"),
+  nrow = 2
+)
+```
+
+```{r simple-hill-landscape-v1}
+data("v1_SimpleHill")
+wireframe(score ~ x * y, data = v1_SimpleHill, xlab = "ori", ylab = "sf")
 ```
 
 ```{r pilot-test, fig.width=10}
@@ -99,22 +126,89 @@ plot_ly(PilotSimpleHill, x = ~selected_x, y = ~selected_y, z = ~score, color = ~
     )
 ```
 
-```{r}
-GemsTest <- PilotTest
-GemsIsolated <- GemsTest %>%
-  filter(trial %in% c(0, 20, 40))
+## Version 2 {-}
 
-ggplot(GemsIsolated) +
-  aes(x = trial, y = score) +
-  geom_line(aes(group = subj_id, color = instructions)) +
-  scale_x_continuous(breaks = c(0, 20, 40)) +
-  facet_wrap("landscape_label", nrow = 1) +
-  t_$theme +
-  theme(
-    legend.position = "bottom"
-  )
+```{r gems}
 ```
 
-# Results {-}
+```{r gabors-v2, fig.cap="Gabor space for Version 2 of the experiment."}
+draw_image("v2_SimpleHillGems", package = "gems")
+```
+
+```{r training-v2, fig.width=10, fig.height=8}
+gridExtra::grid.arrange(
+  read_image("v2_welcome_orientation", package = "gems"),
+  read_image("v2_training_orientation", package = "gems"),
+  read_image("v2_welcome_spatial_frequency", package = "gems"),
+  read_image("v2_training_spatial_frequency", package = "gems"),
+  nrow = 2
+)
+```
+
+### Scores {-}
+
+```{r gems-scores}
+GemsScores <- Gems %>%
+  group_by(instructions, training, landscape_ix, trial) %>%
+  summarize(score = mean(score)) %>%
+  ungroup()
+
+ggplot(Gems) +
+  aes(trial, score, color = instructions) +
+  geom_line(aes(group = interaction(subj_id, landscape_ix)), size = 0.2) +
+  geom_line(stat = "summary", fun.y = "mean", size = 2) +
+  facet_wrap("training_label", scales = "free_x") +
+  t_$theme +
+  theme(legend.position = "bottom")
+```
+
+### Training {-}
+
+```{r gems-training, fig.width=8, fig.height=8}
+data("OrientationBias")
+data("SpatialFrequencyBias")
+
+orientation_bias <- wireframe(score ~ x * y, xlab = "ori", ylab = "sf", data = OrientationBias)
+spatial_frequency_bias <- wireframe(score ~ x * y, xlab = "ori", ylab = "sf", data = SpatialFrequencyBias)
+
+OrientationTraining <- Gems %>%
+  filter(instructions == "orientation", landscape_name == "OrientationBias")
+SpatialFrequencyTraining <- Gems %>%
+  filter(instructions == "spatial_frequency", landscape_name == "SpatialFrequencyBias")
+
+training_plot <- ggplot() +
+  aes(x = current_x, y = current_y, group = subj_id) +
+  geom_line() +
+  annotate("point", x = 5, y = 5, shape = 4) +
+  annotate("point", x = 50, y = 50, shape = 4) +
+  t_$theme
+
+gridExtra::grid.arrange(
+  orientation_bias,
+  (training_plot %+% OrientationTraining) +
+    aes(color = subj_id) +
+    ggtitle("Orientation Training"),
+  spatial_frequency_bias,
+  (training_plot %+% SpatialFrequencyTraining) +
+    aes(color = subj_id) +
+    ggtitle("Spatial Frequency Training"),
+  nrow = 2
+)
+```
+
+### Test {-}
+
+```{r gems-test, fig.width=8, fig.height=8}
+data("SimpleHill")
+simple_hill <- wireframe(score ~ x * y, data = SimpleHill, xlab = "Orientation", ylab = "Spatial frequency")
+
+GemsTest <- filter(Gems, training == "test")
+test_plot <- (training_plot %+% GemsTest) +
+  aes(color = instructions) +
+  facet_wrap("landscape_ix", nrow = 1) +
+  theme(legend.position = "bottom")
+
+gridExtra::grid.arrange(simple_hill, test_plot, nrow = 2)
+```
 
 # Discussion {-}

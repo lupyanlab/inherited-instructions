@@ -54,3 +54,12 @@ Pilot %<>%
   label_training() %>%
   recode_training() %>%
   recode_landscape()
+
+# ---- gems
+data("Gems")
+
+Gems %<>%
+  label_training() %>%
+  recode_training() %>%
+  recode_landscape() %>%
+  arrange(subj_id, trial)

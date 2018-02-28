@@ -1,4 +1,5 @@
 import os
+from os import path
 from ansible_vault import Vault
 from glob import glob
 from pathlib import Path
@@ -67,19 +68,35 @@ def make(ctx, name, clear_cache=False, open_after=False, skip_prereqs=False):
         ctx.run(render_cmd.format(docs=docs, rmd=rmd))
 
 @task
-def get_subj_info(ctx):
+def get_subj_info(ctx, move_to_r_pkg=False):
+    """Download subject info sheets as csvs."""
     gc = connect_google_sheets()
-    dst = 'gem-subj-info.csv'
-    wks = gc.open('gem-subj-info').sheet1
+
+    dst_dir = 'data/data-raw/notes' if move_to_r_pkg else '.'
+    if not Path(dst_dir).is_dir():
+        Path(dst_dir).mkdir()
+
+    dst = path.join(dst_dir, 'subj-info.csv')
+    wks = gc.open('gems-subj-info').sheet1
     with open(dst, 'wb') as f:
         f.write(wks.export())
 
+    dst_pilot = path.join(dst_dir, 'subj-info-pilot.csv')
+    pilot = gc.open('gems-subj-info').worksheet('pilot')
+    with open(dst_pilot, 'wb') as f:
+        f.write(pilot.export())
 
 @task
-def get_survey_responses(ctx):
+def get_survey_responses(ctx, move_to_r_pkg=False):
+    """Download responses to post-experiment questionnaires as csvs."""
     gc = connect_google_sheets()
-    dst = 'gem-survey-responses.csv'
-    wks = gc.open('gem-survey-responses').sheet1
+
+    dst_dir = 'data/data-raw/survey' if move_to_r_pkg else '.'
+    if not Path(dst_dir).is_dir():
+        Path(dst_dir).mkdir()
+
+    dst = path.join(dst_dir, 'responses.csv')
+    wks = gc.open('gems-survey-responses').sheet1
     with open(dst, 'wb') as f:
         f.write(wks.export())
 
