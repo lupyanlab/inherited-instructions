@@ -126,7 +126,7 @@ plot_ly(PilotSimpleHill, x = ~selected_x, y = ~selected_y, z = ~score, color = ~
     )
 ```
 
-## Version 2 {-}
+# Version 2 {-}
 
 ```{r gems}
 ```
@@ -145,7 +145,7 @@ gridExtra::grid.arrange(
 )
 ```
 
-### Scores {-}
+## Scores {-}
 
 ```{r gems-scores}
 GemsScores <- Gems %>%
@@ -162,7 +162,7 @@ ggplot(Gems) +
   theme(legend.position = "bottom")
 ```
 
-### Training {-}
+## Training {-}
 
 ```{r gems-training, fig.width=8, fig.height=8}
 data("OrientationBias")
@@ -196,7 +196,7 @@ gridExtra::grid.arrange(
 )
 ```
 
-### Test {-}
+## Test {-}
 
 ```{r gems-test, fig.width=8, fig.height=8}
 data("SimpleHill")
@@ -211,9 +211,9 @@ test_plot <- (training_plot %+% GemsTest) +
 gridExtra::grid.arrange(simple_hill, test_plot, nrow = 2)
 ```
 
-### Walk {-}
+## Walk {-}
 
-```{r trials-walk}
+```{r trials-walk, eval=FALSE}
 library(gganimate)
 library(geomnet)
 
