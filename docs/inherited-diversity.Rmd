@@ -66,8 +66,7 @@ SpatialFrequencyTraining <- Pilot %>%
 
 training_plot <- ggplot() +
   aes(x = current_x, y = current_y, group = subj_id) +
-  geom_line() +
-  geom_line(aes(group = interaction(subj_id, run))) +
+  geom_segment(aes(xend = selected_x, yend = selected_y, group = interaction(subj_id, run))) +
   annotate("point", x = 5, y = 5, shape = 4) +
   annotate("point", x = 50, y = 50, shape = 4) +
   t_$theme
@@ -96,7 +95,7 @@ PilotTest <- Pilot %>%
 
 ggplot(PilotTest) +
   aes(current_x, current_y, color = instructions) +
-  geom_line(aes(group = subj_id)) +
+  geom_segment(aes(xend = selected_x, yend = selected_y, group = subj_id)) +
   annotate("point", x = 5, y = 5, shape = 4) +
   annotate("point", x = 50, y = 50, shape = 4) +
   facet_wrap("landscape_label", nrow = 1) +
@@ -177,8 +176,8 @@ SpatialFrequencyTraining <- Gems %>%
   filter(instructions == "spatial_frequency", landscape_name == "SpatialFrequencyBias")
 
 training_plot <- ggplot() +
-  aes(x = current_x, y = current_y, group = subj_id) +
-  geom_line() +
+  aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y, group = subj_id) +
+  geom_segment() +
   annotate("point", x = 5, y = 5, shape = 4) +
   annotate("point", x = 50, y = 50, shape = 4) +
   t_$theme
