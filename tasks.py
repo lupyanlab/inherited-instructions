@@ -35,8 +35,7 @@ def configure(ctx):
         f.write(template.render(**kwargs))
 
 @task(help={'clear-cache': 'Clear knitr cache and figs before rendering.',
-            'open-after': 'Open the report after creating it.',
-            'skip-prereqs': 'Don\'t try to update custom prereqs.'})
+            'open-after': 'Open the report after creating it.'})
 def make(ctx, name, clear_cache=False, open_after=False, skip_prereqs=False):
     """Compile dynamic reports from the results of the experiments."""
     docs = Path('docs')
