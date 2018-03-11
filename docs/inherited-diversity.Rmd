@@ -17,6 +17,83 @@ read_graphviz_chunk("team-structures", package = "gems", new_name = "gems-team-s
 
 # Introduction {-}
 
+People can work together in teams to solve all sorts of problems. What is the
+impact of teamwork on the problem solving abilities of the people in the team?
+The purpose of this research was to test the conditions under which teamwork
+might improve individual problem solving ability.
+
+There are many ways to measure the effectiveness of teamwork. A common method
+is to compare the performance of teams to individuals working alone. When
+compared in this way, studies have often failed to find any evidence that
+teamwork provides an improvement over individual problem solving.
+
+One of the reasons teamwork is reflected rather poorly in the experimental
+literature may be due to limits on experimental methods. In order to conduct an
+experiment in which both teams and individuals are administered the same task,
+many tasks are necessarily excluded because they can not be equally attempted
+using both teams and individuals. To use a clear example: if the problem
+solving task required moving heavy objects, teamwork has clear advantages, but
+no one would be surprised by these results.
+
+Teams can clearly solve many problems that are insurmountable for individuals.
+But when both teams and individuals attempt tasks that individuals can complete
+alone, teamwork is rarely found to be an improvement over individual
+performance.
+
+A notable exception to this trend was a study by @Bahrami:2010jl who found
+that two heads were better than one in a perceptual judgment task. In the
+task, participants searched for an oddball target and responded with a
+binary judgment corresponding to which of two displays contained the
+target. If the two participants in each team disagreed about which display
+contained the target, they were allowed to make a joint decision. Because
+the participants made both individual and team responses on each trial,
+the researchers were able to compare the performance of the team to the
+performance of best individual in each team. The results showed a clear
+benefit to teamwork over what was would have been achieved by the
+best individual working alone.
+
+Teamwork has been shown to improve performance on search tasks.
+
+A difficulty that arises when comparing experiments done on teamwork
+is in how to properly control for time. The typical approach is to control
+for **calendar hours**. For example, teams and individuals are both given
+an hour to complete the same task. However, controlling for calendar hours does
+not scale with team size. Individuals and teams are both given an hour,
+regardless of the size of the team.
+
+In this research we controlled for labor hours.
+
+
+
+
+
+
+
+with team size. A single individual can be compare
+
+Controlling for calendar hours
+allows researchers to test questions
+
+
+
+are compared relative to the same number of labor hours
+
+for 
+
+
+variability in how 
+
+The reason teamwork
+
+
+Part of the reason teamwork is reflected poorly in the experimental
+literature is that there are many tasks that teams are good
+
+
+The question of what makes for effective teamwork has many candidate
+
+Seeking the recipe for successful teamwork has 
+
 # Methods {-}
 
 ```{r gems-team-strategies, engine="dot", out.width="40%"}
