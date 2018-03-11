@@ -1,5 +1,4 @@
 # ---- inherited-diversity
-library(plotly)
 library(tidyverse)
 library(magrittr)
 library(lattice)
@@ -16,7 +15,7 @@ get_colors <- function(...) {
 t_ <- list(
   theme = theme_minimal(),
   get_colors = get_colors,
-  scale_color_instructions = 
+  scale_color_instructions =
     scale_color_manual("Training", labels = c("Orientation", "Stripe width"), values = get_colors("green", "blue")),
   coord_landscape = coord_equal(xlim = c(0, 99), ylim = c(0, 99)),
   scale_x_orientation = scale_x_continuous("Orientation"),
