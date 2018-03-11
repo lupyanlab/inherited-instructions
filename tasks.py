@@ -9,7 +9,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import jinja2
 
 @task
-def save(ctx):
+def save_exp(ctx):
     """Save experiment data to R pkg."""
     cmd = 'cp {experiment_dir}/*.csv {r_pkg_data_raw}'
     experiment_dir = Path('experiment/data')
@@ -36,7 +36,7 @@ def configure(ctx):
 
 @task(help={'clear-cache': 'Clear knitr cache and figs before rendering.',
             'open-after': 'Open the report after creating it.'})
-def make(ctx, name, clear_cache=False, open_after=False, skip_prereqs=False):
+def make_doc(ctx, name, clear_cache=False, open_after=False):
     """Compile dynamic reports from the results of the experiments."""
     docs = Path('docs')
     render_cmd = 'cd {docs} && Rscript -e "rmarkdown::render({rmd.name!r})"'
