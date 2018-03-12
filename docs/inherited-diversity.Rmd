@@ -61,164 +61,29 @@ an hour to complete the same task. However, controlling for calendar hours does
 not scale with team size. Individuals and teams are both given an hour,
 regardless of the size of the team.
 
-In this research we controlled for labor hours.
-
-
-
-
-
-
-
-with team size. A single individual can be compare
-
-Controlling for calendar hours
-allows researchers to test questions
-
-
-
-are compared relative to the same number of labor hours
-
-for 
-
-
-variability in how 
-
-The reason teamwork
-
-
-Part of the reason teamwork is reflected poorly in the experimental
-literature is that there are many tasks that teams are good
-
-
-The question of what makes for effective teamwork has many candidate
-
-Seeking the recipe for successful teamwork has 
-
 # Methods {-}
 
 ```{r gems-team-strategies, engine="dot", out.width="40%"}
 ```
 
-# Version 1 {-}
-
-```{r pilot}
-```
-
-```{r gabors-v1, fig.cap="Gabor space for version 1 of the experiment."}
-draw_image("v1_SimpleHillGems", package = "gems")
-```
-
-```{r training-v1, fig.width=10, fig.height=8}
-gridExtra::grid.arrange(
-  read_image("v1_welcome_orientation", package = "gems"),
-  read_image("v1_training_orientation", package = "gems"),
-  read_image("v1_welcome_spatial_frequency", package = "gems"),
-  read_image("v1_training_spatial_frequency", package = "gems"),
-  nrow = 2
-)
-```
-
-```{r pilot-scores, fig.width=6}
-ggplot(Pilot) +
-  aes(trial, score, color = instructions) +
-  geom_line(aes(group = interaction(subj_id, run, landscape_ix)),
-            size = 0.1) +
-  geom_line(stat = "summary", fun.y = "mean", size = 1) +
-  facet_wrap("training_label", scales = "free_x") +
-  t_$theme +
-  theme(legend.position = "bottom")
-```
-
-```{r pilot-training, fig.width=8, fig.height=8}
-data("v1_OrientationBias")
-data("v1_SpatialFrequencyBias")
-
-orientation_bias <- wireframe(score ~ x * y, xlab = "ori", ylab = "sf", data = v1_OrientationBias)
-spatial_frequency_bias <- wireframe(score ~ x * y, xlab = "ori", ylab = "sf", data = v1_SpatialFrequencyBias)
-
-OrientationTraining <- Pilot %>%
-  filter(instructions == "orientation", landscape_name == "OrientationBias")
-SpatialFrequencyTraining <- Pilot %>%
-  filter(instructions == "spatial_frequency", landscape_name == "SpatialFrequencyBias")
-
-training_plot <- ggplot() +
-  aes(x = current_x, y = current_y, group = subj_id) +
-  geom_segment(aes(xend = selected_x, yend = selected_y, group = interaction(subj_id, run))) +
-  annotate("point", x = 5, y = 5, shape = 4) +
-  annotate("point", x = 50, y = 50, shape = 4) +
-  t_$theme
-
-gridExtra::grid.arrange(
-  orientation_bias,
-  (training_plot %+% OrientationTraining) +
-    aes(color = subj_id) +
-    ggtitle("Orientation Training"),
-  spatial_frequency_bias,
-  (training_plot %+% SpatialFrequencyTraining) +
-    aes(color = subj_id) +
-    ggtitle("Spatial Frequency Training"),
-  nrow = 2
-)
-```
-
-```{r simple-hill-landscape-v1}
-data("v1_SimpleHill")
-wireframe(score ~ x * y, data = v1_SimpleHill, xlab = "ori", ylab = "sf")
-```
-
-```{r pilot-test, fig.width=10}
-PilotTest <- Pilot %>%
-  filter(training == "test")
-
-ggplot(PilotTest) +
-  aes(current_x, current_y, color = instructions) +
-  geom_segment(aes(xend = selected_x, yend = selected_y, group = subj_id)) +
-  annotate("point", x = 5, y = 5, shape = 4) +
-  annotate("point", x = 50, y = 50, shape = 4) +
-  facet_wrap("landscape_label", nrow = 1) +
-  t_$scale_x_orientation +
-  t_$scale_y_spatial_frequency +
-  t_$scale_color_instructions +
-  t_$coord_landscape +
-  t_$theme +
-  theme(legend.position = "bottom")
-```
-
-# Version 2 {-}
-
 ```{r gems}
 ```
 
-```{r gabors-v2, fig.cap="Gabor space for Version 2 of the experiment."}
-draw_image("v2_SimpleHillGems", package = "gems")
+```{r gabors, fig.cap="Space of gabors."}
+draw_image("SimpleHillGems", package = "gems")
 ```
 
-```{r training-v2, fig.width=10, fig.height=8}
+```{r training, fig.width=10, fig.height=8}
 gridExtra::grid.arrange(
-  read_image("v2_welcome_orientation", package = "gems"),
-  read_image("v2_training_orientation", package = "gems"),
-  read_image("v2_welcome_spatial_frequency", package = "gems"),
-  read_image("v2_training_spatial_frequency", package = "gems"),
+  read_image("welcome_orientation", package = "gems"),
+  read_image("training_orientation", package = "gems"),
+  read_image("welcome_spatial_frequency", package = "gems"),
+  read_image("training_spatial_frequency", package = "gems"),
   nrow = 2
 )
 ```
 
-## Scores {-}
-
-```{r gems-scores}
-GemsScores <- Gems %>%
-  group_by(instructions, training, landscape_ix, trial) %>%
-  summarize(score = mean(score)) %>%
-  ungroup()
-
-ggplot(Gems) +
-  aes(trial, score, color = instructions) +
-  geom_line(aes(group = interaction(subj_id, landscape_ix)), size = 0.2) +
-  geom_line(stat = "summary", fun.y = "mean", size = 2) +
-  facet_wrap("training_label", scales = "free_x") +
-  t_$theme +
-  theme(legend.position = "bottom")
-```
+# Results {-}
 
 ## Training {-}
 
@@ -256,6 +121,21 @@ gridExtra::grid.arrange(
 
 ## Test {-}
 
+```{r gems-scores}
+GemsScores <- Gems %>%
+  group_by(instructions, training, landscape_ix, trial) %>%
+  summarize(score = mean(score)) %>%
+  ungroup()
+
+ggplot(Gems) +
+  aes(trial, score, color = instructions) +
+  geom_line(aes(group = interaction(subj_id, landscape_ix)), size = 0.2) +
+  geom_line(stat = "summary", fun.y = "mean", size = 2) +
+  facet_wrap("training_label", scales = "free_x") +
+  t_$theme +
+  theme(legend.position = "bottom")
+```
+
 ```{r gems-test, fig.width=8, fig.height=8}
 data("SimpleHill")
 simple_hill <- wireframe(score ~ x * y, data = SimpleHill, xlab = "Orientation", ylab = "Spatial frequency")
@@ -267,29 +147,6 @@ test_plot <- (training_plot %+% GemsTest) +
   theme(legend.position = "bottom")
 
 gridExtra::grid.arrange(simple_hill, test_plot, nrow = 2)
-```
-
-## Walk {-}
-
-```{r trials-walk, eval=FALSE}
-library(gganimate)
-library(geomnet)
-
-Gems111 <- Gems %>%
-  filter(subj_id == "GEMS111", landscape_ix == 1) %>%
-  melt_trial_stims() %>%
-  mutate(
-    is_selected = (selected == gem_pos)
-  ) %>%
-  arrange(trial)
-
-trials_plot <- ggplot(Gems111) +
-  aes(gem_x, gem_y, frame = trial) +
-  geom_segment(aes(current_x, current_y, xend = selected_x, yend = selected_y, group = 1, cumulative = TRUE)) +
-  geom_circle(aes(x = current_x, y = current_y), radius = 0.35) +
-  geom_point(aes(color = factor(is_selected), frame = trial))
-
-gganimate(trials_plot)
 ```
 
 # Discussion {-}
