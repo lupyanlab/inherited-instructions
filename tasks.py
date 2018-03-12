@@ -8,6 +8,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import jinja2
 
+
 @task
 def save_exp(ctx):
     """Save experiment data to R pkg."""
@@ -33,6 +34,7 @@ def configure(ctx):
     kwargs = dict(venv=venv, password_file=password_file)
     with open(dst, 'w') as f:
         f.write(template.render(**kwargs))
+
 
 @task(help={'clear-cache': 'Clear knitr cache and figs before rendering.',
             'open-after': 'Open the report after creating it.'})
@@ -75,15 +77,13 @@ def get_subj_info(ctx, move_to_r_pkg=False):
     if not Path(dst_dir).is_dir():
         Path(dst_dir).mkdir()
 
-    dst = path.join(dst_dir, 'subj-info.csv')
-    wks = gc.open('gems-subj-info').sheet1
-    with open(dst, 'wb') as f:
-        f.write(wks.export())
+    workbook = gc.open('gems-subj-info')
+    for sheet_name in ['generation1', 'generation2', 'pilot']:
+        dst = path.join(dst_dir, 'subj-info-%s.csv' % sheet_name)
+        wks = workbook.worksheet(sheet_name)
+        with open(dst, 'wb') as f:
+          f.write(wks.export())
 
-    dst_pilot = path.join(dst_dir, 'subj-info-pilot.csv')
-    pilot = gc.open('gems-subj-info').worksheet('pilot')
-    with open(dst_pilot, 'wb') as f:
-        f.write(pilot.export())
 
 @task
 def get_survey_responses(ctx, move_to_r_pkg=False):
