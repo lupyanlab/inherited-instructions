@@ -1,10 +1,12 @@
 import os
+import itertools
 from os import path
 from ansible_vault import Vault
 from glob import glob
 from pathlib import Path
 from invoke import Collection, task
 import gspread
+import pandas
 from oauth2client.service_account import ServiceAccountCredentials
 import jinja2
 
@@ -100,6 +102,43 @@ def get_survey_responses(ctx, move_to_r_pkg=False):
         f.write(wks.export())
 
 
+@task
+def update_subj_info(ctx):
+    """Update the subj info sheet.
+
+    Assumes the pos lists have already been exported via:
+
+        experiment/$ inv exp.write-pos-lists  # creates "pos-lists.txt"
+    """
+
+    pos_lists = 'experiment/pos-lists.txt'
+    pos_list_strs = [pos_list_str.strip() for pos_list_str in open(pos_lists)]
+    pos_list_ixs = range(1, len(pos_list_strs))
+
+    instructions_conditions = ['orientation', 'spatial_frequency']
+
+    subj_info = pandas.DataFrame.from_records(
+        list(itertools.product(pos_list_ixs, instructions_conditions)),
+        columns=['starting_pos_list_ix', 'instructions_condition']
+    ).sort_values(['starting_pos_list_ix', 'instructions_condition'])
+
+    gc = connect_google_sheets()
+    wb = gc.open('gems-subj-info')
+    ws = wb.worksheet('generation2')
+
+
+    cells = ws.range(f'D2:D{2+len(subj_info.instructions_condition)}')
+    for cell, value in zip(cells, subj_info.instructions_condition):
+        cell.value = value
+    ws.update_cells(cells)
+
+    cells = ws.range(f'E2:E{2+len(subj_info.starting_pos_list_ix)}')
+    for cell, value in zip(cells, subj_info.starting_pos_list_ix):
+        cell.value = value
+    ws.update_cells(cells)
+
+
+
 def connect_google_sheets():
     password = open(os.environ['ANSIBLE_VAULT_PASSWORD_FILE']).read()
     json_data = Vault(password).load(open('secrets/lupyanlab.json').read())
@@ -122,3 +161,4 @@ ns.add_task(make_doc)
 ns.add_task(get_subj_info)
 ns.add_task(get_survey_responses)
 ns.add_task(save_exp)
+ns.add_task(update_subj_info)
