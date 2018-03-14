@@ -1,7 +1,8 @@
 ---
 title: Teams of complementary problem solvers outperform equally skilled individuals
 output:
-  bookdown::pdf_document2: {}
+  bookdown::pdf_document2:
+    toc: false
   bookdown::html_document2: {}
 ---
 ```{r inherited-diversity-config, include=FALSE}
@@ -68,24 +69,26 @@ regardless of the size of the team.
 ```{r methods}
 ```
 
-## Materials
+## Materials {-}
 
-Stimuli consisted of gabor patches that varied in orientation and
-spatial frequency. Orientations were sampled at regular intervals from
-`r methods$min_ori`° to `r methods$max_ori`°. Spatial frequencies were sampled
-at geometric intervals from `r methods$min_sf` cycles/pixel to
-`r methods$max_sf` cycles/pixel. A geometric progression was used to
-make spatial frequency a more perceptually constant dimension by
-expanding the distance between adjacent, high spatial frequency stimuli.
-Sampled orientations and spatial frequencies were combined to create a total of
-`r methods$n_gabors_in_landscape`. A sample of the space is shown in Fig.
-\@ref(fig:gabors).
+We created `r methods$n_gabors_in_landscape` gabor patches that varied in
+orientation and spatial frequency. A sample of the space is shown in Fig.
+\@ref(fig:gabors). Orientations were sampled at regular intervals from
+`r methods$min_ori`° to `r methods$max_ori`°. Spatial frequencies were sampled at
+geometric intervals from `r methods$min_sf` cycles/pixel to `r methods$max_sf`
+cycles/pixel. A geometric progression was used because high spatial frequencies
+are harder to distinguish than low spatial frequencies. To make spatial frequency
+a more perceptual constant dimension, we expanded the distance between adjacent,
+high spatial frequency stimuli.
+
+(ref:gabors) Sampled space of possible gabor patches. Gabor patches varied
+in orientation and spatial frequency.
 
 ```{r gabors, fig.cap="Space of gabors."}
 draw_image("SimpleHillGems", package = "gems")
 ```
 
-## Training conditions
+## Training conditions {-}
 
 Participants were randomly assigned to one of two training conditions. In the
 orientation condition, participants were instructed that the value of each gem
@@ -101,22 +104,58 @@ gridExtra::grid.arrange(
 )
 ```
 
-## Landscapes
+## Landscapes {-}
 
-The value of each gem was completely determined by its orientation and spatial
-frequency. We refer to the dimensions of orientation and spatial frequency as
-corresponding to a position on a solution landscape, and its value as the
-height at that point in the landscape. There were two different training
+The value of each gem was determined by its orientation and spatial
+frequency. The dimensions of orientation and spatial frequency
+correspond to a position on a landscape, where the height of the landscape
+is the value of the gem. There were two different training
 landscapes, and one test landscape. The training landscapes were constructed so
 that the value of a gem was determined completely by one dimension (either
-orientation or spatial frequency) and not by the other dimension. Values in
-the test landscape were determined by both orientation and spatial frequency.
-The training and test landscapes are shown in Fig. \@ref(fig:landscapes).
+orientation or spatial frequency) and not affected by the other dimension.
+Values in the test landscape were determined by both orientation and spatial
+frequency. The training and test landscapes are shown in Fig.
+\@ref(fig:landscapes).
 
-```{r landscapes}
+```{r landscapes, fig.width=8}
+data("OrientationBias")
+data("SpatialFrequencyBias")
+data("SimpleHill")
+
+lattice::trellis.par.set("axis.line",list(col=NA,lty=1,lwd=1))
+
+gridExtra::grid.arrange(
+  lattice::wireframe(score ~ x * y, data = OrientationBias, xlab = "ori", ylab = "sf", main = "Orientation bias", cuts = 10),
+  lattice::wireframe(score ~ x * y, data = SpatialFrequencyBias, xlab = "ori", ylab = "sf", main = "Spatial frequency bias"),
+  lattice::wireframe(score ~ x * y, data = SimpleHill, xlab = "ori", ylab = "sf", main = "Simple hill"),
+  nrow = 1
+)
 ```
 
+## Procedure {-}
+
+Participants were instructed they would play a computer game where they 
+pretend to be a space explorer who travels to another planet to collect
+precious gems. Their goal was to learn which gems are worth more than others so
+that they could get the highest score in the game.
+
+Participants completed a training block of 30 trials, followed by four
+test blocks of 40 trials each. In the training block, participants traversed
+a training landscape according to their instructions condition. Participants
+who received instructions to pay attention to orientation completed the
+orientation bias landscape, and participants told to pay attention to bar width
+completed the spatial frequency bias landscape.
+
+For the four test blocks, all participants traversed the same simple hill
+landscape. First generation participants started at the origin for all four
+test blocks, and tried to find the most valuable gems in 40 trials. Second
+generation participants started each test block at the location of a first
+generation participant at trial 20.
+
 # Results {-}
+
+```{r results}
+```
 
 ## Training {-}
 
@@ -155,6 +194,7 @@ gridExtra::grid.arrange(
 ## Test {-}
 
 ```{r gems-scores}
+data("")
 GemsScores <- Gems %>%
   group_by(instructions, training, landscape_ix, trial) %>%
   summarize(score = mean(score)) %>%

@@ -55,7 +55,7 @@ methods <- list(min_ori = 10,
 data("SimpleHill")
 methods$n_gabors_in_landscape <- nrow(SimpleHill)
 
-# ---- gems
+# ---- results
 data("Gems")
 
 Gems %<>%
