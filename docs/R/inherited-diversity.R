@@ -46,15 +46,16 @@ recode_landscape <- function(frame) {
   left_join(frame, map)
 }
 
-# ---- pilot
-data("Pilot")
+# ---- methods
+methods <- list(min_ori = 10,
+                max_ori = 90,
+                min_sf = 0.04,
+                max_sf = 0.18) 
 
-Pilot %<>%
-  label_training() %>%
-  recode_training() %>%
-  recode_landscape()
+data("SimpleHill")
+methods$n_gabors_in_landscape <- nrow(SimpleHill)
 
-# ---- gems
+# ---- results
 data("Gems")
 
 Gems %<>%
@@ -62,3 +63,4 @@ Gems %<>%
   recode_training() %>%
   recode_landscape() %>%
   arrange(subj_id, trial)
+
