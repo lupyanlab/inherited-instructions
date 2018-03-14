@@ -17,10 +17,11 @@ read_graphviz_chunk("team-structures", package = "gems", new_name = "gems-team-s
 
 # Introduction {-}
 
-People can work together in teams to solve all sorts of problems. What is the
+People can work together in teams to solve many kinds of problems. What is the
 impact of teamwork on the problem solving abilities of the people in the team?
-The purpose of this research was to test the conditions under which teamwork
-might improve individual problem solving ability.
+Does working in a team ever improve problem solving ability? The purpose of this
+research was to test the conditions under which teamwork might improve
+individual problem solving ability.
 
 There are many ways to measure the effectiveness of teamwork. A common method
 is to compare the performance of teams to individuals working alone. When
@@ -63,13 +64,18 @@ regardless of the size of the team.
 
 # Methods {-}
 
-```{r gems-team-strategies, engine="dot", out.width="40%"}
+(ref:gems-team-strategies) Team strategies. Participants were trained to pay
+attention to either orientation or bar width and assigned to teams.
+Complementary teams comprised individuals trained on both stimulus dimensions.
+Congruent teams comprised individuals being trained on the same stimulus
+dimension.
+
+```{r gems-team-strategies, engine="dot", out.width="40%", fig.cap="(ref:gems-team-strategies)"}
 ```
 
-```{r gems}
-```
+(ref:gabors) Gabors sampled from the solution landscape. Gabors are sinusoidal stimuli
 
-```{r gabors, fig.cap="Space of gabors."}
+```{r gabors, fig.cap="(ref:gabors)"}
 draw_image("SimpleHillGems", package = "gems")
 ```
 
@@ -84,6 +90,9 @@ gridExtra::grid.arrange(
 ```
 
 # Results {-}
+
+```{r gems}
+```
 
 ## Training {-}
 
