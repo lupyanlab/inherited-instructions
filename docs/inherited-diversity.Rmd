@@ -117,8 +117,6 @@ data("OrientationBias")
 data("SpatialFrequencyBias")
 data("SimpleHill")
 
-lattice::trellis.par.set("axis.line",list(col=NA,lty=1,lwd=1))
-
 gridExtra::grid.arrange(
   lattice::wireframe(score ~ x * y, data = OrientationBias, xlab = "ori", ylab = "sf", main = "Orientation bias", cuts = 10),
   lattice::wireframe(score ~ x * y, data = SpatialFrequencyBias, xlab = "ori", ylab = "sf", main = "Spatial frequency bias"),
@@ -130,7 +128,7 @@ gridExtra::grid.arrange(
 ## Procedure {-}
 
 Participants were told they would play a computer game where they 
-play as a space explorer who travels to another planet to collect
+pretend to be a space explorer who travels to another planet to collect
 precious gems. The goal of the game is to discover which gems
 are scored the highest.
 
@@ -141,8 +139,8 @@ they were told the value was determined by the width of the bars.
 
 ```{r training, fig.width=10, fig.height=4}
 gridExtra::grid.arrange(
-  read_image("training_orientation", package = "gems"),
-  read_image("training_spatial_frequency", package = "gems"),
+  crotchet::read_image("training_orientation", package = "gems"),
+  crotchet::read_image("training_spatial_frequency", package = "gems"),
   nrow = 1
 )
 ```
@@ -190,38 +188,36 @@ SpatialFrequencyTraining <- Gems %>%
   filter(instructions == "spatial_frequency", landscape_name == "SpatialFrequencyBias")
 
 training_plot <- ggplot() +
-  aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y, group = subj_id) +
-  geom_segment() +
-  annotate("point", x = 5, y = 5, shape = 4) +
-  annotate("point", x = 50, y = 50, shape = 4) +
-  t_$theme
+  aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y) +
+  geom_segment(aes(group = subj_id), size = 0.25) +
+  scale_x_continuous(breaks = seq(0, 70, by = 10)) +
+  scale_y_continuous(breaks = seq(0, 70, by = 10)) +
+  t_$theme +
+  labs(x = "ori", y = "sf") +
+  coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
 
 gridExtra::grid.arrange(
   orientation_bias,
   (training_plot %+% OrientationTraining) +
-    aes(color = subj_id) +
-    ggtitle("Orientation Training"),
+    ggtitle("Orientation Training") +
+    geom_vline(xintercept = 50, linetype = 2),
   spatial_frequency_bias,
   (training_plot %+% SpatialFrequencyTraining) +
-    aes(color = subj_id) +
-    ggtitle("Spatial Frequency Training"),
+    ggtitle("Spatial Frequency Training") +
+    geom_hline(yintercept = 50, linetype = 2),
   nrow = 2
 )
 ```
 
-## Test {-}
+## Generation 1 {-}
 
 ```{r gems-scores}
-GemsScores <- Gems %>%
-  group_by(instructions, training, landscape_ix, trial) %>%
-  summarize(score = mean(score)) %>%
-  ungroup()
+Gen1 <- filter(Gems, landscape_ix != 0, generation == 1)
 
-ggplot(Gems) +
+ggplot(Gen1) +
   aes(trial, score, color = instructions) +
   geom_line(aes(group = interaction(subj_id, landscape_ix)), size = 0.2) +
   geom_line(stat = "summary", fun.y = "mean", size = 2) +
-  facet_wrap("training_label", scales = "free_x") +
   t_$theme +
   theme(legend.position = "bottom")
 ```
@@ -230,13 +226,27 @@ ggplot(Gems) +
 data("SimpleHill")
 simple_hill <- wireframe(score ~ x * y, data = SimpleHill, xlab = "Orientation", ylab = "Spatial frequency")
 
-GemsTest <- filter(Gems, training == "test")
-test_plot <- (training_plot %+% GemsTest) +
-  aes(color = instructions) +
+ggplot(Gen1) +
+  aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y) +
+  geom_segment(aes(color = instructions, group = subj_id)) +
   facet_wrap("landscape_ix", nrow = 1) +
-  theme(legend.position = "bottom")
+  scale_x_continuous(breaks = seq(0, 70, by = 10)) +
+  scale_y_continuous(breaks = seq(0, 70, by = 10)) +
+  t_$theme +
+  labs(x = "ori", y = "sf") +
+  coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
+```
 
-gridExtra::grid.arrange(simple_hill, test_plot, nrow = 2)
+## Generation 2 {-}
+
+```{r gems-generation2}
+Gems %>%
+  filter(subj_id == "GEMS120" | ancestor_id == "GEMS120",
+         landscape_ix != 0, team_trial <= 40) %>%
+  ggplot() +
+    aes(team_trial, score, group = subj_id, color = instructions) +
+    geom_line(aes(linetype = factor(generation))) +
+  facet_wrap("landscape_ix", nrow = 1)
 ```
 
 # Discussion {-}

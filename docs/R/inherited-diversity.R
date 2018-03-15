@@ -2,8 +2,10 @@
 library(tidyverse)
 library(magrittr)
 library(lattice)
+trellis.par.set("axis.line",list(col=NA,lty=1,lwd=1))
 
 library(gems)
+
 
 colors <- RColorBrewer::brewer.pal(4, "Set2")
 names(colors) <- c("green", "orange", "blue", "pink")
