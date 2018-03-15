@@ -19,6 +19,12 @@ t_ <- list(
   get_colors = get_colors,
   scale_color_instructions =
     scale_color_manual("Training", labels = c("Orientation", "Stripe width"), values = get_colors("green", "blue")),
+  scale_color_strategy =
+    scale_color_manual("Strategy", labels = recode_team_strategy()$team_strategy_label,
+                       values = get_colors("orange", "green", "blue")),
+  scale_fill_strategy =
+    scale_fill_manual("Strategy", labels = recode_team_strategy()$team_strategy_label,
+                      values = get_colors("orange", "green", "blue")),
   coord_landscape = coord_equal(xlim = c(0, 99), ylim = c(0, 99)),
   scale_x_orientation = scale_x_continuous("Orientation"),
   scale_y_spatial_frequency = scale_y_continuous("Spatial frequency")

@@ -246,7 +246,32 @@ Gems %>%
   ggplot() +
     aes(team_trial, score, group = subj_id, color = instructions) +
     geom_line(aes(linetype = factor(generation))) +
-  facet_wrap("landscape_ix", nrow = 1)
+    facet_wrap("landscape_ix", nrow = 1)
+```
+
+```{r}
+Strategies <- Gems %>%
+  filter(landscape_ix != 0, team_trial == 39) %>%
+  label_team_strategy() %>%
+  recode_team_strategy() %>%
+  mutate(distance_to_peak = distance_to_peak(selected_x, selected_y))
+
+ggplot(Strategies) +
+  aes(team_strategy_label, score) +
+  geom_bar(aes(fill = team_strategy_label),
+           stat = "summary", fun.y = "mean",
+           alpha = 0.4) +
+  geom_point(aes(color = team_strategy_label),
+             position = position_jitter(width = 0.2, height = 0)) +
+  coord_cartesian(ylim = c(0, 100), expand = FALSE) +
+  t_$scale_color_strategy +
+  t_$scale_fill_strategy +
+  t_$theme +
+  guides(fill = "none", color = "none") +
+  theme(
+    panel.grid.major.x = element_blank()
+  ) +
+  labs(x = "")
 ```
 
 # Discussion {-}
