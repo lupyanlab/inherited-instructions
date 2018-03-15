@@ -81,6 +81,8 @@ dimension.
 
 ## Materials {-}
 
+### Gabors {-}
+
 We created `r methods$n_gabors_in_landscape` gabor patches that varied in
 orientation and spatial frequency. A sample of the space is shown in Fig.
 \@ref(fig:gabors). Orientations were sampled at regular intervals from
@@ -88,8 +90,8 @@ orientation and spatial frequency. A sample of the space is shown in Fig.
 geometric intervals from `r methods$min_sf` cycles/pixel to `r methods$max_sf`
 cycles/pixel. A geometric progression was used because high spatial frequencies
 are harder to distinguish than low spatial frequencies. To make spatial frequency
-a more perceptual constant dimension, we expanded the distance between adjacent,
-high spatial frequency stimuli.
+a more perceptually constant dimension, we expanded the distances between
+high spatial frequency stimuli using a logarithmic transformation.
 
 (ref:gabors) Sampled space of possible gabor patches. Gabor patches varied
 in orientation and spatial frequency.
@@ -98,28 +100,11 @@ in orientation and spatial frequency.
 draw_image("SimpleHillGems", package = "gems")
 ```
 
-## Training conditions {-}
-
-Participants were randomly assigned to one of two training conditions. In the
-orientation condition, participants were instructed that the value of each gem
-was determined by the orientation of the stripes. In the bar width condition,
-participants were instructed the value was determined by the width of the bars.
-The exact instructions are shown in Fig. \@ref(fig:training).
-
-```{r training, fig.width=10, fig.height=4}
-gridExtra::grid.arrange(
-  read_image("training_orientation", package = "gems"),
-  read_image("training_spatial_frequency", package = "gems"),
-  nrow = 1
-)
-```
-
-## Landscapes {-}
+### Solution landscapes {-}
 
 The value of each gem was determined by its orientation and spatial
-frequency. The dimensions of orientation and spatial frequency
-correspond to a position on a landscape, where the height of the landscape
-is the value of the gem. There were two different training
+frequency, which can be visualized as a point on a three dimensional landscape,
+where the height of the landscape is the value of the gem. There were two different training
 landscapes, and one test landscape. The training landscapes were constructed so
 that the value of a gem was determined completely by one dimension (either
 orientation or spatial frequency) and not affected by the other dimension.
@@ -144,13 +129,36 @@ gridExtra::grid.arrange(
 
 ## Procedure {-}
 
-Participants were instructed they would play a computer game where they
-pretend to be a space explorer who travels to another planet to collect
-precious gems. Their goal was to learn which gems are worth more than others so
-that they could get the highest score in the game.
+Participants were told they would play a computer game where they 
+play as a space explorer who travels to another planet to collect
+precious gems. The goal of the game is to discover which gems
+are scored the highest.
 
-Participants completed a training block of 30 trials, followed by four
-test blocks of 40 trials each. In the training block, participants traversed
+Participants were randomly assigned to one of two training conditions. In the
+orientation condition, participants were told that the value of each gem
+was determined by the orientation of the stripes. In the bar width condition,
+they were told the value was determined by the width of the bars.
+
+```{r training, fig.width=10, fig.height=4}
+gridExtra::grid.arrange(
+  read_image("training_orientation", package = "gems"),
+  read_image("training_spatial_frequency", package = "gems"),
+  nrow = 1
+)
+```
+
+Participants completed a block of 30 training trials, followed by four
+blocks of 40 test trials. There were two differences between training
+and test trials: participants received additional feedback
+on training trials, and participants traversed different solution
+landscapes on training and test trials.
+
+The additional feedback for training trials was that after each
+response, the values of all gabors, not just the one selected, were
+shown. Participants also had to select the most valuable gabor in each
+display to continue to the next trial.
+
+In the training trials, participants traversed
 a training landscape according to their instructions condition. Participants
 who received instructions to pay attention to orientation completed the
 orientation bias landscape, and participants told to pay attention to bar width
