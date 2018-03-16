@@ -83,7 +83,7 @@ gen1_scores_plot <- ggplot(Gen1) +
   aes(trial, score, color = instructions) +
   geom_line(aes(group = interaction(subj_id, landscape_ix)), size = 0.2) +
   geom_line(stat = "summary", fun.y = "mean", size = 2) +
-  facet_wrap("landscape_ix") +
+  facet_wrap("landscape_ix", nrow = 1) +
   t_$theme +
   theme(legend.position = "bottom")
 
