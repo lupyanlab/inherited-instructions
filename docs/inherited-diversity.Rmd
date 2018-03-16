@@ -70,13 +70,27 @@ regardless of the size of the team.
 ```{r methods}
 ```
 
+Participants were presented with displays of gabor patches called "gems" that
+varied in orientation and spatial frequency. On each trial, they had to try to
+select the most valuable gem. The value of each gem was determined by its
+orientation and spatial frequency. Participants had to learn which gems were the
+most valuable in order to achieve the highest score in the game.
+
+Participants were trained to pay attention to either the orientation or the bar width
+of the gems, and were assigned to two-person teams. There were three types of teams (Fig.
+\@ref(fig:gems-team-strategies)). Congruent teams comprised participants trained
+to pay attention to the same stimulus dimension---either orientation or bar width.
+Complementary teams comprised participants trained on different dimensions. The
+final strategy was isolated individuals who were trained on a single dimension
+and completed the experiment alone.
+
 (ref:gems-team-strategies) Team strategies. Participants were trained to pay
 attention to either orientation or bar width and assigned to teams.
 Complementary teams comprised individuals trained on both stimulus dimensions.
 Congruent teams comprised individuals being trained on the same stimulus
 dimension.
 
-```{r gems-team-strategies, engine="dot", out.width="40%", fig.cap="(ref:gems-team-strategies)"}
+```{r gems-team-strategies, engine="dot", out.width="50%", fig.cap="(ref:gems-team-strategies)"}
 ```
 
 ## Materials {-}
@@ -102,12 +116,17 @@ draw_image("SimpleHillGems", package = "gems")
 
 ### Solution landscapes {-}
 
-The value of each gem was determined by its orientation and spatial
-frequency, which can be visualized as a point on a three dimensional landscape,
-where the height of the landscape is the value of the gem. There were two different training
+The value of each gem was determined by its orientation and spatial frequency,
+which can be visualized as a point on a three dimensional landscape. In these
+landscapes, the x and y coordinates correspond to orientation and spatial
+frequency of the gem, and the height (z) corresponds to the value of the gem.
+The goal of the participants is to explore the solution landscape looking for
+the highest peak.
+
+We created three different landscapes. There were two different training
 landscapes, and one test landscape. The training landscapes were constructed so
 that the value of a gem was determined completely by one dimension (either
-orientation or spatial frequency) and not affected by the other dimension.
+orientation or spatial frequency) and not influenced by the other dimension.
 Values in the test landscape were determined by both orientation and spatial
 frequency. The training and test landscapes are shown in Fig.
 \@ref(fig:landscapes).
@@ -118,9 +137,12 @@ data("SpatialFrequencyBias")
 data("SimpleHill")
 
 gridExtra::grid.arrange(
-  lattice::wireframe(score ~ x * y, data = OrientationBias, xlab = "ori", ylab = "sf", main = "Orientation bias", cuts = 10),
-  lattice::wireframe(score ~ x * y, data = SpatialFrequencyBias, xlab = "ori", ylab = "sf", main = "Spatial frequency bias"),
-  lattice::wireframe(score ~ x * y, data = SimpleHill, xlab = "ori", ylab = "sf", main = "Simple hill"),
+  lattice::wireframe(score ~ x * y, data = OrientationBias,
+                     xlab = "ori", ylab = "sf", main = "Orientation training"),
+  lattice::wireframe(score ~ x * y, data = SpatialFrequencyBias,
+                     xlab = "ori", ylab = "sf", main = "Spatial frequency training"),
+  lattice::wireframe(score ~ x * y, data = SimpleHill,
+                     xlab = "ori", ylab = "sf", main = "Simple hill"),
   nrow = 1
 )
 ```
@@ -176,65 +198,21 @@ generation participant at trial 20.
 ## Training {-}
 
 ```{r gems-training, fig.width=8, fig.height=8}
-data("OrientationBias")
-data("SpatialFrequencyBias")
-
-orientation_bias <- wireframe(score ~ x * y, xlab = "ori", ylab = "sf", data = OrientationBias)
-spatial_frequency_bias <- wireframe(score ~ x * y, xlab = "ori", ylab = "sf", data = SpatialFrequencyBias)
-
-OrientationTraining <- Gems %>%
-  filter(instructions == "orientation", landscape_name == "OrientationBias")
-SpatialFrequencyTraining <- Gems %>%
-  filter(instructions == "spatial_frequency", landscape_name == "SpatialFrequencyBias")
-
-training_plot <- ggplot() +
-  aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y) +
-  geom_segment(aes(group = subj_id), size = 0.25) +
-  scale_x_continuous(breaks = seq(0, 70, by = 10)) +
-  scale_y_continuous(breaks = seq(0, 70, by = 10)) +
-  t_$theme +
-  labs(x = "ori", y = "sf") +
-  coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
-
-gridExtra::grid.arrange(
-  orientation_bias,
-  (training_plot %+% OrientationTraining) +
-    ggtitle("Orientation Training") +
-    geom_vline(xintercept = 50, linetype = 2),
-  spatial_frequency_bias,
-  (training_plot %+% SpatialFrequencyTraining) +
-    ggtitle("Spatial Frequency Training") +
-    geom_hline(yintercept = 50, linetype = 2),
-  nrow = 2
-)
+grid::grid.draw(training_plot)
 ```
 
 ## Generation 1 {-}
 
-```{r gems-scores}
-Gen1 <- filter(Gems, landscape_ix != 0, generation == 1)
-
-ggplot(Gen1) +
-  aes(trial, score, color = instructions) +
-  geom_line(aes(group = interaction(subj_id, landscape_ix)), size = 0.2) +
-  geom_line(stat = "summary", fun.y = "mean", size = 2) +
-  t_$theme +
-  theme(legend.position = "bottom")
+```{r gen1-scores, fig.width=8}
+gen1_scores_plot
 ```
 
-```{r gems-test, fig.width=8, fig.height=8}
-data("SimpleHill")
-simple_hill <- wireframe(score ~ x * y, data = SimpleHill, xlab = "Orientation", ylab = "Spatial frequency")
+```{r gen1-positions, fig.width=8}
+gen1_positions_plot
+```
 
-ggplot(Gen1) +
-  aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y) +
-  geom_segment(aes(color = instructions, group = subj_id)) +
-  facet_wrap("landscape_ix", nrow = 1) +
-  scale_x_continuous(breaks = seq(0, 70, by = 10)) +
-  scale_y_continuous(breaks = seq(0, 70, by = 10)) +
-  t_$theme +
-  labs(x = "ori", y = "sf") +
-  coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
+```{r gen1-final-scores}
+gen1_final_scores_plot
 ```
 
 ## Generation 2 {-}
@@ -246,32 +224,13 @@ Gems %>%
   ggplot() +
     aes(team_trial, score, group = subj_id, color = instructions) +
     geom_line(aes(linetype = factor(generation))) +
-    facet_wrap("landscape_ix", nrow = 1)
+    facet_wrap("landscape_ix", nrow = 1) +
+    t_$theme +
+    theme(legend.position = "bottom")
 ```
 
-```{r}
-Strategies <- Gems %>%
-  filter(landscape_ix != 0, team_trial == 39) %>%
-  label_team_strategy() %>%
-  recode_team_strategy() %>%
-  mutate(distance_to_peak = distance_to_peak(selected_x, selected_y))
-
-ggplot(Strategies) +
-  aes(team_strategy_label, score) +
-  geom_bar(aes(fill = team_strategy_label),
-           stat = "summary", fun.y = "mean",
-           alpha = 0.4) +
-  geom_point(aes(color = team_strategy_label),
-             position = position_jitter(width = 0.2, height = 0)) +
-  coord_cartesian(ylim = c(0, 100), expand = FALSE) +
-  t_$scale_color_strategy +
-  t_$scale_fill_strategy +
-  t_$theme +
-  guides(fill = "none", color = "none") +
-  theme(
-    panel.grid.major.x = element_blank()
-  ) +
-  labs(x = "")
+```{r strategies}
+strategies_plot
 ```
 
 # Discussion {-}
