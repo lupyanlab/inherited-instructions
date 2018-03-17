@@ -172,14 +172,28 @@ gridExtra::grid.arrange(
 )
 ```
 
+### Post experiment survey {-}
+
+(ref:survey-questions) Questions asked in the post-experiment survey.
+
+```{r survey-questions, results='asis'}
+data("Survey")
+data_frame(question_text = colnames(Survey)) %>%
+  mutate(question_id = c("timestamp", "subj_id", "computer", "age", "gender", paste0("Q", 1:9))) %>%
+  select(question_id, question_text) %>%
+  kable(questions, caption="(ref:survey-questions)")
+```
+
 ## Procedure {-}
 
 Participants played a computer game where they pretended to be a space explorer
 who travels to another planet to collect precious gems. The goal of the game
 was to discover which gems are valued the most.
 
-The experiment took 30 minutes to complete. After the experiment, participants
-completed a post experiment survey.
+Participants completed a block of 30 training trials followed by four blocks
+of 40 test trials. After completing all trials, participants were given
+a post-experiment survey. The experiment took around 30 minutes
+to complete.
 
 ### Training {-}
 
@@ -188,7 +202,7 @@ orientation condition, participants were told that the value of each gem
 was determined by the orientation of the stripes. In the bar width condition,
 they were told the value was determined by the width of the bars.
 
-```{r training, fig.width=10, fig.height=4}
+```{r training, results="asis"}
 gridExtra::grid.arrange(
   crotchet::read_image("training_orientation", package = "gems"),
   crotchet::read_image("training_spatial_frequency", package = "gems"),
@@ -196,38 +210,40 @@ gridExtra::grid.arrange(
 )
 ```
 
-After reading the training instructions, participants completed a block
-of 30 training trials on one of the training landscapes corresponding to their
-instructions condition. For example, a participant who was instructed to pay attention to bar width completed the training trials on the landscape
-that was biased so that the values of the gems were dependent completely on spatial frequency and not on orientation.
+After reading the training instructions, participants completed a block of 30
+training trials on a training landscape corresponding to their
+instructions condition. For example, a participant who was instructed to pay
+attention to bar width completed the training trials on the landscape that was
+biased so that the values of the gems were dependent completely on spatial
+frequency and not on orientation.
 
 For the training trials, after each choice, participants were shown the values
 of all the gems in the display, and had to click on the most valuable
 gem to continue to the next trial. This second response was to encourage
 participants to learn which gabors were the most valuable. If the participant
-correctly selected the most valuable gem, they were told instead to
+correctly selected the most valuable gem, they were told to
 click on the gem they selected again.
 
 ### Test {-}
 
-After completing the training trials, participants completed four
-blocks of 40 trials each. Participants traversed the same landscape
-four times. First generation participants started off at the origin
-for each block. Second generation participants started off at the
-location of a first generation participant after 20 trials.
-First and second generation participants were yoked over blocks
-such that second generation participants always inherited from
-the same first generation participant.
+After completing the training trials, participants completed four blocks of 40
+trials. All test trials were conducted on the test landscape, described above.
+Participants traversed the same landscape four times.
+
+First generation participants started off at the origin for each block. Second
+generation participants started off at the location of a randomly selected first
+generation participant after 20 trials. First and second generation participants
+were yoked over blocks such that second generation participants inherited from
+the same first generation participant at the start of each new block.
 
 ## Participants {-}
 
-Participants were undergraduates at the University of Wisconsin-Madison
-who completed the experiment in exchange for course credit.
-We decided to collect data for 40 first generation participants, and
-80 second generation participants. There were twice as many second
-generation participants because each first generation participant
-was paired up with two second generation participants, one in
-each training condition.
+Participants were undergraduates at the University of Wisconsin-Madison who
+completed the experiment in exchange for course credit. We decided to collect
+data for 40 first generation participants, and 80 second generation
+participants. There were twice as many second generation participants because
+each first generation participant was yoked to two second generation
+participants, one in each training condition.
 
 # Results {-}
 
@@ -236,8 +252,17 @@ each training condition.
 
 ## Training {-}
 
-```{r gems-training, fig.width=8, fig.height=8}
-grid::grid.draw(training_plot)
+(ref:gems-training) Training procedure. Participants were randomly assigned to either
+the orientation or the spatial frequency condition.
+
+```{r gems-training, fig.width=8, fig.height=8, fig.cap="(ref:gems-training)"}
+gridExtra::grid.arrange(
+  orientation_bias,
+  orientation_training_plot,
+  spatial_frequency_bias,
+  spatial_frequency_training_plot,
+  nrow = 2
+)
 ```
 
 ## Generation 1 {-}

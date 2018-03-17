@@ -49,8 +49,6 @@ Gen2 <- filter(Gems, landscape_ix != 0, generation == 2)
 data("OrientationBias")
 data("SpatialFrequencyBias")
 
-orientation_bias <- wireframe(score ~ x * y, xlab = "ori", ylab = "sf", data = OrientationBias)
-spatial_frequency_bias <- wireframe(score ~ x * y, xlab = "ori", ylab = "sf", data = SpatialFrequencyBias)
 
 OrientationTraining <- Gems %>%
   filter(instructions == "orientation", landscape_name == "OrientationBias")
@@ -66,17 +64,23 @@ training_plot <- ggplot() +
   labs(x = "ori", y = "sf") +
   coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
 
-training_plot <- gridExtra::arrangeGrob(
-  orientation_bias,
-  (training_plot %+% OrientationTraining) +
-    ggtitle("Orientation Training") +
-    geom_vline(xintercept = 50, linetype = 2),
-  spatial_frequency_bias,
-  (training_plot %+% SpatialFrequencyTraining) +
-    ggtitle("Spatial Frequency Training") +
-    geom_hline(yintercept = 50, linetype = 2),
-  nrow = 2
-)
+
+orientation_bias <- wireframe(
+  score ~ x * y, xlab = "ori", ylab = "sf", data = OrientationBias,
+  main = grid::textGrob("A. Orientation bias", x = 0))
+
+orientation_training_plot <- (training_plot %+% OrientationTraining) +
+  geom_vline(xintercept = 50, linetype = 2) +
+  ggtitle("B. Orientation training")
+
+spatial_frequency_bias <- wireframe(
+  score ~ x * y, xlab = "ori", ylab = "sf", data = SpatialFrequencyBias,
+  main = grid::textGrob("C. Spatial frequency bias", x = 0))
+
+spatial_frequency_training_plot <- (training_plot %+% SpatialFrequencyTraining) +
+  geom_hline(yintercept = 50, linetype = 2) +
+  ggtitle("D. Spatial frequency training")
+
 
 # gen1-scores ----
 gen1_scores_plot <- ggplot(Gen1) +
