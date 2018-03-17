@@ -1,5 +1,5 @@
 ---
-title: Teams of complementary problem solvers outperform equally skilled individuals
+title: Complementary problem solving in diachronic collaboration
 output:
   bookdown::pdf_document2:
     toc: false
@@ -70,25 +70,51 @@ regardless of the size of the team.
 ```{r methods}
 ```
 
-Participants were presented with displays of gabor patches called "gems" that
-varied in orientation and spatial frequency. On each trial, they had to try to
-select the most valuable gem. The value of each gem was determined by its
-orientation and spatial frequency. Participants had to learn which gems were the
-most valuable in order to achieve the highest score in the game.
+Participants completed a perceptual discrimination task where they were
+presented displays of gabor patches that varied in orientation and
+spatial frequency. We asked them to think of the gabor patches as 
+"gems" on a foreign planet, and their job was to figure out which
+gems were more valuable than others.
 
-Participants were trained to pay attention to either the orientation or the bar width
-of the gems, and were assigned to two-person teams. There were three types of teams (Fig.
-\@ref(fig:gems-team-strategies)). Congruent teams comprised participants trained
-to pay attention to the same stimulus dimension---either orientation or bar width.
-Complementary teams comprised participants trained on different dimensions. The
-final strategy was isolated individuals who were trained on a single dimension
-and completed the experiment alone.
+The value of each gem was determined by the orientation and spatial frequency
+of the gabor patch stimuli. The space of possible gems and their associated
+values can be visualized as a three dimensional landscape. As participants
+selected gems across trials, they effectively explored different parts
+of the landscape, looking for the highest peaks in the landscape, corresponding
+to the most valuable gems.
 
-(ref:gems-team-strategies) Team strategies. Participants were trained to pay
-attention to either orientation or bar width and assigned to teams.
-Complementary teams comprised individuals trained on both stimulus dimensions.
-Congruent teams comprised individuals being trained on the same stimulus
-dimension.
+The six gabors presented on each trial were sampled within a certain radius of
+the gabor selected on the previous trial. As a result, in order to find the
+most valuable gems, participants had to move through the stimulus space
+in incremental steps.
+
+Participants were trained to pay attention to either the orientation or the bar
+width of the gems. They read instructions to pay attention to
+either the orientation or the bar width, and they also completed 30 trials
+on a training landscape that was designed to value one stimulus dimension but
+not the other. The training procedure is described below.
+
+Participants were also assigned to the first or second generation.
+First generation participants started at the origin on each landscape.
+Second generation participants inherited the location on the landscape of the
+gem selected by a first generation participant after 20 trials. There was no
+interaction between first and second generation participants other than that
+second generation participants started each landscape off in a different part
+of the landscape than their predecessors.
+
+In our analyses, we were interested in a comparison of three types
+of problem solving strategies (Fig. \@ref(fig:gems-team-strategies)). Congruent
+teams were made of participants trained to pay attention to the same stimulus
+dimension---either orientation or bar width. Complementary teams were made of
+participants trained on different stimulus dimensions. As a control, we also
+compared the performance of individuals trained on a single dimension who
+completed the same total number of trials on their own.
+
+(ref:gems-team-strategies) Problem solving strategies. Participants were
+trained to pay attention to either orientation or bar width and assigned to
+generations. First generation participants completed the task as isolated
+individuals. Second generation participants were assigned to inherit from
+a first generation participant.
 
 ```{r gems-team-strategies, engine="dot", out.width="50%", fig.cap="(ref:gems-team-strategies)"}
 ```
@@ -100,12 +126,10 @@ dimension.
 We created `r methods$n_gabors_in_landscape` gabor patches that varied in
 orientation and spatial frequency. A sample of the space is shown in Fig.
 \@ref(fig:gabors). Orientations were sampled at regular intervals from
-`r methods$min_ori`° to `r methods$max_ori`°. Spatial frequencies were sampled at
-geometric intervals from `r methods$min_sf` cycles/pixel to `r methods$max_sf`
-cycles/pixel. A geometric progression was used because high spatial frequencies
-are harder to distinguish than low spatial frequencies. To make spatial frequency
-a more perceptually constant dimension, we expanded the distances between
-high spatial frequency stimuli using a logarithmic transformation.
+`r methods$min_ori`° to `r methods$max_ori`°. Spatial frequencies were sampled 
+at geometric intervals from `r methods$min_sf` cycles/pixel to
+`r methods$max_sf` cycles/pixel. A geometric progression was used because high
+spatial frequencies are harder to distinguish than low spatial frequencies.
 
 (ref:gabors) Sampled space of possible gabor patches. Gabor patches varied
 in orientation and spatial frequency.
@@ -115,13 +139,6 @@ draw_image("SimpleHillGems", package = "gems")
 ```
 
 ### Solution landscapes {-}
-
-The value of each gem was determined by its orientation and spatial frequency,
-which can be visualized as a point on a three dimensional landscape. In these
-landscapes, the x and y coordinates correspond to orientation and spatial
-frequency of the gem, and the height (z) corresponds to the value of the gem.
-The goal of the participants is to explore the solution landscape looking for
-the highest peak.
 
 We created three different landscapes. There were two different training
 landscapes, and one test landscape. The training landscapes were constructed so
@@ -149,10 +166,14 @@ gridExtra::grid.arrange(
 
 ## Procedure {-}
 
-Participants were told they would play a computer game where they 
-pretend to be a space explorer who travels to another planet to collect
-precious gems. The goal of the game is to discover which gems
-are scored the highest.
+Participants played a computer game where they pretended to be a space explorer
+who travels to another planet to collect precious gems. The goal of the game
+was to discover which gems are valued the most.
+
+The experiment took 30 minutes to complete. After the experiment, participants
+completed a post experiment survey.
+
+### Training {-}
 
 Participants were randomly assigned to one of two training conditions. In the
 orientation condition, participants were told that the value of each gem
@@ -167,28 +188,38 @@ gridExtra::grid.arrange(
 )
 ```
 
-Participants completed a block of 30 training trials, followed by four
-blocks of 40 test trials. There were two differences between training
-and test trials: participants received additional feedback
-on training trials, and participants traversed different solution
-landscapes on training and test trials.
+After reading the training instructions, participants completed a block
+of 30 training trials on one of the training landscapes corresponding to their
+instructions condition. For example, a participant who was instructed to pay attention to bar width completed the training trials on the landscape
+that was biased so that the values of the gems were dependent completely on spatial frequency and not on orientation.
 
-The additional feedback for training trials was that after each
-response, the values of all gabors, not just the one selected, were
-shown. Participants also had to select the most valuable gabor in each
-display to continue to the next trial.
+For the training trials, after each choice, participants were shown the values
+of all the gems in the display, and had to click on the most valuable
+gem to continue to the next trial. This second response was to encourage
+participants to learn which gabors were the most valuable. If the participant
+correctly selected the most valuable gem, they were told instead to
+click on the gem they selected again.
 
-In the training trials, participants traversed
-a training landscape according to their instructions condition. Participants
-who received instructions to pay attention to orientation completed the
-orientation bias landscape, and participants told to pay attention to bar width
-completed the spatial frequency bias landscape.
+### Test {-}
 
-For the four test blocks, all participants traversed the same simple hill
-landscape. First generation participants started at the origin for all four
-test blocks, and tried to find the most valuable gems in 40 trials. Second
-generation participants started each test block at the location of a first
-generation participant at trial 20.
+After completing the training trials, participants completed four
+blocks of 40 trials each. Participants traversed the same landscape
+four times. First generation participants started off at the origin
+for each block. Second generation participants started off at the
+location of a first generation participant after 20 trials.
+First and second generation participants were yoked over blocks
+such that second generation participants always inherited from
+the same first generation participant.
+
+## Participants {-}
+
+Participants were undergraduates at the University of Wisconsin-Madison
+who completed the experiment in exchange for course credit.
+We decided to collect data for 40 first generation participants, and
+80 second generation participants. There were twice as many second
+generation participants because each first generation participant
+was paired up with two second generation participants, one in
+each training condition.
 
 # Results {-}
 
