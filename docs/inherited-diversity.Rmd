@@ -174,14 +174,22 @@ gridExtra::grid.arrange(
 
 ### Post experiment survey {-}
 
+After finishing the main experiment, participants completed a short survey.
+We asked the participants about the instructions they received, how they
+approached the experiment, and to what extent they thought the gems and
+scores were random. We were particularly interested in if the
+participants felt they were moving around the solution landscape.
+The questions are listed in Table \@ref(tab:survey-questions).
+
 (ref:survey-questions) Questions asked in the post-experiment survey.
 
 ```{r survey-questions, results='asis'}
 data("Survey")
 data_frame(question_text = colnames(Survey)) %>%
   mutate(question_id = c("timestamp", "subj_id", "computer", "age", "gender", paste0("Q", 1:9))) %>%
-  select(question_id, question_text) %>%
-  kable(questions, caption="(ref:survey-questions)")
+  filter(grepl("Q", question_id)) %>%
+  select(`#` = question_id, `Text` = question_text) %>%
+  kable(caption="(ref:survey-questions)")
 ```
 
 ## Procedure {-}
@@ -252,36 +260,51 @@ participants, one in each training condition.
 
 ## Training {-}
 
-(ref:gems-training) Training procedure. Participants were randomly assigned to either
+First and second generation participants completed the same training procedure.
+In the training procedure, participants traversed either the oriention bias landscape
+or the spatial frequency bias landscape. As expected, participants in either training
+condition moved through the same stimulus space in orthogonal directions
+(Fig. \@ref(fig:gems-training)).
+
+(ref:gems-training) Results of training procedure. Participants were randomly assigned to either
 the orientation or the spatial frequency condition.
 
-```{r gems-training, fig.width=8, fig.height=8, fig.cap="(ref:gems-training)"}
+```{r gems-training, fig.width=10, fig.height=4, fig.cap="(ref:gems-training)"}
 gridExtra::grid.arrange(
-  orientation_bias,
-  orientation_training_plot,
-  spatial_frequency_bias,
-  spatial_frequency_training_plot,
+  training_positions_plot + ggtitle("A. Position"),
+  training_scores_plot + ggtitle("B. Score"),
+  training_distance_plot + ggtitle("C. Distance"),
+  nrow = 1
+)
+```
+
+```{r gems-training-per-trial}
+training_score_rank_plot
+```
+
+## First generation {-}
+
+(ref:gen1-results) Results of first generation problem solvers. Each line is a
+participant. **A. Positions** on the solution landscape. **B. Scores** over
+trials.
+
+```{r gen1-results, fig.width=8, fig.height=8, fig.cap="(ref:gen1-results)"}
+gridExtra::grid.arrange(
+  gen1_positions_plot + ggtitle("A. Positions"),
+  gen1_scores_plot + ggtitle("B. Scores"),
   nrow = 2
 )
 ```
 
-## Generation 1 {-}
+(ref:gen1-final-scores) Performance of first generation participants by block.
 
-```{r gen1-scores, fig.width=8}
-gen1_scores_plot
-```
-
-```{r gen1-positions, fig.width=8}
-gen1_positions_plot
-```
-
-```{r gen1-final-scores}
+```{r gen1-final-scores, fig.cap="(ref:gen1-final-scores)"}
 gen1_final_scores_plot
 ```
 
 ## Generation 2 {-}
 
-```{r gems-generation2}
+```{r gems-generation2, fig.width=8}
 Gems %>%
   filter(subj_id == "GEMS120" | ancestor_id == "GEMS120",
          landscape_ix != 0, team_trial <= 40) %>%

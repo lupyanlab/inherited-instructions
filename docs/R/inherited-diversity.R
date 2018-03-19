@@ -41,46 +41,81 @@ methods$n_gabors_in_landscape <- nrow(SimpleHill)
 
 # ---- results
 data("Gems")
+data("OrientationBias")
+data("SpatialFrequencyBias")
 
 Gen1 <- filter(Gems, landscape_ix != 0, generation == 1)
 Gen2 <- filter(Gems, landscape_ix != 0, generation == 2)
 
 # training ----
-data("OrientationBias")
-data("SpatialFrequencyBias")
+Training <- Gems %>%
+  filter(landscape_ix == 0) %>%
+  mutate(distance_1d = ifelse(instructions == "orientation", 50 - current_x, 50 - current_y))
 
-
-OrientationTraining <- Gems %>%
-  filter(instructions == "orientation", landscape_name == "OrientationBias")
-SpatialFrequencyTraining <- Gems %>%
-  filter(instructions == "spatial_frequency", landscape_name == "SpatialFrequencyBias")
-
-training_plot <- ggplot() +
-  aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y) +
+training_positions_plot <- ggplot(Training) +
+  aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y, color = instructions) +
   geom_segment(aes(group = subj_id), size = 0.25) +
   scale_x_continuous(breaks = seq(0, 70, by = 10)) +
   scale_y_continuous(breaks = seq(0, 70, by = 10)) +
-  t_$theme +
-  labs(x = "ori", y = "sf") +
-  coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
-
-
-orientation_bias <- wireframe(
-  score ~ x * y, xlab = "ori", ylab = "sf", data = OrientationBias,
-  main = grid::textGrob("A. Orientation bias", x = 0))
-
-orientation_training_plot <- (training_plot %+% OrientationTraining) +
-  geom_vline(xintercept = 50, linetype = 2) +
-  ggtitle("B. Orientation training")
-
-spatial_frequency_bias <- wireframe(
-  score ~ x * y, xlab = "ori", ylab = "sf", data = SpatialFrequencyBias,
-  main = grid::textGrob("C. Spatial frequency bias", x = 0))
-
-spatial_frequency_training_plot <- (training_plot %+% SpatialFrequencyTraining) +
   geom_hline(yintercept = 50, linetype = 2) +
-  ggtitle("D. Spatial frequency training")
+  geom_vline(xintercept = 50, linetype = 2) +
+  labs(x = "ori", y = "sf") +
+  coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE) +
+  t_$theme +
+  theme(legend.position = "top")
 
+training_scores_plot <- ggplot(Training) +
+  aes(x = trial, y = score, color = instructions) +
+  geom_line(aes(group = subj_id), size = 0.25) +
+  geom_line(aes(group = instructions),
+            stat = "summary", fun.y = "mean",
+            size = 2) +
+  t_$theme +
+  theme(
+    legend.position = "top"
+  )
+
+training_distance_plot <- ggplot(Training) +
+  aes(trial, distance_1d, color = instructions) +
+  geom_line(aes(group = subj_id), size = 0.25) +
+  geom_line(aes(group = instructions),
+            stat = "summary", fun.y = "mean",
+            size = 2) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  scale_y_reverse("Distance to 1D peak", breaks = seq(-20, 50, by = 10)) +
+  coord_cartesian(expand = FALSE) +
+  t_$theme +
+  theme(
+    legend.position = "top"
+  )
+
+TrainingScores <- bind_rows(
+    OrientationBias = OrientationBias,
+    SpatialFrequencyBias = SpatialFrequencyBias,
+    .id = "landscape_name"
+  ) %>%
+  rename(
+    gem_x = x,
+    gem_y = y,
+    gem_score = score
+  )
+
+TrainingTrials <- Training %>%
+  melt_trial_stims() %>%
+  left_join(TrainingScores) %>%
+  rank_stims_in_trial() %>%
+  filter(selected == gem_pos)
+
+training_score_rank_plot <- ggplot(TrainingTrials) +
+  aes(gem_score_rank, color = instructions) +
+  geom_density(aes(group = subj_id),
+               size = 0.25) +
+  geom_density(size = 2, adjust = 2) +
+  scale_x_reverse("stim score (rank)", breaks = 1:6) +
+  t_$theme +
+  theme(
+    legend.position = "top"
+  )
 
 # gen1-scores ----
 gen1_scores_plot <- ggplot(Gen1) +
