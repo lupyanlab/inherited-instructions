@@ -2,35 +2,16 @@
 library(tidyverse)
 library(magrittr)
 library(lattice)
-trellis.par.set("axis.line",list(col=NA,lty=1,lwd=1))
 
 library(gems)
+t_ <- get_theme()
 
+# Remove bounding box around all lattice plots.
+# Also removes axis arrows!
+trellis.par.set("axis.line",list(col=NA,lty=1,lwd=1))
 
-colors <- RColorBrewer::brewer.pal(4, "Set2")
-names(colors) <- c("green", "orange", "blue", "pink")
-get_colors <- function(...) {
-  names <- list(...)
-  unname(colors[unlist(names)])
-}
-
-t_ <- list(
-  theme = theme_minimal(),
-  get_colors = get_colors,
-  scale_color_instructions =
-    scale_color_manual("Training", labels = c("Orientation", "Stripe width"), values = get_colors("green", "blue")),
-  scale_color_strategy =
-    scale_color_manual("Strategy", labels = recode_team_strategy()$team_strategy_label,
-                       values = get_colors("orange", "green", "blue")),
-  scale_fill_strategy =
-    scale_fill_manual("Strategy", labels = recode_team_strategy()$team_strategy_label,
-                      values = get_colors("orange", "green", "blue")),
-  coord_landscape = coord_equal(xlim = c(0, 99), ylim = c(0, 99)),
-  scale_x_orientation = scale_x_continuous("Orientation"),
-  scale_y_spatial_frequency = scale_y_continuous("Spatial frequency")
-)
-
-# ---- methods
+# ---- methods ----
+# Defined in experiment/gems/landscapes.py
 methods <- list(min_ori = 10,
                 max_ori = 90,
                 min_sf = 0.04,
@@ -39,19 +20,32 @@ methods <- list(min_ori = 10,
 data("SimpleHill")
 methods$n_gabors_in_landscape <- nrow(SimpleHill)
 
-# ---- results
+# ---- results ----
 data("Gems")
 data("OrientationBias")
 data("SpatialFrequencyBias")
 
-Gen1 <- filter(Gems, landscape_ix != 0, generation == 1)
-Gen2 <- filter(Gems, landscape_ix != 0, generation == 2)
+# training-data ----
+TrainingLandscapes <- bind_rows(
+    OrientationBias = OrientationBias,
+    SpatialFrequencyBias = SpatialFrequencyBias,
+    .id = "landscape_name"
+  ) %>%
+  rename(
+    gem_x = x,
+    gem_y = y,
+    gem_score = score
+  )
 
-# training ----
 Training <- Gems %>%
   filter(landscape_ix == 0) %>%
-  mutate(distance_1d = ifelse(instructions == "orientation", 50 - current_x, 50 - current_y))
+  mutate_distance_1d() %>%
+  melt_trial_stims() %>%
+  left_join(TrainingLandscapes) %>%
+  rank_stims_in_trial() %>%
+  filter(selected == gem_pos)
 
+# * training-positions ----
 training_positions_plot <- ggplot(Training) +
   aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y, color = instructions) +
   geom_segment(aes(group = subj_id), size = 0.25) +
@@ -64,6 +58,7 @@ training_positions_plot <- ggplot(Training) +
   t_$theme +
   theme(legend.position = "top")
 
+# * training-scores ----
 training_scores_plot <- ggplot(Training) +
   aes(x = trial, y = score, color = instructions) +
   geom_line(aes(group = subj_id), size = 0.25) +
@@ -71,10 +66,9 @@ training_scores_plot <- ggplot(Training) +
             stat = "summary", fun.y = "mean",
             size = 2) +
   t_$theme +
-  theme(
-    legend.position = "top"
-  )
+  theme(legend.position = "top")
 
+# * training-distance ----
 training_distance_plot <- ggplot(Training) +
   aes(trial, distance_1d, color = instructions) +
   geom_line(aes(group = subj_id), size = 0.25) +
@@ -89,44 +83,20 @@ training_distance_plot <- ggplot(Training) +
     legend.position = "top"
   )
 
-TrainingScores <- bind_rows(
-    OrientationBias = OrientationBias,
-    SpatialFrequencyBias = SpatialFrequencyBias,
-    .id = "landscape_name"
-  ) %>%
-  rename(
-    gem_x = x,
-    gem_y = y,
-    gem_score = score
-  )
-
-TrainingTrials <- Training %>%
-  melt_trial_stims() %>%
-  left_join(TrainingScores) %>%
-  rank_stims_in_trial() %>%
-  filter(selected == gem_pos)
-
-training_score_rank_plot <- ggplot(TrainingTrials) +
+# * training-score-rank ----
+training_score_rank_plot <- ggplot(Training) +
   aes(gem_score_rank, color = instructions) +
   geom_density(aes(group = subj_id),
                size = 0.25) +
   geom_density(size = 2, adjust = 2) +
   scale_x_reverse("stim score (rank)", breaks = 1:6) +
   t_$theme +
-  theme(
-    legend.position = "top"
-  )
+  theme(legend.position = "top")
 
-# gen1-scores ----
-gen1_scores_plot <- ggplot(Gen1) +
-  aes(trial, score, color = instructions) +
-  geom_line(aes(group = interaction(subj_id, landscape_ix)), size = 0.2) +
-  geom_line(stat = "summary", fun.y = "mean", size = 2) +
-  facet_wrap("landscape_ix", nrow = 1) +
-  t_$theme +
-  theme(legend.position = "bottom")
+# gen1-data ----
+Gen1 <- filter(Gems, landscape_ix != 0, generation == 1)
 
-# gen1-positions ----
+# * gen1-positions ----
 gen1_positions_plot <- ggplot(Gen1) +
   aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y) +
   geom_segment(aes(color = instructions, group = subj_id)) +
@@ -139,7 +109,18 @@ gen1_positions_plot <- ggplot(Gen1) +
   labs(x = "ori", y = "sf") +
   coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
 
-# gen1-final-scores ----
+# * gen1-scores ----
+gen1_scores_plot <- ggplot(Gen1) +
+  aes(trial, score, color = instructions) +
+  geom_line(aes(group = interaction(subj_id, landscape_ix)), size = 0.2) +
+  geom_line(stat = "summary", fun.y = "mean", size = 2) +
+  facet_wrap("landscape_ix", nrow = 1) +
+  t_$theme +
+  theme(legend.position = "bottom")
+
+# * gen1-distance ----
+
+# * gen1-final-scores ----
 Gen1Final <- Gen1 %>%
   filter(trial == 39)
 gen1_final_scores_plot <- ggplot(Gen1Final) +
@@ -149,13 +130,14 @@ gen1_final_scores_plot <- ggplot(Gen1Final) +
   t_$theme +
   theme(legend.position = "bottom")
 
-# strategies ----
+# strategies-data ----
 Strategies <- Gems %>%
   filter(landscape_ix != 0, team_trial == 39) %>%
   label_team_strategy() %>%
   recode_team_strategy() %>%
   mutate(distance_to_peak = distance_to_peak(selected_x, selected_y))
 
+# * strategies-scores ----
 strategies_plot <- ggplot(Strategies) +
   aes(team_strategy_label, score) +
   geom_bar(aes(fill = team_strategy_label),
@@ -164,11 +146,10 @@ strategies_plot <- ggplot(Strategies) +
   geom_point(aes(color = team_strategy_label),
              position = position_jitter(width = 0.2, height = 0)) +
   coord_cartesian(ylim = c(0, 100), expand = FALSE) +
+  labs(x = "") +
   t_$scale_color_strategy +
   t_$scale_fill_strategy +
-  t_$theme +
   guides(fill = "none", color = "none") +
-  theme(
-    panel.grid.major.x = element_blank()
-  ) +
-  labs(x = "")
+  t_$theme +
+  theme(panel.grid.major.x = element_blank())
+  
