@@ -278,8 +278,21 @@ gridExtra::grid.arrange(
 )
 ```
 
-```{r gems-training-per-trial}
-training_score_rank_plot
+(ref:gems-training-sensitivities) Sensitivity to stimulus dimensions.
+
+```{r gems-training-sensitivities, fig.width=8, fig.cap="(ref:gems-training-sensitivities)"}
+gridExtra::grid.arrange(
+  score_sensitivity_plot +
+    theme(legend.position = c(0.4, 0.8)) +
+    ggtitle("A. Score"),
+  orientation_sensitivity_plot +
+    theme(legend.position = "none") +
+    ggtitle("B. Orientation"),
+  spatial_frequency_sensitivity_plot +
+    theme(legend.position = "none") +
+    ggtitle("C. Spatial frequency"),
+  nrow = 1
+)
 ```
 
 ## First generation {-}

@@ -32,25 +32,32 @@ data("Gems")
 data("OrientationBias")
 data("SpatialFrequencyBias")
 
-# training-data ----
-TrainingLandscapes <- bind_rows(
-    OrientationBias = OrientationBias,
-    SpatialFrequencyBias = SpatialFrequencyBias,
-    .id = "landscape_name"
-  ) %>%
+# training-gems-data ----
+TrainingGems <- bind_rows(
+  OrientationBias = OrientationBias,
+  SpatialFrequencyBias = SpatialFrequencyBias,
+  .id = "landscape_name"
+) %>%
   rename(
     gem_x = x,
     gem_y = y,
-    gem_score = score
+    gem_score = score,
+    gem_ori = ori,
+    gem_sf = sf
   )
 
-Training <- Gems %>%
+# training-data ----
+TrainingStims <- Gems %>%
   filter(landscape_ix == 0) %>%
-  mutate_distance_1d() %>%
   melt_trial_stims() %>%
-  left_join(TrainingLandscapes) %>%
+  left_join(TrainingGems) %>%
   rank_stims_in_trial() %>%
-  filter(selected == gem_pos)
+  rank_gems_in_trial() %>%
+  mutate(gem_selected = (selected == gem_pos))
+
+Training <- TrainingStims %>%
+  filter(gem_selected) %>%
+  mutate_distance_1d()
 
 # * training-positions ----
 training_positions_plot <- ggplot(Training) +
@@ -98,16 +105,27 @@ training_scores_plot <- ggplot(Training) +
   t_$theme +
   theme(legend.position = "top")
 
-# * training-score-rank ----
-training_score_rank_plot <- ggplot(Training) +
-  aes(gem_score_rank, color = instructions) +
-  geom_density(aes(group = subj_id),
-               size = 0.25) +
-  geom_density(size = 2, adjust = 2) +
-  scale_x_reverse("stim score (rank)", breaks = 1:6) +
+# * training-sensitivity ----
+training_sensitivity_plot <- ggplot(Training) +
+  aes(color = instructions) +
+  geom_density(aes(group = subj_id), size = 0.25, adjust = 1.5) +
+  geom_density(size = 2, adjust = 1.5) +
   t_$scale_color_instructions +
   t_$theme +
+  coord_cartesian(ylim = c(0, 0.6)) +
   theme(legend.position = "top")
+
+score_sensitivity_plot <- training_sensitivity_plot +
+  aes(gem_score_rank) +
+  scale_x_reverse("rank (by score)", breaks = 1:6)
+
+orientation_sensitivity_plot <- training_sensitivity_plot +
+  aes(gem_x_rank) +
+  scale_x_reverse("rank (by orientation)", breaks = 1:6)
+
+spatial_frequency_sensitivity_plot <- training_sensitivity_plot +
+  aes(gem_y_rank) +
+  scale_x_reverse("rank (by spatial frequency)", breaks = 1:6)
 
 # gen1-data ----
 TestLandscapeCurrentScores <- SimpleHill %>%
