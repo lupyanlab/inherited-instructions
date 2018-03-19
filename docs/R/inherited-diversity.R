@@ -51,10 +51,30 @@ training_positions_plot <- ggplot(Training) +
   geom_segment(aes(group = subj_id), size = 0.25) +
   scale_x_continuous(breaks = seq(0, 70, by = 10)) +
   scale_y_continuous(breaks = seq(0, 70, by = 10)) +
-  geom_hline(yintercept = 50, linetype = 2) +
-  geom_vline(xintercept = 50, linetype = 2) +
-  labs(x = "ori", y = "sf") +
+  geom_hline(yintercept = 50, linetype = 2, color = t_$get_colors("blue")) +
+  geom_vline(xintercept = 50, linetype = 2, color = t_$get_colors("green")) +
+  annotate("text", x = 30, y = 50, label = "peak sf",
+           vjust = 1.3, color = t_$get_colors("blue")) +
+  annotate("text", x = 50, y = 30, label = "peak ori", angle = 90,
+           vjust = -0.5, color = t_$get_colors("green")) +
+  labs(x = "orientation", y = "bar width") +
   coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE) +
+  t_$theme +
+  t_$scale_color_instructions +
+  theme(legend.position = "top")
+
+# * training-distance ----
+training_distance_plot <- ggplot(Training) +
+  aes(trial, distance_1d, color = instructions) +
+  geom_line(aes(group = subj_id), size = 0.25) +
+  geom_line(aes(group = instructions),
+            stat = "summary", fun.y = "mean",
+            size = 2, show.legend = FALSE) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  scale_y_reverse("distance to 1D peak", breaks = seq(-20, 50, by = 10)) +
+  coord_cartesian(xlim = c(0, 30), expand = FALSE) +
+  t_$scale_x_trial +
+  t_$scale_color_instructions +
   t_$theme +
   theme(legend.position = "top")
 
@@ -64,24 +84,12 @@ training_scores_plot <- ggplot(Training) +
   geom_line(aes(group = subj_id), size = 0.25) +
   geom_line(aes(group = instructions),
             stat = "summary", fun.y = "mean",
-            size = 2) +
+            size = 2, show.legend = FALSE) +
+  coord_cartesian(xlim = c(0, 30), expand = FALSE) +
+  t_$scale_x_trial +
+  t_$scale_color_instructions +
   t_$theme +
   theme(legend.position = "top")
-
-# * training-distance ----
-training_distance_plot <- ggplot(Training) +
-  aes(trial, distance_1d, color = instructions) +
-  geom_line(aes(group = subj_id), size = 0.25) +
-  geom_line(aes(group = instructions),
-            stat = "summary", fun.y = "mean",
-            size = 2) +
-  geom_hline(yintercept = 0, linetype = 2) +
-  scale_y_reverse("Distance to 1D peak", breaks = seq(-20, 50, by = 10)) +
-  coord_cartesian(expand = FALSE) +
-  t_$theme +
-  theme(
-    legend.position = "top"
-  )
 
 # * training-score-rank ----
 training_score_rank_plot <- ggplot(Training) +
@@ -90,11 +98,15 @@ training_score_rank_plot <- ggplot(Training) +
                size = 0.25) +
   geom_density(size = 2, adjust = 2) +
   scale_x_reverse("stim score (rank)", breaks = 1:6) +
+  t_$scale_color_instructions +
   t_$theme +
   theme(legend.position = "top")
 
 # gen1-data ----
-Gen1 <- filter(Gems, landscape_ix != 0, generation == 1)
+Gen1 <- Gems %>%
+  filter(landscape_ix != 0, generation == 1) %>%
+  mutate_distance_1d() %>%
+  mutate_distance_2d()
 
 # * gen1-positions ----
 gen1_positions_plot <- ggplot(Gen1) +
@@ -104,21 +116,41 @@ gen1_positions_plot <- ggplot(Gen1) +
   scale_x_continuous(breaks = seq(0, 70, by = 10)) +
   scale_y_continuous(breaks = seq(0, 70, by = 10)) +
   annotate("point", x = 50, y = 50, shape = 4, size = 3) +
+  t_$scale_color_instructions +
   t_$theme +
-  theme(legend.position = "bottom") +
-  labs(x = "ori", y = "sf") +
+  theme(legend.position = "bottom",
+        panel.spacing.x = unit(1, "lines")) +
+  labs(x = "orientation", y = "bar width") +
   coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
+gen1_positions_plot
 
 # * gen1-scores ----
 gen1_scores_plot <- ggplot(Gen1) +
   aes(trial, score, color = instructions) +
   geom_line(aes(group = interaction(subj_id, landscape_ix)), size = 0.2) +
-  geom_line(stat = "summary", fun.y = "mean", size = 2) +
+  geom_line(stat = "summary", fun.y = "mean", size = 2,
+            show.legend = FALSE) +
   facet_wrap("landscape_ix", nrow = 1) +
+  t_$scale_color_instructions +
   t_$theme +
-  theme(legend.position = "bottom")
-
+  theme(legend.position = "bottom",
+        panel.spacing.x = unit(1, "lines"))
+  
 # * gen1-distance ----
+gen1_distance_plot <- ggplot(Gen1) +
+  aes(trial, distance_2d, color = instructions) +
+  geom_line(aes(group = subj_id), size = 0.25) +
+  geom_line(aes(group = instructions),
+            stat = "summary", fun.y = "mean",
+            size = 2, show.legend = FALSE) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  facet_wrap("landscape_ix", nrow = 1) +
+  scale_y_reverse("distance to 2D peak", breaks = seq(-20, 50, by = 10)) +
+  coord_cartesian(expand = FALSE) +
+  t_$scale_color_instructions +
+  t_$theme +
+  theme(legend.position = "bottom",
+        panel.spacing.x = unit(1, "lines"))
 
 # * gen1-final-scores ----
 Gen1Final <- Gen1 %>%
@@ -128,6 +160,7 @@ gen1_final_scores_plot <- ggplot(Gen1Final) +
   geom_line(aes(group = subj_id), size = 0.2) +
   geom_line(aes(group = instructions), stat = "summary", fun.y = "mean", size = 2) +
   t_$theme +
+  t_$scale_color_instructions +
   theme(legend.position = "bottom")
 
 # strategies-data ----

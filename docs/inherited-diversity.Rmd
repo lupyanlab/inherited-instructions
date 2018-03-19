@@ -272,8 +272,8 @@ the orientation or the spatial frequency condition.
 ```{r gems-training, fig.width=10, fig.height=4, fig.cap="(ref:gems-training)"}
 gridExtra::grid.arrange(
   training_positions_plot + ggtitle("A. Position"),
-  training_scores_plot + ggtitle("B. Score"),
-  training_distance_plot + ggtitle("C. Distance"),
+  training_distance_plot + ggtitle("B. Distance"),
+  training_scores_plot + ggtitle("C. Score"),
   nrow = 1
 )
 ```
@@ -285,14 +285,14 @@ training_score_rank_plot
 ## First generation {-}
 
 (ref:gen1-results) Results of first generation problem solvers. Each line is a
-participant. **A. Positions** on the solution landscape. **B. Scores** over
-trials.
+participant. **A. Position** on the solution landscape. **B. Distance** between current location and 2D peak. **C. Score** over trials. 
 
-```{r gen1-results, fig.width=8, fig.height=8, fig.cap="(ref:gen1-results)"}
+```{r gen1-results, fig.width=8, fig.height=10, fig.cap="(ref:gen1-results)"}
 gridExtra::grid.arrange(
-  gen1_positions_plot + ggtitle("A. Positions"),
-  gen1_scores_plot + ggtitle("B. Scores"),
-  nrow = 2
+  gen1_positions_plot + ggtitle("A. Position"),
+  gen1_distance_plot + ggtitle("B. Distance"),
+  gen1_scores_plot + ggtitle("C. Score"),
+  nrow = 3
 )
 ```
 
