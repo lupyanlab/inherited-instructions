@@ -11,14 +11,21 @@ t_ <- get_theme()
 trellis.par.set("axis.line",list(col=NA,lty=1,lwd=1))
 
 # ---- methods ----
+data("OrientationBias")
+data("SpatialFrequencyBias")
+data("SimpleHill")
+
 # Defined in experiment/gems/landscapes.py
 methods <- list(min_ori = 10,
                 max_ori = 90,
                 min_sf = 0.04,
                 max_sf = 0.18) 
 
-data("SimpleHill")
 methods$n_gabors_in_landscape <- nrow(SimpleHill)
+
+orientation_bias_landscape <- make_landscape(OrientationBias, "Orientation bias")
+spatial_frequency_bias_landscape <- make_landscape(SpatialFrequencyBias, "Bar width bias")
+simple_hill_landscape <- make_landscape(SimpleHill, "Simple hill")
 
 # ---- results ----
 data("Gems")
@@ -122,7 +129,6 @@ gen1_positions_plot <- ggplot(Gen1) +
         panel.spacing.x = unit(1, "lines")) +
   labs(x = "orientation", y = "bar width") +
   coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
-gen1_positions_plot
 
 # * gen1-scores ----
 gen1_scores_plot <- ggplot(Gen1) +

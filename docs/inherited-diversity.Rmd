@@ -7,11 +7,13 @@ output:
 ---
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
-library(crotchet)
+library(kableExtra)
 opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE,
                fig.height=4, fig.width=4)
 chunks_dir <- "R"
 read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
+
+library(crotchet)
 read_graphviz_chunk("team-structures", package = "gems",
                     new_name = "gems-team-strategies")
 ```
@@ -156,18 +158,15 @@ Values in the test landscape were determined by both orientation and spatial
 frequency. The training and test landscapes are shown in Fig.
 \@ref(fig:landscapes).
 
-```{r landscapes, fig.width=8}
-data("OrientationBias")
-data("SpatialFrequencyBias")
-data("SimpleHill")
+(ref:landscapes) Participants assigned to the orientation or bar width
+condition completed the training trials on the corresponding landscape.
+All participants completed the test trials on the same landscape.
 
+```{r landscapes, fig.width=8, fig.cap="(ref:landscapes)"}
 gridExtra::grid.arrange(
-  lattice::wireframe(score ~ x * y, data = OrientationBias,
-                     xlab = "ori", ylab = "sf", main = "Orientation training"),
-  lattice::wireframe(score ~ x * y, data = SpatialFrequencyBias,
-                     xlab = "ori", ylab = "sf", main = "Spatial frequency training"),
-  lattice::wireframe(score ~ x * y, data = SimpleHill,
-                     xlab = "ori", ylab = "sf", main = "Simple hill"),
+  orientation_bias_landscape,
+  spatial_frequency_bias_landscape,
+  simple_hill_landscape,
   nrow = 1
 )
 ```
@@ -189,7 +188,8 @@ data_frame(question_text = colnames(Survey)) %>%
   mutate(question_id = c("timestamp", "subj_id", "computer", "age", "gender", paste0("Q", 1:9))) %>%
   filter(grepl("Q", question_id)) %>%
   select(`#` = question_id, `Text` = question_text) %>%
-  kable(caption="(ref:survey-questions)")
+  kable(caption="(ref:survey-questions)") %>%
+  column_spec(2, width = "45em")
 ```
 
 ## Procedure {-}
@@ -210,7 +210,7 @@ orientation condition, participants were told that the value of each gem
 was determined by the orientation of the stripes. In the bar width condition,
 they were told the value was determined by the width of the bars.
 
-```{r training, results="asis"}
+```{r training}
 gridExtra::grid.arrange(
   crotchet::read_image("training_orientation", package = "gems"),
   crotchet::read_image("training_spatial_frequency", package = "gems"),
