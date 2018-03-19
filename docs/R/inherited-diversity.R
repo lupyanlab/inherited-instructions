@@ -110,10 +110,21 @@ training_score_rank_plot <- ggplot(Training) +
   theme(legend.position = "top")
 
 # gen1-data ----
+TestLandscapeCurrentScores <- SimpleHill %>%
+  transmute(current_x = x, current_y = y, current_score = score)
+TestLandscapeGemScores <- SimpleHill %>%
+  transmute(gem_x = x, gem_y = y, gem_score = score)
+
 Gen1 <- Gems %>%
   filter(landscape_ix != 0, generation == 1) %>%
   mutate_distance_1d() %>%
-  mutate_distance_2d()
+  mutate_distance_2d() %>%
+  left_join(TestLandscapeCurrentScores) %>%
+  melt_trial_stims() %>%
+  left_join(TestLandscapeGemScores) %>%
+  rank_stims_in_trial() %>%
+  rank_scores_in_trial() %>%
+  filter(selected == gem_pos)
 
 # * gen1-positions ----
 gen1_positions_plot <- ggplot(Gen1) +
