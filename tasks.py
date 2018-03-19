@@ -43,32 +43,33 @@ def configure(ctx):
 def make_doc(ctx, name, clear_cache=False, open_after=False):
     """Compile dynamic reports from the results of the experiments."""
     docs = Path('docs')
-    render_cmd = 'cd {docs} && Rscript -e "rmarkdown::render({rmd.name!r})"'
+    render_cmd = 'cd {docs} && Rscript -e "rmarkdown::render({rmd.name!r}, output_format={output_format!r}, output_file={output.name!r})"'
     clear_cmd = 'rm -rf {docs}/{rmd.stem}_cache/ {docs}/{rmd.stem}_files/'
 
-    all_reports = [Path(report) for report in glob('{docs}/*.Rmd'.format(docs=docs))]
     if name == 'list':
+        all_reports = glob('{docs}/*.Rmd'.format(docs=docs))
         print('Reports:')
         for report in all_reports:
-            print(' - ' + report.stem)
+            print(' - ' + Path(report).stem)
         return
-    elif name == 'all':
-        reports = all_reports
-    elif Path(name).exists():
-        reports = [name]
-    else:
-        for report in all_reports:
-            if report.stem == name:
-                reports = [report]
-                break
-        else:
-            raise AssertionError('Report "{}" not found'.format(name))
 
-    for rmd in reports:
-        if clear_cache:
-            ctx.run(clear_cmd.format(docs=docs, rmd=rmd), echo=True)
+    output = Path(name)
 
-        ctx.run(render_cmd.format(docs=docs, rmd=rmd))
+    try:
+      output_format = {'.pdf': 'bookdown::pdf_document2'}[output.suffix]
+    except KeyError:
+      raise AssertionError(f'output format "{output.suffix}" not defined')
+
+    rmd = Path(f'{docs}/{output.stem}.Rmd')
+    assert rmd.exists(), f'report "{rmd}" not found'
+
+    if clear_cache:
+        ctx.run(clear_cmd.format(docs=docs, rmd=rmd), echo=True)
+
+    ctx.run(render_cmd.format(docs=docs, rmd=rmd, output=output, output_format=output_format), echo=True)
+
+    if open_after:
+        ctx.run(f'open {docs}/{output.name}', echo=True)
 
 @task
 def get_subj_info(ctx, move_to_r_pkg=False):
