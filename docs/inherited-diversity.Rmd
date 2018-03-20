@@ -315,7 +315,9 @@ gridExtra::grid.arrange(
 gen1_final_scores_plot
 ```
 
-## Generation 2 {-}
+## Second generation {-}
+
+## Strategies {-}
 
 ```{r gems-generation2, fig.width=8}
 Gems %>%
