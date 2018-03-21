@@ -1,5 +1,6 @@
 ---
 title: Complementary problem solving in diachronic collaboration
+bibliography: references.bib
 output:
   bookdown::pdf_document2:
     toc: false
@@ -210,7 +211,7 @@ orientation condition, participants were told that the value of each gem
 was determined by the orientation of the stripes. In the bar width condition,
 they were told the value was determined by the width of the bars.
 
-```{r training}
+```{r training, fig.width=8}
 gridExtra::grid.arrange(
   crotchet::read_image("training_orientation", package = "gems"),
   crotchet::read_image("training_spatial_frequency", package = "gems"),
@@ -280,7 +281,7 @@ gridExtra::grid.arrange(
 
 (ref:gems-training-sensitivities) Sensitivity to stimulus dimensions.
 
-```{r gems-training-sensitivities, fig.width=8, fig.cap="(ref:gems-training-sensitivities)"}
+```{r gems-training-sensitivities, fig.width=8, fig.height=3, fig.cap="(ref:gems-training-sensitivities)"}
 gridExtra::grid.arrange(
   score_sensitivity_plot +
     theme(legend.position = c(0.4, 0.8)) +
@@ -309,13 +310,38 @@ gridExtra::grid.arrange(
 )
 ```
 
-(ref:gen1-final-scores) Performance of first generation participants by block.
+(ref:gen1-final-scores) First generation performance by block.
 
-```{r gen1-final-scores, fig.cap="(ref:gen1-final-scores)"}
-gen1_final_scores_plot
+```{r gen1-final-scores, fig.width=6, fig.cap="(ref:gen1-final-scores)"}
+gridExtra::grid.arrange(
+  gen1_final_scores_plot + ggtitle("A. Final scores"),
+  gen1_final_distances_plot + ggtitle("B. Distance to peak"),
+  nrow = 1
+)
 ```
 
 ## Second generation {-}
+
+(ref:gen2-results) Second generation results.
+
+```{r gen2-results, fig.width=8, fig.height=10, fig.cap="(ref:gen2-results)"}
+gridExtra::grid.arrange(
+  gen2_positions_plot + ggtitle("A. Position"),
+  gen2_distance_plot + ggtitle("B. Distance"),
+  gen2_scores_plot + ggtitle("C. Score"),
+  nrow = 3
+)
+```
+
+(ref:gen2-final-scores) Second generation performance by block.
+
+```{r gen2-final-scores, fig.width=6, fig.cap="(ref:gen2-final-scores)"}
+gridExtra::grid.arrange(
+  gen2_final_scores_plot + ggtitle("A. Final scores"),
+  gen2_final_distances_plot + ggtitle("B. Distance to peak"),
+  nrow = 1
+)
+```
 
 ## Strategies {-}
 
@@ -331,8 +357,19 @@ Gems %>%
     theme(legend.position = "bottom")
 ```
 
-```{r strategies}
-strategies_plot
+(ref:strategies) Hill climbing performance. **A. Scores** correspond to heights
+on the landscape, and **C. Distances** correspond to Euclidean distances between
+current location and peak in the landscape. **B.** and **D.** show these same
+measures controlling for starting position.
+
+```{r strategies, fig.width=7, fig.height=7, fig.cap="(ref:strategies)"}
+gridExtra::grid.arrange(
+  strategies_scores_plot + ggtitle("A. Final score"),
+  strategies_relative_scores_plot + ggtitle("B. Relative score"),
+  strategies_distance_plot + ggtitle("C. Distance to peak"), 
+  strategies_relative_distance_plot + ggtitle("D. Relative distance"),
+  nrow = 2
+)
 ```
 
 # Discussion {-}
