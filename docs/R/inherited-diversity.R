@@ -222,7 +222,9 @@ Gen2 <- Gems %>%
   left_join(TestLandscapeGemScores) %>%
   rank_stims_in_trial() %>%
   rank_scores_in_trial() %>%
-  filter(selected == gem_pos)
+  filter(selected == gem_pos) %>%
+  label_team_strategy() %>%
+  recode_team_strategy()
 
 Gen2Final <- Gen2 %>%
   filter(trial == 39)
@@ -231,7 +233,7 @@ Gen2Final <- Gen2 %>%
 gen2_positions_plot <- (gen1_positions_plot %+% Gen2)
 
 # * gen2-distance ----
-gen2_positions_plot <- (gen1_distance_plot %+% Gen2)
+gen2_distance_plot <- (gen1_distance_plot %+% Gen2)
 
 # * gen2-scores ----
 gen2_scores_plot <- (gen1_scores_plot %+% Gen2)
