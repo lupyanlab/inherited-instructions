@@ -32,8 +32,8 @@ data("Gems")
 data("OrientationBias")
 data("SpatialFrequencyBias")
 
-# training-gems-data ----
-TrainingGems <- bind_rows(
+# training-landscape-data ----
+TrainingLandscape <- bind_rows(
   OrientationBias = OrientationBias,
   SpatialFrequencyBias = SpatialFrequencyBias,
   .id = "landscape_name"
@@ -50,7 +50,7 @@ TrainingGems <- bind_rows(
 TrainingStims <- Gems %>%
   filter(landscape_ix == 0) %>%
   melt_trial_stims() %>%
-  left_join(TrainingGems) %>%
+  left_join(TrainingLandscape) %>%
   rank_stims_in_trial() %>%
   rank_gems_in_trial() %>%
   mutate(gem_selected = (selected == gem_pos))
@@ -144,6 +144,9 @@ Gen1 <- Gems %>%
   rank_scores_in_trial() %>%
   filter(selected == gem_pos)
 
+Gen1Final <- Gen1 %>%
+  filter(trial == 39)
+
 # * gen1-positions ----
 gen1_positions_plot <- ggplot(Gen1) +
   aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y) +
@@ -154,7 +157,7 @@ gen1_positions_plot <- ggplot(Gen1) +
   annotate("point", x = 50, y = 50, shape = 4, size = 3) +
   t_$scale_color_instructions +
   t_$theme +
-  theme(legend.position = "bottom",
+  theme(legend.position = "top",
         panel.spacing.x = unit(1, "lines")) +
   labs(x = "orientation", y = "bar width") +
   coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
@@ -168,7 +171,7 @@ gen1_scores_plot <- ggplot(Gen1) +
   facet_wrap("landscape_ix", nrow = 1) +
   t_$scale_color_instructions +
   t_$theme +
-  theme(legend.position = "bottom",
+  theme(legend.position = "top",
         panel.spacing.x = unit(1, "lines"))
   
 # * gen1-distance ----
@@ -184,35 +187,92 @@ gen1_distance_plot <- ggplot(Gen1) +
   coord_cartesian(expand = FALSE) +
   t_$scale_color_instructions +
   t_$theme +
-  theme(legend.position = "bottom",
+  theme(legend.position = "top",
         panel.spacing.x = unit(1, "lines"))
 
-# * gen1-final-scores ----
-Gen1Final <- Gen1 %>%
-  filter(trial == 39)
+# * gen1-final ----
 gen1_final_scores_plot <- ggplot(Gen1Final) +
   aes(landscape_ix, score, color = instructions) +
   geom_line(aes(group = subj_id), size = 0.2) +
   geom_line(aes(group = instructions), stat = "summary", fun.y = "mean", size = 2) +
+  geom_hline(yintercept = 100, linetype = 2) +
+  xlab("block") +
   t_$theme +
   t_$scale_color_instructions +
   theme(legend.position = "bottom")
 
+gen1_final_distances_plot <- ggplot(Gen1Final) +
+  aes(landscape_ix, distance_2d, color = instructions) +
+  geom_line(aes(group = subj_id), size = 0.2) +
+  geom_line(aes(group = instructions), stat = "summary", fun.y = "mean", size = 2) +
+  xlab("block") +
+  scale_y_reverse("distance to 2d peak") +
+  geom_hline(yintercept = 0, linetype = 2) +
+  t_$theme +
+  t_$scale_color_instructions +
+  theme(legend.position = "bottom")
+
+# gen2-data ----
+Gen2 <- Gems %>%
+  filter(landscape_ix != 0, generation == 2) %>%
+  mutate_distance_1d() %>%
+  mutate_distance_2d() %>%
+  left_join(TestLandscapeCurrentScores) %>%
+  melt_trial_stims() %>%
+  left_join(TestLandscapeGemScores) %>%
+  rank_stims_in_trial() %>%
+  rank_scores_in_trial() %>%
+  filter(selected == gem_pos)
+
+Gen2Final <- Gen2 %>%
+  filter(trial == 39)
+
+# * gen2-positions ----
+gen2_positions_plot <- (gen1_positions_plot %+% Gen2)
+
+# * gen2-distance ----
+gen2_positions_plot <- (gen1_distance_plot %+% Gen2)
+
+# * gen2-scores ----
+gen2_scores_plot <- (gen1_scores_plot %+% Gen2)
+
+# * gen2-final ----
+gen2_final_scores_plot <- (gen1_final_scores_plot %+% Gen2Final)
+gen2_final_distances_plot <- (gen1_final_distances_plot %+% Gen2Final)
+
 # strategies-data ----
+TestLandscapeStartingScores <- SimpleHill %>%
+  select(starting_x = x, starting_y = y, starting_score = score)
+
 Strategies <- Gems %>%
   filter(landscape_ix != 0, team_trial == 39) %>%
+  mutate_distance_1d() %>%
+  mutate_distance_2d() %>%
+  parse_pos("starting_pos", "starting_") %>%
+  select(-starting_score) %>%
+  left_join(TestLandscapeStartingScores) %>%
+  mutate_distance_1d("starting_x", "starting_y", "inherited_distance_1d") %>%
+  mutate(
+    # distance from origin to starting position inherited from ancestor
+    inherited_distance =
+      distance_to_peak(0, 0) - distance_to_peak(starting_x, starting_y),
+    # distance from starting position to position after 20 trials
+    achieved_distance =
+      distance_to_peak(starting_x, starting_y) - distance_to_peak(selected_x, selected_y),
+    achieved_score = score - starting_score
+  ) %>%
   label_team_strategy() %>%
-  recode_team_strategy() %>%
-  mutate(distance_to_peak = distance_to_peak(selected_x, selected_y))
+  recode_team_strategy()
 
 # * strategies-scores ----
-strategies_plot <- ggplot(Strategies) +
+strategies_scores_plot <- ggplot(Strategies) +
   aes(team_strategy_label, score) +
   geom_bar(aes(fill = team_strategy_label),
            stat = "summary", fun.y = "mean",
            alpha = 0.4) +
   geom_point(aes(color = team_strategy_label),
              position = position_jitter(width = 0.2, height = 0)) +
+  geom_hline(yintercept = 100, linetype = 2) +
   coord_cartesian(ylim = c(0, 100), expand = FALSE) +
   labs(x = "") +
   t_$scale_color_strategy +
@@ -220,4 +280,45 @@ strategies_plot <- ggplot(Strategies) +
   guides(fill = "none", color = "none") +
   t_$theme +
   theme(panel.grid.major.x = element_blank())
-  
+
+strategies_relative_scores_plot <- ggplot(Strategies) +
+  aes(team_strategy_label, achieved_score) +
+  geom_bar(aes(fill = team_strategy_label),
+           stat = "summary", fun.y = "mean",
+           alpha = 0.4) +
+  geom_point(aes(color = team_strategy_label),
+             position = position_jitter(width = 0.2, height = 0)) +
+  labs(x = "", y = "relative score") +
+  guides(fill = "none", color = "none") +
+  t_$scale_color_strategy +
+  t_$scale_fill_strategy +
+  t_$theme +
+  theme(panel.grid.major.x = element_blank())
+
+# * strategies-distances ----
+strategies_distance_plot <- ggplot(Strategies) +
+  aes(team_strategy_label, distance_2d) +
+  geom_boxplot(aes(color = team_strategy_label)) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  scale_y_reverse() +
+  t_$scale_color_strategy +
+  t_$theme +
+  labs(x = "", y = "distance to 2d peak") +
+  guides(color = "none")
+
+strategies_relative_distance_plot <- ggplot(Strategies) +
+  aes(team_strategy_label, achieved_distance) +
+  geom_boxplot(aes(color = team_strategy_label)) +
+  t_$scale_color_strategy +
+  t_$theme +
+  labs(x = "", y = "relative distance to 2d peak") +
+  guides(color = "none")
+
+# * strategies-correlations ----
+achieved_to_inherited_plot <- ggplot(Strategies) +
+  aes(inherited_distance, achieved_distance) +
+  geom_point(aes(color = team_strategy_label))
+
+achieved_to_inherited_1d_plot <- ggplot(Strategies) +
+  aes(inherited_distance_1d, achieved_distance) +
+  geom_point(aes(color = team_strategy_label))
