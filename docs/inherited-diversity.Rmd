@@ -9,14 +9,16 @@ output:
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
 library(kableExtra)
-opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE,
+opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE, results="hide",
                fig.height=4, fig.width=4)
 chunks_dir <- "R"
 read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
 
 library(crotchet)
-read_graphviz_chunk("team-structures", package = "gems",
-                    new_name = "gems-team-strategies")
+read_graphviz_chunk("team-structures-instructions", package = "gems",
+                    new_name = "gems-team-structures-instructions")
+read_graphviz_chunk("team-structures-generations", package = "gems",
+                    new_name = "gems-team-structures-generations")
 ```
 ```{r inherited-diversity}
 ```
@@ -25,12 +27,30 @@ read_graphviz_chunk("team-structures", package = "gems",
 
 One of the fundamental processes in cultural evolution is the transmission of
 problem solving knowledge from one generation to the next. Cultural transmission
-is notoriously imperfect compared to, e.g., genetic transmission. Yet the human
+is notoriously imperfect compared to, for example, genetic transmission. Yet the human
 ability to transmit cultural information far exceeds the abilities of any
 non-human animals. Humans have evolved a number of abilities that improve the
 success of cultural transmission, including teaching, language, and other social
-learning abilities. These abilities enable the high fidelity reproduction of
-innovations over generations.
+learning abilities. The ability to reproduce tools and other solutions to
+problems over generations is particularly beneficial in that future generations
+of problem solvers rarely have to start from scratch when solving new problems.
+Instead, they start off with solutions that were inherited from a previous
+generation. How does the starting point in a problem solving task affect future
+problem solving?
+
+Some starting points are more beneficial than others. A laptop is clearly more
+beneficial than a calculator. But does the starting point affect the way in
+which the problem is solved? If the starting point can improve future problem
+solving performance, then our system of cultural inheritance may actually
+contribute to a general improvement in human problem solving ability.
+
+To answer this question, we had participants complete a problem solving task
+either as first or second generation problem solvers. First generation problem
+solvers attempted a problem solving task that simulated a hill climbing
+procedure. All first generation problem solvers started off from the same
+Second generation problem solvers attempted the same problem solving
+task but starting at where the first generation problem solvers had been
+at the halfway point.
 
 A consequence of our system of cultural inheritance is that problem solvers
 rarely have to start from scratch when solving new problems. Instead, they start
@@ -82,55 +102,57 @@ In the experiment, we compare three strategies for solving the same problem.
 ```
 
 Participants completed a perceptual discrimination task where they were
-presented displays of sinusoidal gabor patches that varied in orientation and
-spatial frequency. We asked them to think of the gabor patches as "gems"
-existing on a foreign planet. Their job was to figure out which gems were
+presented displays of sinusoidal gabor patch stimuli that varied in orientation and
+spatial frequency. We asked them to think of the gabors as "gems"
+from a foreign planet. Their task was to learn which gems were
 more valuable than others.
 
-The value of each gem was determined by the orientation and spatial frequency
-of the gabor patch stimuli. The space of possible gems and their associated
-values can be visualized as a three dimensional landscape. As participants
-selected gems across trials, they effectively explored different parts
-of this landscape, looking for the highest peaks, corresponding
-to the most valuable gems.
+The value of each gem was determined by its orientation and spatial frequency.
+The space of possible gems and their associated values can be visualized as a
+three dimensional landscape. As participants selected gems across trials, they
+effectively explored different parts of this landscape, looking for the highest
+peaks, corresponding to the most valuable gems. In order to detect
+the most valuable gems on each trial, participants had to learn which stimulus
+dimensions were the most important.
 
 On each trial, participants selected one of six gabor patches they thought
 was the most valuable. The six gabors presented on each trial were sampled
-within a radial distance in stimulus space of the gabor selected on the previous
-trial. As a result, in order to find the most valuable gems, participants had to
-move through the stimulus space in a series of incremental steps.
+within a certain distance of previously selected gem. In order to find the most
+valuable gems, participants had to navigate the solution landscape in a series
+of incremental steps.
 
 Participants were trained to pay attention to either the orientation or the bar
 width of the gems. The training procedure consisted of written instructions
-and 30 training trials. The instructions told participants that the value of
-the gems was determined by either the orientation or the bar width. The training
-trials were completed on a landscape that was designed to value the trained
-stimulus dimension but not the untrained dimension. The training procedure
-is described in more detail below.
+and 30 training trials. The training procedure is detailed below.
 
-Participants were also assigned to the first or second generation.
-First generation participants started at the origin `(0,0)` on each landscape.
-Second generation participants started at the location on the landscape of the
-gem selected by a first generation participant. There was no
-interaction between first and second generation participants other than that
-second generation participants started each landscape off in a different part
-of the landscape than their predecessors.
+Participants were also assigned to the first or second generation. First
+generation participants started at the origin `(0,0)` on each landscape. Second
+generation participants were randomly assigned to inherit from a first
+generation participant. They inherited the location on the landscape of the gem
+selected by the first generation participant. There was no interaction between
+first and second generation participants other than that second generation
+participants started each landscape off in a different part of the landscape
+than their predecessors.
 
-In our analyses, we were interested in the comparison of three problem solving
-strategies (Fig. \@ref(fig:gems-team-strategies)). Congruent
-teams were made of participants trained to pay attention to the same stimulus
+In our analyses, we compare three problem solving strategies. Congruent teams
+were made of participants trained to pay attention to the same stimulus
 dimension---either orientation or bar width. Complementary teams were made of
 participants trained on different stimulus dimensions. As a control, we also
 compared the performance of individuals trained on a single dimension who
 completed the same total number of trials on their own.
 
-(ref:gems-team-strategies) Problem solving strategies. Participants were
-trained to pay attention to either orientation or bar width and assigned to
-generations. First generation participants completed the task as isolated
-individuals. Second generation participants were assigned to inherit from
-a first generation participant.
+(ref:gems-team-structures-instructions) Team structures by instructions.
+Participants were trained to pay attention to either orientation or bar width,
+and assigned to generations. First generation participants completed the task as
+isolated individuals. Second generation participants were assigned to inherit
+from a first generation participant.
 
-```{r gems-team-strategies, engine="dot", out.width="50%", fig.cap="(ref:gems-team-strategies)"}
+```{r gems-team-structures, fig.width=8, fig.cap="(ref:gems-team-structures-instructions)"}
+gridExtra::grid.arrange(
+  crotchet::read_graphviz("team-structures-instructions", package = "gems"),
+  crotchet::read_graphviz("team-structures-generations", package = "gems"),
+  nrow = 1, widths = c(0.45, 0.55)
+)
 ```
 
 ## Materials {-}
@@ -290,7 +312,7 @@ gridExtra::grid.arrange(
 ## First generation {-}
 
 (ref:gen1-results) Results of first generation problem solvers. Each line is a
-participant. **A. Position** on the solution landscape. **B. Distance** between current location and 2D peak. **C. Score** over trials. 
+participant. **A. Position** on the solution landscape. **B. Distance** between current location and 2D peak. **C. Score** over trials.
 
 ```{r gen1-results, fig.width=8, fig.height=10, fig.cap="(ref:gen1-results)"}
 gridExtra::grid.arrange(
@@ -357,7 +379,7 @@ measures controlling for starting position.
 gridExtra::grid.arrange(
   strategies_scores_plot + ggtitle("A. Final score"),
   strategies_relative_scores_plot + ggtitle("B. Relative score"),
-  strategies_distance_plot + ggtitle("C. Distance to peak"), 
+  strategies_distance_plot + ggtitle("C. Distance to peak"),
   strategies_relative_distance_plot + ggtitle("D. Relative distance"),
   nrow = 2
 )
