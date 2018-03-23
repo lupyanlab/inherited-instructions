@@ -15,10 +15,11 @@ def configure(ctx):
     dst = '.environment'
     template = jinja2.Template(open('environment.j2', 'r').read())
 
+    proj_root = str(Path(__file__).absolute().parent.parent)
     venv = input("Path to venv: ")
     password_file = input("Path to password file: ")
 
-    kwargs = dict(venv=venv, password_file=password_file)
+    kwargs = dict(venv=venv, password_file=password_file, proj_root=proj_root)
     with open(dst, 'w') as f:
         f.write(template.render(**kwargs))
 

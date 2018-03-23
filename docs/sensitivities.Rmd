@@ -1,0 +1,168 @@
+---
+title: "Modeling sensitivities to various stimulus dimensions"
+output:
+  html_document: {}
+---
+```{r config, include=FALSE}
+library(knitr)
+library(tidyverse)
+library(lme4)
+library(AICcmodavg)
+
+opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r setup, echo=1:5}
+# devtools::install_git("https://gitlab.com/pedmiston/gems-data.git")
+library(gems)
+data("Gems")
+data("OrientationBias")
+data("SpatialFrequencyBias")
+
+t_ <- get_theme()
+
+TrainingLandscape <- bind_rows(
+  OrientationBias = OrientationBias,
+  SpatialFrequencyBias = SpatialFrequencyBias,
+  .id = "landscape_name"
+) %>%
+  rename(
+    current_x = x,
+    current_y = y,
+    current_score = score,
+    current_ori = ori,
+    current_sf = sf
+  )
+
+TrainingStimsLandscape <- bind_rows(
+  OrientationBias = OrientationBias,
+  SpatialFrequencyBias = SpatialFrequencyBias,
+  .id = "landscape_name"
+) %>%
+  rename(
+    gem_x = x,
+    gem_y = y,
+    gem_score = score,
+    gem_ori = ori,
+    gem_sf = sf
+  )
+
+TrainingStims <- Gems %>%
+  filter(landscape_ix == 0) %>%
+  left_join(TrainingLandscape) %>%  # label current score
+  melt_trial_stims() %>%
+  mutate(gem_selected = (selected == gem_pos)) %>%
+  left_join(TrainingStimsLandscape) %>%  # label gem scores
+  rank_stims_in_trial() %>%
+  recode_instructions()
+  
+Training <- TrainingStims %>%
+  filter(gem_selected) %>%
+  mutate_distance_1d()
+```
+
+```{r training-stims, results='asis'}
+TrainingStims %>%
+  filter(subj_id == "GEMS120", trial == 0) %>%
+  select(subj_id, instructions, trial, gem_x, gem_y, gem_score, gem_x_rel_c, gem_y_rel_c, gem_selected) %>%
+  kable(caption = "Data from a single trial.")
+```
+
+```{r, fig.width=6, fig.height=6}
+p <- ggplot(TrainingStims) +
+  geom_histogram()
+
+gridExtra::grid.arrange(
+  p + aes(gem_x),
+  p + aes(gem_y),
+  p + aes(gem_x_rel_c),
+  p + aes(gem_y_rel_c)
+)
+```
+
+```{r, fig.width=6}
+training_sensitivity_plot <- ggplot(Training) +
+  aes(color = instructions) +
+  geom_density(aes(group = subj_id), size = 0.25, adjust = 1.5) +
+  geom_density(size = 2, adjust = 1.5) +
+  t_$scale_color_instructions +
+  t_$theme +
+  coord_cartesian(ylim = c(0, 0.6)) +
+  theme(legend.position = "top")
+
+orientation_sensitivity_plot <- training_sensitivity_plot +
+  aes(gem_x_rank) +
+  scale_x_reverse("rank (by orientation)", breaks = 1:6)
+
+spatial_frequency_sensitivity_plot <- training_sensitivity_plot +
+  aes(gem_y_rank) +
+  scale_x_reverse("rank (by spatial frequency)", breaks = 1:6)
+
+gridExtra::grid.arrange(
+  orientation_sensitivity_plot,
+  spatial_frequency_sensitivity_plot,
+  nrow = 1
+)
+```
+
+```{r, fig.width=6, echo = 1:3}
+training_sensitivity_ori_mod <- glmer(
+  gem_selected ~ gem_x_rel_c * instructions_c + (gem_x_rel_c|subj_id),
+  family = "binomial", data = TrainingStims
+)
+
+training_sensitivity_sf_mod <- glmer(
+  gem_selected ~ gem_y_rel_c * instructions_c + (gem_y_rel_c|subj_id),
+  family = "binomial", data = TrainingStims
+)
+
+training_sensitivity_ori_preds <- expand.grid(
+  gem_x_rel_c = seq(-10, 10),
+  instructions_c = c(-0.5, 0.5)
+) %>%
+  cbind(., predictSE(training_sensitivity_ori_mod, newdata = ., se = TRUE)) %>%
+  as_data_frame() %>%
+  rename(gem_selected = fit, se = se.fit) %>%
+  recode_instructions()
+
+training_sensitivity_sf_preds <- expand.grid(
+    gem_y_rel_c = seq(-10, 10),
+    instructions_c = c(-0.5, 0.5)
+  ) %>%
+  cbind(., predictSE(training_sensitivity_sf_mod, newdata = ., se = TRUE)) %>%
+  as_data_frame() %>%
+  rename(gem_selected = fit, se = se.fit) %>%
+  recode_instructions()
+
+training_sensitivity_sf_plot <- ggplot(TrainingStims) +
+  aes(x = gem_y_rel_c, y = gem_selected) +
+  geom_smooth(aes(ymin = gem_selected-se, ymax = gem_selected+se,
+                  color = instructions),
+              data = training_sensitivity_sf_preds,
+              stat = "identity") +
+  scale_y_continuous("", labels = scales::percent) +
+  labs(x = "relative difference in spatial frequency") +
+  coord_cartesian(ylim = c(0, 0.6)) +
+  t_$scale_color_instructions +
+  t_$theme +
+  theme(legend.position = "top")
+
+training_sensitivity_ori_plot <- ggplot(TrainingStims) +
+  aes(x = gem_x_rel_c, y = gem_selected) +
+  geom_smooth(aes(ymin = gem_selected-se, ymax = gem_selected+se,
+                  color = instructions),
+              data = training_sensitivity_ori_preds,
+              stat = "identity") +
+  scale_y_continuous("", labels = scales::percent) +
+  labs(x = "relative difference in orientation") +
+  coord_cartesian(ylim = c(0, 0.6)) +
+  t_$scale_color_instructions +
+  t_$theme +
+  theme(legend.position = "top")
+
+gridExtra::grid.arrange(
+  training_sensitivity_ori_plot,
+  training_sensitivity_sf_plot,
+  nrow = 1
+)
+```

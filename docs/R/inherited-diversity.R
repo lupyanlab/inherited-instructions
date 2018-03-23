@@ -36,7 +36,7 @@ data("OrientationBias")
 data("SpatialFrequencyBias")
 
 # training-landscape-data ----
-TrainingLandscape <- bind_rows(
+TrainingStimsLandscape <- bind_rows(
   OrientationBias = OrientationBias,
   SpatialFrequencyBias = SpatialFrequencyBias,
   .id = "landscape_name"
@@ -49,13 +49,27 @@ TrainingLandscape <- bind_rows(
     gem_sf = sf
   )
 
+TrainingLandscape <- bind_rows(
+  OrientationBias = OrientationBias,
+  SpatialFrequencyBias = SpatialFrequencyBias,
+  .id = "landscape_name"
+) %>%
+  rename(
+    current_x = x,
+    current_y = y,
+    current_score = score,
+    current_ori = ori,
+    current_sf = sf
+  )
+
+
 # training-data ----
 TrainingStims <- Gems %>%
   filter(landscape_ix == 0) %>%
-  melt_trial_stims() %>%
   left_join(TrainingLandscape) %>%
+  melt_trial_stims() %>%
+  left_join(TrainingStimsLandscape) %>%
   rank_stims_in_trial() %>%
-  rank_gems_in_trial() %>%
   mutate(gem_selected = (selected == gem_pos)) %>%
   recode_instructions() %>%
   recode_trial()
@@ -162,7 +176,6 @@ training_scores_plot <- ggplot(Training) +
   t_$scale_fill_instructions +
   t_$theme +
   theme(legend.position = "top")
-training_scores_plot
 
 # * training-sensitivity ----
 training_sensitivity_plot <- ggplot(Training) +
@@ -256,7 +269,6 @@ Gen1 <- Gems %>%
   melt_trial_stims() %>%
   left_join(TestLandscapeGemScores) %>%
   rank_stims_in_trial() %>%
-  rank_scores_in_trial() %>%
   filter(selected == gem_pos)
 
 Gen1Final <- Gen1 %>%
@@ -336,7 +348,6 @@ Gen2 <- Gems %>%
   melt_trial_stims() %>%
   left_join(TestLandscapeGemScores) %>%
   rank_stims_in_trial() %>%
-  rank_scores_in_trial() %>%
   filter(selected == gem_pos) %>%
   label_team_strategy() %>%
   recode_team_strategy()

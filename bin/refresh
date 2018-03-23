@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -x
+cd ~/Dropbox/LupyanExps/gems-experiment
+git add .
+git commit
+git push
+cd ~/PhD/gems/experiment
+git pull
+cd ../
+inv save-exp R.install -m make-doc inherited-diversity.pdf -co
