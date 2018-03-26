@@ -274,6 +274,7 @@ each first generation participant was yoked to two second generation
 participants, one in each training condition.
 
 # Results {-}
+
 ```{r results}
 ```
 
@@ -383,6 +384,32 @@ gridExtra::grid.arrange(
   strategies_relative_distance_plot + ggtitle("D. Relative distance"),
   nrow = 2
 )
+```
+
+## Post experiment survey {-}
+
+```{r survey}
+data("Survey")
+
+questions <- data_frame(question_text = colnames(Survey)) %>%
+  mutate(question_id = c("timestamp", "subj_id", "computer", "age", "gender", paste0("Q", 1:9))) %>%
+  select(question_id, question_text)
+
+get_question_text <- function(question_id) {
+  questions[questions$question_id == question_id, ]$question_text
+}
+
+colnames(Survey) <- questions$question_id
+
+predictable_plot <- ggplot(Survey) +
+  aes(Q7) +
+  geom_bar(stat = "count", width = 0.95) +
+  scale_x_continuous("", breaks = 1:5, labels = c("1\nRandom", 2, 3, 4, "5\nPredictable")) +
+  ggtitle(get_question_text("Q7")) +
+  coord_cartesian(expand = FALSE) +
+  t_$theme +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank())
 ```
 
 # Discussion {-}
