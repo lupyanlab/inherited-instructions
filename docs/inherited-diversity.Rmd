@@ -24,17 +24,17 @@ read_graphviz_chunk("team-structures", package = "gems",
 # Introduction {-}
 
 One of the fundamental processes in cultural evolution is the transmission of
-problem solving knowledge from one generation to the next. Cultural transmission
-is notoriously imperfect compared to, e.g., genetic transmission. Yet the human
-ability to transmit cultural information far exceeds the abilities of any
-non-human animals. Humans have evolved a number of abilities that improve the
-success of cultural transmission, including teaching, language, and other social
-learning abilities. These abilities enable the high fidelity reproduction of
-innovations over generations.
-
-A consequence of our system of cultural inheritance is that problem solvers
-rarely have to start from scratch when solving new problems. Instead, they start
-off with the solutions that were inherited from a previous generation.
+problem solving knowledge from one generation to the next. Cultural
+transmission is notoriously imperfect compared to, e.g., genetic transmission.
+Yet the human ability to transmit cultural information far exceeds the
+abilities of any non-human animals. Humans have evolved a number of abilities
+that improve the success of cultural transmission, including teaching,
+language, and other social learning abilities. A consequence of our system of
+cultural inheritance is that problem solvers rarely have to start from scratch
+when solving new problems. Instead, they start off with the solutions that were
+inherited from a previous generation. The goal of this research was to
+better our understanding of how inheritance from a previous generation can
+influence future problem solving behavior.
 
 There are many ways to measure the effectiveness of teamwork. A common method
 is to compare the performance of teams to individuals working alone. When
@@ -42,31 +42,34 @@ compared in this way, studies have often failed to find any evidence that
 teamwork provides an improvement over individual problem solving.
 
 One of the reasons teamwork is reflected rather poorly in the experimental
-literature may be due to limits on experimental methods. In order to conduct an
+literature is due to limits in experimental methods. In order to conduct an
 experiment in which both teams and individuals are administered the same task,
 many tasks are necessarily excluded because they can not be equally attempted
 using both teams and individuals. To use a clear example: if the problem
 solving task required moving heavy objects, teamwork has clear advantages, but
-no one would be surprised by these results.
+no one would be surprised by these results. 
 
 Teams can clearly solve many problems that are insurmountable for individuals.
 But when both teams and individuals attempt tasks that individuals can complete
 alone, teamwork is rarely found to be an improvement over individual
-performance.
+performance. A notable exception is a study by @Bahrami:2010jl who found that
+dyads were better than individuals in a perceptual judgment task. In the
+experiment, participants searched for an oddball target and responded with
+a binary judgment corresponding to which of two displays contained the target.
+If the dyad disagreed about which display contained the target, they were
+allowed to confer and make a joint decision. Because the participants made both
+individual and team responses on each trial, the researchers were able to
+compare the performance of the team to the performance of best individual in
+each team. The results showed a clear benefit to teamwork over what would have
+been achieved by the best individual in each dyad completing the task alone.
 
-A notable exception to this trend was a study by @Bahrami:2010jl who found
-that two heads were better than one in a perceptual judgment task. In the
-task, participants searched for an oddball target and responded with a
-binary judgment corresponding to which of two displays contained the
-target. If the two participants in each team disagreed about which display
-contained the target, they were allowed to make a joint decision. Because
-the participants made both individual and team responses on each trial,
-the researchers were able to compare the performance of the team to the
-performance of best individual in each team. The results showed a clear
-benefit to teamwork over what was would have been achieved by the
-best individual working alone.
-
-Teamwork has been shown to improve performance on search tasks.
+Later studies have shown that dyads were able to improve team performance
+through confidence matching, which is improved by settling on a common vocabulary
+to use to communicate uncertainty, but confidence matching also occurs
+when using continuous measures of uncertainty. In confidence matching tasks,
+teamwork improves team performance over what could be achieved by the best
+individual specifically when the members of the team have the same perceptual
+ability.
 
 A difficulty that arises when comparing experiments done on teamwork
 is in how to properly control for time. The typical approach is to control
