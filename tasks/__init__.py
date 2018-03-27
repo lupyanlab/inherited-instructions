@@ -15,10 +15,11 @@ def configure(ctx):
     dst = '.environment'
     template = jinja2.Template(open('environment.j2', 'r').read())
 
+    proj_root = str(Path(__file__).absolute().parent.parent)
     venv = input("Path to venv: ")
     password_file = input("Path to password file: ")
 
-    kwargs = dict(venv=venv, password_file=password_file)
+    kwargs = dict(venv=venv, password_file=password_file, proj_root=proj_root)
     with open(dst, 'w') as f:
         f.write(template.render(**kwargs))
 
@@ -45,7 +46,7 @@ def save_exp(ctx, no_subj_info=False, no_survey=False):
 @task(help={'clear-cache': 'Clear knitr cache and figs before rendering.',
             'open-after': 'Open the report after creating it.'})
 def make_doc(ctx, name, clear_cache=False, open_after=False):
-    """Compile dynamic reports from the results of the experiments."""
+    """Compile dynamic documents."""
     docs = Path('docs')
     render_cmd = 'cd {docs} && Rscript -e "rmarkdown::render({rmd.name!r}, output_format={output_format!r}, output_file={output.name!r})"'
     clear_cmd = 'rm -rf {docs}/{rmd.stem}_cache/ {docs}/{rmd.stem}_files/'
@@ -75,15 +76,19 @@ def make_doc(ctx, name, clear_cache=False, open_after=False):
     if open_after:
         ctx.run(f'open {docs}/{output.name}', echo=True)
 
-from data import tasks as data_tasks
-# from bots import tasks as bots_tasks
-from tasks.googledrive import update_subj_info
 
 ns = Collection()
-ns.add_collection(data_tasks, 'R')
-# ns.add_collection(bots_tasks, 'bots')
 
+# Add tasks defined in this file
 ns.add_task(configure)
 ns.add_task(make_doc)
 ns.add_task(save_exp)
-ns.add_task(update_subj_info)
+
+# Add tasks defined in other files
+
+from data import tasks as data_tasks
+ns.add_collection(data_tasks, 'R')
+
+# from bots import tasks as bots_tasks
+# ns.add_collection(bots_tasks, 'bots')
+

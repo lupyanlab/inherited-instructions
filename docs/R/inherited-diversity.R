@@ -36,7 +36,7 @@ data("OrientationBias")
 data("SpatialFrequencyBias")
 
 # training-landscape-data ----
-TrainingLandscape <- bind_rows(
+TrainingStimsLandscape <- bind_rows(
   OrientationBias = OrientationBias,
   SpatialFrequencyBias = SpatialFrequencyBias,
   .id = "landscape_name"
@@ -49,15 +49,30 @@ TrainingLandscape <- bind_rows(
     gem_sf = sf
   )
 
+TrainingLandscape <- bind_rows(
+  OrientationBias = OrientationBias,
+  SpatialFrequencyBias = SpatialFrequencyBias,
+  .id = "landscape_name"
+) %>%
+  rename(
+    current_x = x,
+    current_y = y,
+    current_score = score,
+    current_ori = ori,
+    current_sf = sf
+  )
+
+
 # training-data ----
 TrainingStims <- Gems %>%
   filter(landscape_ix == 0) %>%
-  melt_trial_stims() %>%
   left_join(TrainingLandscape) %>%
+  melt_trial_stims() %>%
+  left_join(TrainingStimsLandscape) %>%
   rank_stims_in_trial() %>%
-  rank_gems_in_trial() %>%
   mutate(gem_selected = (selected == gem_pos)) %>%
-  recode_instructions()
+  recode_instructions() %>%
+  recode_trial()
 
 Training <- TrainingStims %>%
   filter(gem_selected) %>%
@@ -82,10 +97,43 @@ training_positions_plot <- ggplot(Training) +
   theme(legend.position = "top")
 
 # * training-distance ----
+training_distance_linear_mod <- lmer(
+  distance_1d ~ trial_c * instructions_c + (trial_c|subj_id),
+  data = Training
+)
+
+training_distance_linear_preds <- expand.grid(
+  trial = 0:29,
+  instructions_c = c(-0.5, 0.5)
+) %>%
+  recode_trial() %>%
+  recode_instructions() %>%
+  cbind(., predictSE(training_distance_linear_mod, newdata = ., se = TRUE)) %>%
+  as_data_frame() %>%
+  rename(distance_1d = fit, se = se.fit)
+
+training_distance_quad_mod <- lmer(
+  distance_1d ~ (trial_z + trial_z_sqr) * instructions_c + (trial_z + trial_z_sqr|subj_id),
+  data = Training
+)
+
+training_distance_quad_preds <- expand.grid(
+  trial = 0:29,
+  instructions_c = c(-0.5, 0.5)
+) %>%
+  recode_trial() %>%
+  recode_instructions() %>%
+  cbind(., predictSE(training_distance_quad_mod, newdata = ., se = TRUE)) %>%
+  as_data_frame() %>%
+  rename(distance_1d = fit, se = se.fit)
+
 training_distance_plot <- ggplot(Training) +
-  aes(trial, distance_1d, color = instructions) +
-  geom_line(aes(group = subj_id), size = 0.25) +
-  geom_line(aes(group = instructions),
+  aes(trial, distance_1d) +
+  geom_ribbon(aes(ymin = distance_1d-se, ymax = distance_1d+se, fill = instructions),
+              data = training_distance_quad_preds,
+              alpha = 0.5, show.legend = FALSE) +
+  geom_line(aes(color = instructions, group = subj_id), size = 0.25) +
+  geom_line(aes(color = instructions, group = instructions),
             stat = "summary", fun.y = "mean",
             size = 2, show.legend = FALSE) +
   geom_hline(yintercept = 0, linetype = 2) +
@@ -93,19 +141,39 @@ training_distance_plot <- ggplot(Training) +
   coord_cartesian(xlim = c(0, 30), expand = FALSE) +
   t_$scale_x_trial +
   t_$scale_color_instructions +
+  t_$scale_fill_instructions +
   t_$theme +
   theme(legend.position = "top")
 
 # * training-scores ----
+training_scores_quad_mod <- lmer(
+  score ~ (trial_z + trial_z_sqr) * instructions_c + (trial_z + trial_z_sqr|subj_id),
+  data = Training
+)
+
+training_scores_quad_preds <- expand.grid(
+  trial = 0:29,
+  instructions_c = c(-0.5, 0.5)
+) %>%
+  recode_trial() %>%
+  recode_instructions() %>%
+  cbind(., predictSE(training_scores_quad_mod, newdata = ., se = TRUE)) %>%
+  as_data_frame() %>%
+  rename(score = fit, se = se.fit)
+
 training_scores_plot <- ggplot(Training) +
-  aes(x = trial, y = score, color = instructions) +
-  geom_line(aes(group = subj_id), size = 0.25) +
-  geom_line(aes(group = instructions),
+  aes(x = trial, y = score) +
+  geom_ribbon(aes(ymin = score-se, ymax = score+se, fill = instructions),
+              data = training_scores_quad_preds,
+              alpha = 0.5, show.legend = FALSE) +
+  geom_line(aes(color = instructions, group = subj_id), size = 0.25) +
+  geom_line(aes(color = instructions, group = instructions),
             stat = "summary", fun.y = "mean",
             size = 2, show.legend = FALSE) +
   coord_cartesian(xlim = c(0, 30), expand = FALSE) +
   t_$scale_x_trial +
   t_$scale_color_instructions +
+  t_$scale_fill_instructions +
   t_$theme +
   theme(legend.position = "top")
 
@@ -142,6 +210,7 @@ training_sensitivity_ori_preds <- expand.grid(
   instructions_c = c(-0.5, 0.5)
 ) %>%
   cbind(., predictSE(training_sensitivity_ori_mod, newdata = ., se = TRUE)) %>%
+  as_data_frame() %>%
   rename(gem_selected = fit, se = se.fit) %>%
   recode_instructions()
 
@@ -169,6 +238,7 @@ training_sensitivity_sf_preds <- expand.grid(
     instructions_c = c(-0.5, 0.5)
   ) %>%
   cbind(., predictSE(training_sensitivity_sf_mod, newdata = ., se = TRUE)) %>%
+  as_data_frame() %>%
   rename(gem_selected = fit, se = se.fit) %>%
   recode_instructions()
 
@@ -180,25 +250,6 @@ training_sensitivity_sf_plot <- ggplot(TrainingStims) +
               stat = "identity") +
   scale_y_continuous("", labels = scales::percent) +
   labs(x = "relative difference in spatial frequency") +
-  coord_cartesian(ylim = c(0, 0.6)) +
-  t_$scale_color_instructions +
-  t_$theme +
-  theme(legend.position = "top")
-
-training_sensitivity_preds <- bind_rows(
-  orientation = training_sensitivity_ori_preds,
-  spatial_frequency = training_sensitivity_sf_preds,
-  .id = "sensitivity") %>%
-  mutate(gem_rel_c = ifelse(instructions == "orientation", gem_x_rel_c, gem_y_rel_c))
-
-training_sensitivity_plot <- ggplot(training_sensitivity_preds) +
-  aes(x = gem_rel_c, y = gem_selected,
-      color = instructions, linetype = sensitivity,
-      group = interaction(instructions, sensitivity)) +
-  geom_smooth(aes(ymin = gem_selected-se, ymax = gem_selected+se),
-              stat = "identity") +
-  scale_y_continuous("", labels = scales::percent) +
-  labs(x = "relative difference") +
   coord_cartesian(ylim = c(0, 0.6)) +
   t_$scale_color_instructions +
   t_$theme +
@@ -218,7 +269,6 @@ Gen1 <- Gems %>%
   melt_trial_stims() %>%
   left_join(TestLandscapeGemScores) %>%
   rank_stims_in_trial() %>%
-  rank_scores_in_trial() %>%
   filter(selected == gem_pos)
 
 Gen1Final <- Gen1 %>%
@@ -298,7 +348,6 @@ Gen2 <- Gems %>%
   melt_trial_stims() %>%
   left_join(TestLandscapeGemScores) %>%
   rank_stims_in_trial() %>%
-  rank_scores_in_trial() %>%
   filter(selected == gem_pos) %>%
   label_team_strategy() %>%
   recode_team_strategy()
