@@ -123,6 +123,7 @@ regardless of the size of the team.
 In the experiment, we compare three strategies for solving the same problem.
 
 # Methods {-}
+
 ```{r methods}
 ```
 
@@ -334,13 +335,18 @@ landscape. The relationship was linear,
 `r r_$training_distance_linear_trial`, with most participants reaching the peak
 of the training landscape within 30 trials.
 
-Although participants in both training conditions proceeded in orthogonal directions,
-they did not do so equally. Participants trained on bar width were able
-to move further toward their peak gem in fewer trials than participants trained on orientation,
-`r r_$training_distance_linear_trial_v_instructions`.
+Although participants in both training conditions proceeded in orthogonal
+directions, they did not do so equally. Participants trained on bar width were
+able to move further toward their peak gem in fewer trials than participants
+trained on orientation, `r r_$training_distance_linear_trial_v_instructions`.
 
 (ref:gems-training) Results of training procedure. Participants were randomly
 assigned to either the orientation or the spatial frequency condition.
+**A. Position.** Participants in either training condition traversed the
+same stimulus space in orthogonal directions, each progressing toward the
+optimal stimulus value in the trained dimension. **B. Distance.** Grid positions
+were converted to distances relative to the optimal value in each dimension.
+**C. Score.** Cumulative increases in score over trials.
 
 ```{r gems-training, fig.width=10, fig.height=4, fig.cap="(ref:gems-training)"}
 gridExtra::grid.arrange(
@@ -350,6 +356,19 @@ gridExtra::grid.arrange(
   nrow = 1
 )
 ```
+
+We also measured the perceptual sensitivity of participants to the different
+stimulus dimensions. For our analysis, we transformed the stimulus dimensions
+of the gems displayed on each trial to be relative to the optimal value along
+that dimension. These relative values were then mean centered so that they
+formed a normal distribution. Positive values in the transformed stimulus
+dimension mean that the gem that was selected on a particular trial was closer
+to the optimal gem in that dimension. We fit two models, one predicting
+sensitivity to the orientation dimension, and one predicting
+sensitivity to the spatial frequency dimension. In the models, we included
+the instruction condition of the participants. We expected participants
+in either training condition to be more sensitive to to their trained dimension
+than the orthogonal dimension.
 
 (ref:gems-training-sensitivities) Sensitivity to stimulus dimensions.
 
