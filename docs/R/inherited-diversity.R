@@ -35,6 +35,8 @@ data("Gems")
 data("OrientationBias")
 data("SpatialFrequencyBias")
 
+r_ <- list()
+
 # training-landscape-data ----
 TrainingStimsLandscape <- bind_rows(
   OrientationBias = OrientationBias,
@@ -144,6 +146,12 @@ training_distance_plot <- ggplot(Training) +
   t_$scale_fill_instructions +
   t_$theme +
   theme(legend.position = "top")
+
+r_$training_distance_linear_trial <- report_lmer(training_distance_linear_mod, "trial_c")
+r_$training_distance_linear_trial_v_instructions <- report_lmer(training_distance_linear_mod, "trial_c:instructions_c")
+
+r_$training_distance_quad_trial_sqr <- report_lmer(training_distance_quad_mod, "trial_z")
+
 
 # * training-scores ----
 training_scores_quad_mod <- lmer(

@@ -1,5 +1,5 @@
 ---
-title: Complementary problem solving in diachronic collaboration
+title: Teams of complementary problem solvers outperform equally skilled individuals
 bibliography: references.bib
 output:
   bookdown::pdf_document2:
@@ -26,20 +26,21 @@ read_graphviz_chunk("team-structures-generations", package = "gems",
 # Introduction {-}
 
 One of the fundamental processes in cultural evolution is the transmission of
-problem solving knowledge from one generation to the next. Cultural
-transmission is notoriously imperfect compared to, e.g., genetic transmission.
+tools and other solutions to problems from one generation to the next. Cultural
+transmission is notoriously imperfect when compared to genetic transmission.
 Yet the human ability to transmit cultural information far exceeds the
 abilities of any non-human animals. Humans have evolved a number of abilities
 that improve the success of cultural transmission, including teaching,
-language, and other social learning abilities. A consequence of our system of
-cultural inheritance is that problem solvers rarely have to start from scratch
-when solving new problems. Instead, they start off with the solutions that were
-inherited from a previous generation. The goal of this research was to
-understand how inheriting from a previous generation influences future problem
-solving behavior.
+language, and other social learning abilities, such as the ability to learn
+through observation. A consequence of our system of cultural inheritance is
+that problem solvers rarely have to start from scratch when solving new
+problems. Instead, they start off with the solutions that were inherited from
+a previous generation. The purpose of this research was to understand how
+inheriting from a previous generation influences future problem solving
+behavior.
 
 At the population level, our advanced social learning abilities enable certain
-complex traits to be sustained over generations even if the 
+complex traits to be sustained over generations even if the
 
 Cultural transmission across generations is notoriously imperfect. For example,
 when folktales are passed from person to person in a transmission chain
@@ -200,14 +201,18 @@ draw_image("SimpleHillGems", package = "gems")
 
 ### Solution landscapes {-}
 
-We created three different solution landscapes, shown in Fig.
-\@ref(fig:landscapes). There were two different training
+The three different solution landscapes we used are show in Fig.
+\@ref(fig:landscapes). There were two training
 landscapes, and one test landscape. The training landscapes were constructed so
 that the value of a gem was determined completely by one dimension (either
 orientation or spatial frequency) and not influenced by the other dimension. For
 these landscapes, the peak value was set at 50 units in either stimulus dimension.
+
 Values in the test landscape were determined by both orientation and spatial
 frequency, corresponding to a simple hill landscape with a single peak at `(50,50)`.
+The simple hill landscape was symmetric with regard to training condition,
+such that both instructions conditions were equally helpful for the test
+landscape.
 
 (ref:landscapes) Training and test landscapes. Participants assigned to the
 orientation or bar width condition completed the training trials on the
@@ -246,47 +251,59 @@ data_frame(question_text = colnames(Survey)) %>%
 
 ## Procedure {-}
 
-Participants read the instructions corresponding to their randomly assigned
-training condition, and completed a block of 30 training trials. After the
-training trials, they completed four blocks of 40 test trials. After all four
-blocks of test trials, participants completed the post-experiment survey. The
-experiment took around 30 minutes to complete.
+Participants were randomly assigned training condition and generation.
+The researcher told all participants that they would be playing a
+game where they played as a space explorer who is trying to find valuable
+gems on a foreign planet. The goal of the game was to learn to find
+the most valuable gems. Then participants read the instructions corresponding
+to training condition, and completed a block of 30 training trials. After
+the training trials, they completed four blocks of 40 test trials. When
+finished, participants completed the post-experiment survey.
+The experiment took around 30 minutes to complete.
 
 ### Training {-}
 
 Participants were randomly assigned to one of two training conditions. In the
-orientation condition, participants were told that the value of each gem
-was determined by the orientation of the stripes. In the bar width condition,
-they were told the value was determined by the width of the bars. The exact
-instructions are shown in Fig. \@ref(fig:training).
+orientation condition, participants read in their instructions that the value
+of each gem was determined by the orientation of the stripes. In the bar width
+condition, they read that the value was determined by the width of the bars.
+The exact instructions are shown in Fig. \@ref(fig:training).
 
 After reading the instructions, participants completed a block of 30 training
-trials on a landscape corresponding to their instructions condition. For
-example, a participant who was instructed to pay attention to bar width
-completed the training trials on the landscape that was biased so that the
-values of the gems were dependent completely on spatial frequency and not on
-orientation.
+trials. Across the 30 trials, participants traversed a landscape corresponding
+to their instructions condition. For example, a participant who was instructed
+to pay attention to bar width completed the training trials on the landscape
+that was biased so that the values of the gems were dependent completely on
+spatial frequency and not on orientation.
 
-For the training trials, after each choice, participants were shown the values
-of all the gems in the display, and had to click on the most valuable
-gem to continue to the next trial. This second response was to encourage
-participants to learn which gabors were the most valuable. If the participant
-had correctly selected the most valuable gem in their first response, they were told to
-click on the gem they selected again. An example training trial is shown
-in Fig. \@ref(fig:training-trial).
+On the first training trial, participants were shown six gems sampled from around
+the origin `(0,0)` of the stimulus space. On subsequent training trials, gems
+were sampled from around the position of the gem $(x_{ori},y_{bw})$ selected on the
+previous trial.
+
+After selecting a gem, participants were shown the
+values of all six gems, and had to click on the most valuable gem in the display
+to continue. This second response was to encourage
+participants to learn which gabors were the most valuable so they could select
+the most valuable gem on each trial. If the participant had correctly selected
+the most valuable gem in their first response, they were congratulated for
+making the correct choice, and told to click on the gem they selected again. An
+example training trial is shown in Fig. \@ref(fig:training-trial).
 
 ### Test {-}
 
 After completing the training trials, participants completed four blocks of 40
-trials. All test trials were conducted on the test landscape, described above.
-Participants traversed the same landscape four times.
+trials. Participants were given a break after each block, and told that for
+the next block, they may encounter gems that they had not seen before.
 
-First generation participants started off at the origin `(0,0)` for each block. Second
-generation participants started off at the location of a first
-generation participant after 20 trials. First and second generation participants
-were yoked over blocks such that second generation participants inherited from
-the same first generation participant a total of four times, one for each
-block.
+All test trials were conducted on the same simple hill landscape, defined above.
+Participants traversed the simple hill landscape four times. First generation
+participants started each block with 6 gems sampled from around the origin
+`(0,0)`. Second generation participants participants started off at the location of
+a first generation participant after 20 trials. First and second generation
+participants were yoked over blocks such that second generation participants
+inherited from the same first generation participant a total of four times, one
+for each block.
 
 ## Participants {-}
 
@@ -304,11 +321,23 @@ participants, one in each training condition.
 
 ## Training {-}
 
-First and second generation participants completed the same training procedure.
-In the training procedure, participants traversed either the oriention bias landscape
-or the spatial frequency bias landscape. As expected, participants in either training
-condition moved through the same stimulus space in orthogonal directions
-(Fig. \@ref(fig:gems-training)).
+The purpose of the training procedure was for participants to learn to pay
+attention to orthogonal dimensions of the gem stimuli. To verify whether the
+training procedure worked, we measured the extent to which participants
+selected stimuli in each training trial corresponding to their training
+condition.
+
+Participants in either training condition traversed the same stimulus space
+in orthogonal directions (Fig. \@ref(fig:gems-training)). Participants selected
+gems that moved them closer to the most valuable gems on their particular
+landscape. The relationship was linear,
+`r r_$training_distance_linear_trial`, with most participants reaching the peak
+of the training landscape within 30 trials.
+
+Although participants in both training conditions proceeded in orthogonal directions,
+they did not do so equally. Participants trained on bar width were able
+to move further toward their peak gem in fewer trials than participants trained on orientation,
+`r r_$training_distance_linear_trial_v_instructions`.
 
 (ref:gems-training) Results of training procedure. Participants were randomly
 assigned to either the orientation or the spatial frequency condition.
