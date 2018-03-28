@@ -147,10 +147,10 @@ training_distance_plot <- ggplot(Training) +
   t_$theme +
   theme(legend.position = "top")
 
-r_$training_distance_linear_trial <- report_lmer(training_distance_linear_mod, "trial_c")
-r_$training_distance_linear_trial_v_instructions <- report_lmer(training_distance_linear_mod, "trial_c:instructions_c")
+r_$training_distance_linear_trial <- report_lmer_mod(training_distance_linear_mod, "trial_c")
+r_$training_distance_linear_trial_v_instructions <- report_lmer_mod(training_distance_linear_mod, "trial_c:instructions_c")
 
-r_$training_distance_quad_trial_sqr <- report_lmer(training_distance_quad_mod, "trial_z")
+r_$training_distance_quad_trial_sqr <- report_lmer_mod(training_distance_quad_mod, "trial_z")
 
 
 # * training-scores ----
@@ -186,7 +186,50 @@ training_scores_plot <- ggplot(Training) +
   theme(legend.position = "top")
 
 # * training-sensitivity ----
-training_sensitivity_plot <- ggplot(Training) +
+training_sensitivity_ori_mod <- lmer(gem_x_rel_c ~ instructions_c + (1|subj_id), data = Training)
+training_sensitivity_sf_mod <- lmer(gem_y_rel_c ~ instructions_c + (1|subj_id), data = Training)
+
+training_sensitivity_ori_preds <- expand.grid(
+  instructions_c = c(-0.5, 0.5)
+) %>%
+  cbind(., predictSE(training_sensitivity_ori_mod, newdata = ., se = TRUE)) %>%
+  as_data_frame() %>%
+  rename(relative = fit, se = se.fit)
+
+training_sensitivity_sf_preds <- expand.grid(
+  instructions_c = c(-0.5, 0.5)
+) %>%
+  cbind(., predictSE(training_sensitivity_sf_mod, newdata = ., se = TRUE)) %>%
+  as_data_frame() %>%
+  rename(relative = fit, se = se.fit)
+
+training_sensitivity_preds <- bind_rows(
+  gem_x_rel_c = training_sensitivity_ori_preds,
+  gem_y_rel_c = training_sensitivity_sf_preds,
+  .id = "dimension"
+) %>%
+  recode_instructions() %>%
+  recode_dimension()
+
+TrainingRel <- Training %>%
+  select(subj_id, instructions_c, gem_x_rel_c, gem_y_rel_c) %>%
+  gather(dimension, relative, -subj_id, -instructions_c) %>%
+  recode_instructions() %>%
+  recode_dimension()
+
+training_sensitivity_plot <- ggplot(TrainingRel) +
+  aes(dimension_label, relative, color = instructions) +
+  geom_line(aes(group = subj_id), stat = "summary", fun.y = "mean") +
+  geom_smooth(aes(ymin = relative-se, ymax = relative+se, group = instructions),
+              data = training_sensitivity_preds, stat = "identity") +
+  facet_wrap("instructions") +
+  scale_x_discrete("") +
+  scale_y_continuous("") +
+  t_$theme +
+  theme(legend.position = "none")
+
+# * training-sensitivity-ranks ----
+training_sensitivity_ranks_plot <- ggplot(Training) +
   aes(color = instructions) +
   geom_density(aes(group = subj_id), size = 0.25, adjust = 1.5) +
   geom_density(size = 2, adjust = 1.5) +
@@ -195,73 +238,13 @@ training_sensitivity_plot <- ggplot(Training) +
   coord_cartesian(ylim = c(0, 0.6)) +
   theme(legend.position = "top")
 
-score_sensitivity_plot <- training_sensitivity_plot +
-  aes(gem_score_rank) +
-  scale_x_reverse("rank (by score)", breaks = 1:6)
-
-orientation_sensitivity_plot <- training_sensitivity_plot +
+orientation_sensitivity_ranks_plot <- training_sensitivity_ranks_plot +
   aes(gem_x_rank) +
   scale_x_reverse("rank (by orientation)", breaks = 1:6)
 
-spatial_frequency_sensitivity_plot <- training_sensitivity_plot +
+spatial_frequency_sensitivity_ranks_plot <- training_sensitivity_ranks_plot +
   aes(gem_y_rank) +
   scale_x_reverse("rank (by spatial frequency)", breaks = 1:6)
-
-# ** training-sensitivity-ori ----
-training_sensitivity_ori_mod <- glmer(
-  gem_selected ~ gem_x_rel_c * instructions_c + (gem_x_rel_c|subj_id),
-  family = "binomial", data = TrainingStims
-)
-
-training_sensitivity_ori_preds <- expand.grid(
-  gem_x_rel_c = seq(-10, 10),
-  instructions_c = c(-0.5, 0.5)
-) %>%
-  cbind(., predictSE(training_sensitivity_ori_mod, newdata = ., se = TRUE)) %>%
-  as_data_frame() %>%
-  rename(gem_selected = fit, se = se.fit) %>%
-  recode_instructions()
-
-training_sensitivity_ori_plot <- ggplot(TrainingStims) +
-  aes(x = gem_x_rel_c, y = gem_selected) +
-  geom_smooth(aes(ymin = gem_selected-se, ymax = gem_selected+se,
-                  color = instructions),
-              data = training_sensitivity_ori_preds,
-              stat = "identity") +
-  scale_y_continuous("", labels = scales::percent) +
-  labs(x = "relative difference in orientation") +
-  coord_cartesian(ylim = c(0, 0.6)) +
-  t_$scale_color_instructions +
-  t_$theme +
-  theme(legend.position = "top")
-
-# ** training-sensitivity-sf ----
-training_sensitivity_sf_mod <- glmer(
-  gem_selected ~ gem_y_rel_c * instructions_c + (gem_y_rel_c|subj_id),
-  family = "binomial", data = TrainingStims
-)
-
-training_sensitivity_sf_preds <- expand.grid(
-    gem_y_rel_c = seq(-10, 10),
-    instructions_c = c(-0.5, 0.5)
-  ) %>%
-  cbind(., predictSE(training_sensitivity_sf_mod, newdata = ., se = TRUE)) %>%
-  as_data_frame() %>%
-  rename(gem_selected = fit, se = se.fit) %>%
-  recode_instructions()
-
-training_sensitivity_sf_plot <- ggplot(TrainingStims) +
-  aes(x = gem_y_rel_c, y = gem_selected) +
-  geom_smooth(aes(ymin = gem_selected-se, ymax = gem_selected+se,
-                  color = instructions),
-              data = training_sensitivity_sf_preds,
-              stat = "identity") +
-  scale_y_continuous("", labels = scales::percent) +
-  labs(x = "relative difference in spatial frequency") +
-  coord_cartesian(ylim = c(0, 0.6)) +
-  t_$scale_color_instructions +
-  t_$theme +
-  theme(legend.position = "top")
 
 # gen1-data ----
 TestLandscapeCurrentScores <- SimpleHill %>%

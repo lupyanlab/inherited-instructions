@@ -353,14 +353,8 @@ gridExtra::grid.arrange(
 
 (ref:gems-training-sensitivities) Sensitivity to stimulus dimensions.
 
-```{r gems-training-sensitivities, fig.width=8, fig.height=3, fig.cap="(ref:gems-training-sensitivities)"}
-gridExtra::grid.arrange(
-  training_sensitivity_ori_plot +
-    ggtitle("A. Sensitivity to orientation"),
-  training_sensitivity_sf_plot +
-    ggtitle("B. Sensitivity to spatial frequency"),
-  nrow = 1
-)
+```{r gems-training-sensitivities, fig.width=6, fig.height=3, fig.cap="(ref:gems-training-sensitivities)"}
+training_sensitivity_plot
 ```
 
 ## First generation {-}
