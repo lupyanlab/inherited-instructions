@@ -1,0 +1,9 @@
+name: gems
+root: ~/PhD/gems
+windows:
+  - main:
+      layout: 10d3,160x58,0,0{79x58,0,0,0,80x58,80,0[80x28,80,0,2,80x29,80,29,3]}
+      panes:
+        - source .environment && git status && inv -l
+        - source .environment && cd data && git status
+        - cd experiment && source .environment && git status
