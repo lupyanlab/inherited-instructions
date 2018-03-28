@@ -26,17 +26,38 @@ read_graphviz_chunk("team-structures-generations", package = "gems",
 # Introduction {-}
 
 One of the fundamental processes in cultural evolution is the transmission of
-problem solving knowledge from one generation to the next. Cultural transmission
-is notoriously imperfect compared to, for example, genetic transmission. Yet the human
-ability to transmit cultural information far exceeds the abilities of any
-non-human animals. Humans have evolved a number of abilities that improve the
-success of cultural transmission, including teaching, language, and other social
-learning abilities. The ability to reproduce tools and other solutions to
-problems over generations is particularly beneficial in that future generations
-of problem solvers rarely have to start from scratch when solving new problems.
-Instead, they start off with solutions that were inherited from a previous
-generation. How does the starting point in a problem solving task affect future
-problem solving?
+problem solving knowledge from one generation to the next. Cultural
+transmission is notoriously imperfect compared to, e.g., genetic transmission.
+Yet the human ability to transmit cultural information far exceeds the
+abilities of any non-human animals. Humans have evolved a number of abilities
+that improve the success of cultural transmission, including teaching,
+language, and other social learning abilities. A consequence of our system of
+cultural inheritance is that problem solvers rarely have to start from scratch
+when solving new problems. Instead, they start off with the solutions that were
+inherited from a previous generation. The goal of this research was to
+understand how inheriting from a previous generation influences future problem
+solving behavior.
+
+At the population level, our advanced social learning abilities enable certain
+complex traits to be sustained over generations even if the 
+
+Cultural transmission across generations is notoriously imperfect. For example,
+when folktales are passed from person to person in a transmission chain
+procedure, errors and omissions are introduced into the stories, and they
+slowly lose their resemblance to the original story.
+
+However, a number of experiments have demonstrated that the information that is
+lost or retained through repeated storytelling is not random. Bartlett's
+original demonstrations of this phenomena show that culturally learned schema
+for how folktales are structured influences which information is retained over
+generations. More recent investigations have found that social information, as
+opposed to factual information, is more likely to be retained over generations
+[@Mesoudi].
+
+In some cases, the loss of information over generations is beneficial. Flynn
+[-@Flynn] found that as children repeatedly copied the same actions over
+generations, the actions became simpler, and lost their resemblance to the
+original action.
 
 Some starting points are more beneficial than others. A laptop is clearly more
 beneficial than a calculator. But does the starting point affect the way in
