@@ -7,3 +7,8 @@ windows:
         - source .environment && git status && inv -l
         - source .environment && cd data && git status
         - cd experiment && source .environment && git status
+  - inherited-diversity.Rmd:
+      layout: main-vertical
+      panes:
+        - cd docs && vim inherited-diversity.Rmd
+        - cd docs && ls
