@@ -34,11 +34,12 @@ that improve the success of cultural transmission, including teaching,
 language, and other social learning abilities, such as the ability to learn
 through observation. A consequence of our system of cultural inheritance is
 that problem solvers rarely have to start from scratch when solving new
-problems. Instead, they start off with the solutions that were inherited from a
-previous generation. Does the accumulation of problem solving knowledge
-impact future generations of problem solvers beyond simply giving a head start
-on future labor? The purpose of this research was to understand the conditions
-under which inheriting from a previous generation may improve future problem
+problems. Instead, they start off with the solutions that were inherited from
+a previous generation. A question that arises when considering the consequences
+of cultural transmission on human problem solving is the extent to which
+future generations are able to benefit from the solutions achieved by previous
+generations. The purpose of this research was to understand the conditions
+under which inheriting from a previous generation may future problem
 solving performance beyond what would be achieved by working alone.
 
 Although the human capacity to work together in teams to solve large problems
@@ -46,67 +47,41 @@ is evident in many scientific and technological domains, teamwork is rarely
 considered to be an effective means of improving individual problem solving
 performance. When both teams and individuals complete tasks that individuals
 can complete alone, teamwork does not usually improve performance over what
-could have been accomplished individually. Larger teams are subject to effects
-such as social loafing that decrease motivation and performance. Larger teams
+could have been accomplished individually. Part of the reason is due to the
+social dynamics of teamwork. Large teams are subject to effects
+such as social loafing that decrease motivation and performance. Teamwork
 may be inefficient for other reasons, as well. For example, on software
 development projects, adding more team members can sometimes slow the speed at
-which new changes can be implemented.
+which new changes can be implemented, due to increasing costs of communication
+among team members working independently.
 
-A notable exception is a study by @Bahrami:2010jl who found that
-dyads were better than individuals in a perceptual judgment task. In the
-experiment, participants searched for an oddball target and responded with
-a binary judgment corresponding to which of two displays contained the target.
-If the dyad disagreed about which display contained the target, they were
-allowed to confer and make a joint decision. Because the participants made both
-individual and team responses on each trial, the researchers were able to
-compare the performance of the team to the performance of best individual in
-each team. The results showed a clear benefit to teamwork over what would have
-been achieved by the best individual in each dyad completing the task alone.
+A notable exception is a study by @Bahrami:2010jl who found that teams of two
+individuals or dyads performed better than individuals in a perceptual judgment
+task. In the experiment, participants searched for an oddball target and
+responded with a binary judgment corresponding to which of two displays
+contained the oddball target. If the dyad disagreed about which display
+contained the target, they were allowed to confer and make a joint decision.
+Because participants made both individual and team responses on each trial, the
+researchers were able to compare the performance of the team to the performance
+of best individual in each team. The results showed a clear benefit to teamwork
+over what would have been achieved by the best individual in each dyad
+completing the task alone. Additional studies have shown that dyads were able
+to improve team performance through confidence matching, which is improved by
+settling on a common vocabulary to use to communicate uncertainty, but
+confidence matching also occurs when using non-linguistic indicators of
+uncertainty.
 
-Later studies have shown that dyads were able to improve team performance
-through confidence matching, which is improved by settling on a common vocabulary
-to use to communicate uncertainty, but confidence matching also occurs
-when using continuous measures of uncertainty. In confidence matching tasks,
-teamwork improves team performance over what could be achieved by the best
-individual specifically when the members of the team have the same perceptual
-ability.
-
-A difficulty that arises when comparing experiments done on teamwork
-is in how to properly control for time. The typical approach is to control
-for **calendar hours**. For example, teams and individuals are both given
-an hour to complete the same task. However, controlling for calendar hours does
-not scale with team size. Individuals and teams are both given an hour,
-regardless of the size of the team.
-
-In the experiment, we compare three strategies for solving the same problem.
-
-
-At the population level, our advanced social learning abilities enable certain
-complex traits to be sustained over generations even if the
-
-Cultural transmission across generations is notoriously imperfect. For example,
-when folktales are passed from person to person in a transmission chain
-procedure, errors and omissions are introduced into the stories, and they
-slowly lose their resemblance to the original story.
-
-However, a number of experiments have demonstrated that the information that is
-lost or retained through repeated storytelling is not random. Bartlett's
-original demonstrations of this phenomena show that culturally learned schema
-for how folktales are structured influences which information is retained over
-generations. More recent investigations have found that social information, as
-opposed to factual information, is more likely to be retained over generations
-[@Mesoudi].
-
-In some cases, the loss of information over generations is beneficial. Flynn
-[-@Flynn] found that as children repeatedly copied the same actions over
-generations, the actions became simpler, and lost their resemblance to the
-original action.
-
-Some starting points are more beneficial than others. A laptop is clearly more
-beneficial than a calculator. But does the starting point affect the way in
-which the problem is solved? If the starting point can improve future problem
-solving performance, then our system of cultural inheritance may actually
-contribute to a general improvement in human problem solving ability.
+In confidence matching tasks, teamwork improves team performance over what
+could be achieved by each individual specifically when the members of the team
+have the similar perceptual abilities. This finding contrasts with other
+research on teamwork that has found a benefit to diversity among team members.
+In tasks requiring problem solvers to search a space of possible solutions,
+homogeneous teams of problem solvers, where all team members have equal skill,
+may prematurely convergence on suboptimal solutions, whereas heterogeneous
+teams are able to avoid these pitfalls, and maintain a wider search for
+globally optimal solutions. These results have been used to argue that
+diversity among team members is an effective means of improving team
+performance.
 
 To answer this question, we had participants complete a problem solving task
 either as first or second generation problem solvers. First generation problem
@@ -115,16 +90,6 @@ procedure. All first generation problem solvers started off from the same
 Second generation problem solvers attempted the same problem solving
 task but starting at where the first generation problem solvers had been
 at the halfway point.
-
-A consequence of our system of cultural inheritance is that problem solvers
-rarely have to start from scratch when solving new problems. Instead, they start
-off with the solutions that were inherited from a previous generation.
-
-There are many ways to measure the effectiveness of teamwork. A common method
-is to compare the performance of teams to individuals working alone. When
-compared in this way, studies have often failed to find any evidence that
-teamwork provides an improvement over individual problem solving.
-
 
 # Methods {-}
 
