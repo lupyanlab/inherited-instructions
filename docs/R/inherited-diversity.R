@@ -189,6 +189,9 @@ training_scores_plot <- ggplot(Training) +
 training_sensitivity_ori_mod <- lmer(gem_x_rel_c ~ instructions_c + (1|subj_id), data = Training)
 training_sensitivity_sf_mod <- lmer(gem_y_rel_c ~ instructions_c + (1|subj_id), data = Training)
 
+r_$training_sensitivity_ori <- report_lmer_mod(training_sensitivity_ori_mod, "instructions_c")
+r_$training_sensitivity_sf <- report_lmer_mod(training_sensitivity_sf_mod, "instructions_c")
+
 training_sensitivity_ori_preds <- expand.grid(
   instructions_c = c(-0.5, 0.5)
 ) %>%
@@ -215,18 +218,52 @@ TrainingRel <- Training %>%
   select(subj_id, instructions_c, gem_x_rel_c, gem_y_rel_c) %>%
   gather(dimension, relative, -subj_id, -instructions_c) %>%
   recode_instructions() %>%
-  recode_dimension()
+  recode_dimension() %>%
+  label_trained_dimension() %>%
+  recode_trained_dimension()
 
 training_sensitivity_plot <- ggplot(TrainingRel) +
   aes(dimension_label, relative, color = instructions) +
-  geom_line(aes(group = subj_id), stat = "summary", fun.y = "mean") +
+  geom_line(aes(group = subj_id), stat = "summary", fun.y = "mean",
+            size = 0.3) +
   geom_smooth(aes(ymin = relative-se, ymax = relative+se, group = instructions),
-              data = training_sensitivity_preds, stat = "identity") +
-  facet_wrap("instructions") +
+              data = training_sensitivity_preds, stat = "identity",
+              size = 1.5) +
+  facet_wrap("instructions_facet_label") +
   scale_x_discrete("") +
-  scale_y_continuous("") +
+  scale_y_continuous("sensitivity") +
+  coord_cartesian(xlim = c(1.45, 1.55)) +
   t_$theme +
+  t_$scale_color_instructions +
   theme(legend.position = "none")
+
+training_sensitivity_trained_dimensions_mod <- lmer(
+  relative ~ trained_dimension_c * instructions_c + (1|subj_id), data = TrainingRel
+)
+
+training_sensitivity_trained_dimensions_preds <- expand.grid(
+  trained_dimension_c = c(-0.5, 0.5),
+  instructions_c = c(-0.5, 0.5)
+) %>%
+  cbind(., predictSE(training_sensitivity_trained_dimensions_mod, newdata = ., se = TRUE)) %>%
+  rename(relative = fit, se = se.fit) %>%
+  recode_instructions() %>%
+  recode_trained_dimension()
+
+training_sensitivity_trained_dimensions_plot <- ggplot(TrainingRel) +
+  aes(trained_dimension_label, relative, color = instructions) +
+  geom_line(aes(group = subj_id),
+            size = 0.3, stat = "summary", fun.y = "mean") +
+  geom_smooth(aes(group = instructions, ymin = relative - se, ymax = relative + se),
+              stat = "identity",
+              data = training_sensitivity_trained_dimensions_preds,
+              size = 1.5) +
+  scale_x_discrete("") +
+  scale_y_continuous("sensitivity") +
+  coord_cartesian(xlim = c(1.45, 1.55)) +
+  t_$theme +
+  t_$scale_color_instructions +
+  theme(legend.position = c(0.5, 0.9))
 
 # * training-sensitivity-ranks ----
 training_sensitivity_ranks_plot <- ggplot(Training) +

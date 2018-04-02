@@ -13,12 +13,6 @@ opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE, results="hi
                fig.height=4, fig.width=4)
 chunks_dir <- "R"
 read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
-
-library(crotchet)
-read_graphviz_chunk("team-structures-instructions", package = "gems",
-                    new_name = "gems-team-structures-instructions")
-read_graphviz_chunk("team-structures-generations", package = "gems",
-                    new_name = "gems-team-structures-generations")
 ```
 ```{r inherited-diversity}
 ```
@@ -37,9 +31,9 @@ that problem solvers rarely have to start from scratch when solving new
 problems. Instead, they start off with the solutions that were inherited from
 a previous generation. A question that arises when considering the consequences
 of cultural transmission on human problem solving is the extent to which
-future generations are able to benefit from the solutions achieved by previous
+future generations are able to benefit from the solutions discovered by previous
 generations. The purpose of this research was to understand the conditions
-under which inheriting from a previous generation may future problem
+under which inheriting from a previous generation may improve future problem
 solving performance beyond what would be achieved by working alone.
 
 Although the human capacity to work together in teams to solve large problems
@@ -71,16 +65,15 @@ settling on a common vocabulary to use to communicate uncertainty, but
 confidence matching also occurs when using non-linguistic indicators of
 uncertainty.
 
-In confidence matching tasks, teamwork improves team performance over what
-could be achieved by each individual specifically when the members of the team
-have the similar perceptual abilities. This finding contrasts with other
-research on teamwork that has found a benefit to diversity among team members.
-In tasks requiring problem solvers to search a space of possible solutions,
-homogeneous teams of problem solvers, where all team members have equal skill,
-may prematurely convergence on suboptimal solutions, whereas heterogeneous
-teams are able to avoid these pitfalls, and maintain a wider search for
-globally optimal solutions. These results have been used to argue that
-diversity among team members is an effective means of improving team
+In confidence matching tasks, teamwork improves performance specifically when
+the members of the team have similar perceptual abilities. This finding
+contrasts with other research on teamwork that has found a benefit to diversity
+among team members. In tasks requiring problem solvers to search a space of
+possible solutions, homogeneous teams of problem solvers, where all team members
+have equal skill, may prematurely convergence on suboptimal solutions, whereas
+heterogeneous teams are able to avoid these pitfalls, and maintain a wider
+search for globally optimal solutions. These results have been used to argue
+that diversity among team members is an effective means of improving team
 performance.
 
 To answer this question, we had participants complete a problem solving task
@@ -97,24 +90,24 @@ at the halfway point.
 ```
 
 Participants completed a perceptual discrimination task where they were
-presented displays of sinusoidal gabor patch stimuli that varied in orientation and
-spatial frequency. We asked them to think of the gabors as "gems"
-from a foreign planet. Their task was to learn which gems were
-more valuable than others.
+presented displays of sinusoidal gabor patch stimuli that varied in orientation
+and spatial frequency. We asked them to think of the gabors as precious gems on a
+foreign planet. Their task was to learn which gems were more valuable than
+others.
 
 The value of each gem was determined by its orientation and spatial frequency.
 The space of possible gems and their associated values can be visualized as a
 three dimensional landscape. As participants selected gems across trials, they
 effectively explored different parts of this landscape, looking for the highest
-peaks, corresponding to the most valuable gems. In order to detect
-the most valuable gems on each trial, participants had to learn which stimulus
-dimensions were the most important.
+peaks, corresponding to the most valuable gems. In order to select the most
+valuable gems on each trial, participants had to learn which stimulus dimensions
+were the most important.
 
-On each trial, participants selected one of six gabor patches they thought
-was the most valuable. The six gabors presented on each trial were sampled
-within a certain distance of previously selected gem. In order to find the most
-valuable gems, participants had to navigate the solution landscape in a series
-of incremental steps.
+On each trial, participants selected one of six gabor patches they thought was
+the most valuable. The six gabors presented on each trial were sampled within a
+certain distance in the stimulus space of the previously selected gem. In order
+to find the most valuable gems, participants had to traverse the solution
+landscape in a series of incremental steps.
 
 Participants were trained to pay attention to either the orientation or the bar
 width of the gems. The training procedure consisted of written instructions
@@ -124,17 +117,20 @@ Participants were also assigned to the first or second generation. First
 generation participants started at the origin `(0,0)` on each landscape. Second
 generation participants were randomly assigned to inherit from a first
 generation participant. They inherited the location on the landscape of the gem
-selected by the first generation participant. There was no interaction between
-first and second generation participants other than that second generation
-participants started each landscape off in a different part of the landscape
-than their predecessors.
+selected by the first generation participant after a certain number of trials.
+There was no interaction between first and second generation participants other
+than that second generation participants started each landscape off in a
+different part of the landscape than their first generation predecessors.
 
-In our analyses, we compare three problem solving strategies. Congruent teams
+In our analyses, we compared three problem solving strategies. Congruent teams
 were made of participants trained to pay attention to the same stimulus
 dimension---either orientation or bar width. Complementary teams were made of
 participants trained on different stimulus dimensions. As a control, we also
 compared the performance of individuals trained on a single dimension who
-completed the same total number of trials on their own.
+completed the same total number of trials on their own. We hypothesized that
+complementary teams of problem solvers would be more efficient at traversing
+the solution landscapes than congruent teams or isolated individuals trained
+to discriminate the same stimulus dimensions.
 
 (ref:gems-team-structures-instructions) Team structures by instructions.
 Participants were trained to pay attention to either orientation or bar width,
@@ -150,46 +146,31 @@ gridExtra::grid.arrange(
 )
 ```
 
-```{r gems-landscape}
-gridExtra::grid.arrange(
-  crotchet::read_image("trial", package = "gems"),
-  simple_hill_landscape
-)
-```
-
 ## Materials {-}
 
 ### Gabors {-}
 
-We created a 71x71 grid of `r methods$n_gabors_in_landscape` gabor patches that
-varied in orientation and spatial frequency. A sample of the space is shown in
-Fig. \@ref(fig:gabors). Orientations were sampled at regular intervals from
-`r methods$min_ori`° to `r methods$max_ori`°. Spatial frequencies were sampled at
-geometric intervals from `r methods$min_sf` cycles/pixel to `r methods$max_sf`
-cycles/pixel. A geometric progression was used because high spatial frequencies
-are harder to distinguish than low spatial frequencies.
-
-(ref:gabors) Sampled space of possible gabor patches. Gabor patches varied
-in orientation and spatial frequency.
-
-```{r gabors, fig.cap="(ref:gabors)"}
-draw_image("SimpleHillGems", package = "gems")
-```
+We created a $71 \times 71$ grid of `r methods$n_gabors_in_landscape` gabor
+patches that varied in orientation and spatial frequency. Orientations were sampled at regular
+intervals from `r methods$min_ori`° to `r methods$max_ori`°. Spatial frequencies
+were sampled at geometric intervals from `r methods$min_sf` cycles/pixel to
+`r methods$max_sf` cycles/pixel. A geometric progression was used because high
+spatial frequencies are harder to distinguish than low spatial frequencies.
 
 ### Solution landscapes {-}
 
 The three different solution landscapes we used are show in Fig.
-\@ref(fig:landscapes). There were two training
-landscapes, and one test landscape. The training landscapes were constructed so
-that the value of a gem was determined completely by one dimension (either
-orientation or spatial frequency) and not influenced by the other dimension. For
-these landscapes, the peak value was set at 50 units in either stimulus dimension.
+\@ref(fig:landscapes). There were two training landscapes, and one test
+landscape. The training landscapes were constructed so that the value of a
+gem was determined completely by one dimension (either orientation or spatial
+frequency) and not influenced by the other dimension. For these landscapes, the
+peak value was set at 50 units in either stimulus dimension.
 
 Values in the test landscape were determined by both orientation and spatial
 frequency, corresponding to a simple hill landscape with a single peak at `(50,50)`.
 The simple hill landscape was symmetric with regard to training condition,
-such that both instructions conditions were equally helpful for the test
-landscape.
+such that both instructions conditions were equally informative about the values
+of the gems in the test landscape.
 
 (ref:landscapes) Training and test landscapes. Participants assigned to the
 orientation or bar width condition completed the training trials on the
@@ -207,36 +188,24 @@ gridExtra::grid.arrange(
 
 ### Post experiment survey {-}
 
-After finishing the main experiment, participants completed a short survey.
-We asked the participants about the instructions they received, how they
-approached the experiment, and to what extent they thought the gems and
-scores were random. We were particularly interested in if the
-participants felt they were moving around space of possible gabors
-of their own volition. The questions are listed in Table \@ref(tab:survey-questions).
-
-(ref:survey-questions) Questions asked in the post-experiment survey.
-
-```{r survey-questions, results='asis'}
-data("Survey")
-data_frame(question_text = colnames(Survey)) %>%
-  mutate(question_id = c("timestamp", "subj_id", "computer", "age", "gender", paste0("Q", 1:9))) %>%
-  filter(grepl("Q", question_id)) %>%
-  select(`#` = question_id, `Text` = question_text) %>%
-  kable(caption="(ref:survey-questions)") %>%
-  column_spec(2, width = "45em")
-```
+After finishing the main experiment, participants completed a short survey. We
+asked the participants to recall the instructions they received, to describe how
+they approached the experiment, and to rate the extent to which they thought the
+gems and scores were random. We were particularly interested in if the
+participants felt they were moving around space of possible gabors of their own
+volition.
 
 ## Procedure {-}
 
-Participants were randomly assigned training condition and generation.
-The researcher told all participants that they would be playing a
-game where they played as a space explorer who is trying to find valuable
-gems on a foreign planet. The goal of the game was to learn to find
-the most valuable gems. Then participants read the instructions corresponding
-to training condition, and completed a block of 30 training trials. After
-the training trials, they completed four blocks of 40 test trials. When
-finished, participants completed the post-experiment survey.
-The experiment took around 30 minutes to complete.
+Participants were randomly assigned to training condition (orientation, bar
+width) and generation (first, second). The researcher told participants
+they would be playing a game where they played as a space explorer who is trying
+to find valuable gems on a foreign planet. Their goal was to learn to
+distinguish the valuable gems from the cheap ones. Then participants read the
+instructions corresponding to their assigned training condition, and completed a
+block of 30 training trials. After the training trials, they completed four
+blocks of 40 test trials. When finished, participants completed the
+post-experiment survey. The experiment took around 30 minutes to complete.
 
 ### Training {-}
 
@@ -244,7 +213,6 @@ Participants were randomly assigned to one of two training conditions. In the
 orientation condition, participants read in their instructions that the value
 of each gem was determined by the orientation of the stripes. In the bar width
 condition, they read that the value was determined by the width of the bars.
-The exact instructions are shown in Fig. \@ref(fig:training).
 
 After reading the instructions, participants completed a block of 30 training
 trials. Across the 30 trials, participants traversed a landscape corresponding
@@ -253,24 +221,23 @@ to pay attention to bar width completed the training trials on the landscape
 that was biased so that the values of the gems were dependent completely on
 spatial frequency and not on orientation.
 
-On the first training trial, participants were shown six gems sampled from around
-the origin `(0,0)` of the stimulus space. On subsequent training trials, gems
-were sampled from around the position of the gem $(x_{ori},y_{bw})$ selected on the
-previous trial.
+On the first training trial, participants were shown six gems sampled from
+around the origin `(0,0)` of the stimulus space. On subsequent training trials,
+gems were sampled from around the position of the gem
+$(x_{orientation},y_{bar\ width})$ selected on the previous trial.
 
-After selecting a gem, participants were shown the
+In the training trials, after selecting a gem, participants were shown the
 values of all six gems, and had to click on the most valuable gem in the display
-to continue. This second response was to encourage
-participants to learn which gabors were the most valuable so they could select
-the most valuable gem on each trial. If the participant had correctly selected
-the most valuable gem in their first response, they were congratulated for
-making the correct choice, and told to click on the gem they selected again. An
-example training trial is shown in Fig. \@ref(fig:training-trial).
+to continue. This second response was to encourage participants to learn which
+gabors were the most valuable so they could select the most valuable gem on each
+trial. If the participant had correctly selected the most valuable gem in their
+first response, they were congratulated for making the correct choice, and told
+to click on the gem they selected again.
 
 ### Test {-}
 
 After completing the training trials, participants completed four blocks of 40
-trials. Participants were given a break after each block, and told that for
+test trials. Participants were given a break after each block, and told that for
 the next block, they may encounter gems that they had not seen before.
 
 All test trials were conducted on the same simple hill landscape, defined above.
@@ -298,13 +265,13 @@ participants, one in each training condition.
 
 ## Training {-}
 
-The purpose of the training procedure was for participants to learn to pay
-attention to orthogonal dimensions of the gem stimuli. To verify whether the
-training procedure worked, we measured the extent to which participants
+The purpose of the training procedure was to induce participants to pay
+attention to independent dimensions of the gabor stimuli. To verify the success
+of the training procedure, we measured the extent to which participants
 selected stimuli in each training trial corresponding to their training
 condition.
 
-Participants in either training condition traversed the same stimulus space
+Participants in both training conditions traversed the same stimulus space
 in orthogonal directions (Fig. \@ref(fig:gems-training)). Participants selected
 gems that moved them closer to the most valuable gems on their particular
 landscape. The relationship was linear,
@@ -315,9 +282,11 @@ Although participants in both training conditions proceeded in orthogonal
 directions, they did not do so equally. Participants trained on bar width were
 able to move further toward their peak gem in fewer trials than participants
 trained on orientation, `r r_$training_distance_linear_trial_v_instructions`.
+This difference between training conditions was unintentional, but it does not
+challenge the goals of the experiment.
 
 (ref:gems-training) Results of training procedure. Participants were randomly
-assigned to either the orientation or the spatial frequency condition.
+assigned to either the orientation or the bar width condition.
 **A. Position.** Participants in either training condition traversed the
 same stimulus space in orthogonal directions, each progressing toward the
 optimal stimulus value in the trained dimension. **B. Distance.** Grid positions
@@ -334,22 +303,34 @@ gridExtra::grid.arrange(
 ```
 
 We also measured the perceptual sensitivity of participants to the different
-stimulus dimensions. For our analysis, we transformed the stimulus dimensions
-of the gems displayed on each trial to be relative to the optimal value along
-that dimension. These relative values were then mean centered so that they
-formed a normal distribution. Positive values in the transformed stimulus
-dimension mean that the gem that was selected on a particular trial was closer
-to the optimal gem in that dimension. We fit two models, one predicting
-sensitivity to the orientation dimension, and one predicting
-sensitivity to the spatial frequency dimension. In the models, we included
-the instruction condition of the participants. We expected participants
-in either training condition to be more sensitive to to their trained dimension
-than the orthogonal dimension.
+stimulus dimensions on a trial-by-trial basis. For this analysis, we transformed
+the stimulus dimensions of the gems displayed on each trial to be relative to
+the optimal value along that dimension. For example, for a participant assigned
+to the orientation training condition, gems with orientations at at grid points
+40 and 60 were both 10 units away from the peak orientation at 50 units. These
+relative values were then mean centered for each trial such that positive values
+indicate that the gem was closer to the optimal gem in that dimension than the
+other gems on that trial. Using these tranformed values, we fit two models, one
+predicting sensitivity to the orientation dimension, and another predicting
+sensitivity to the bar width dimension. In the models, we included the
+instruction condition of the participants. We expected participants in either
+training condition to be more sensitive to to their trained dimension than the
+untrained dimension.
 
-(ref:gems-training-sensitivities) Sensitivity to stimulus dimensions.
+As expected, participants trained on either stimulus dimension selected
+gems on each trial that moved them closer to the optimal stimulus value
+in that dimension, orientation: `r r_$training_sensitivity_ori`, bar width: `r r_$training_sensitivity_sf`.
+
+(ref:gems-training-sensitivities) Sensitivity to stimulus dimensions in the training
+procedure.
 
 ```{r gems-training-sensitivities, fig.width=6, fig.height=3, fig.cap="(ref:gems-training-sensitivities)"}
-training_sensitivity_plot
+gridExtra::grid.arrange(
+  training_sensitivity_plot,
+  training_sensitivity_trained_dimensions_plot,
+  nrow = 1,
+  widths = c(0.66, 0.34)
+)
 ```
 
 ## First generation {-}
@@ -456,38 +437,6 @@ predictable_plot <- ggplot(Survey) +
 
 # Discussion {-}
 
-# Appendix {-}
 
-(ref:training) Exact instructions given to participants in either training condition. The instructions differ in the first paragraph and in the sample gabors shown
-on the screen.
 
-```{r training, fig.width=8, fig.cap="(ref:training)"}
-gridExtra::grid.arrange(
-  crotchet::read_image("training_orientation", package = "gems"),
-  crotchet::read_image("training_spatial_frequency", package = "gems"),
-  nrow = 1
-)
-```
 
-(ref:training-trial) Training trial procedure. Participants received
-feedback in the form of relative changes in their score for each of
-the six stimuli on a trial.
-
-```{r training-trial, fig.width=8, fig.cap="(ref:training-trial)"}
-gridExtra::grid.arrange(
-  crotchet::read_image("training_trial", package = "gems"),
-  crotchet::read_image("training_trial_feedback", package = "gems"),
-  nrow = 1
-)
-```
-
-(ref:test-trial) Test trial procedure. Participants received feedback in the
-form of the relative change in their score after each selection.
-
-```{r test-trial, fig.width=8, fig.cap="(ref:test-trial)"}
-gridExtra::grid.arrange(
-  crotchet::read_image("test_trial", package = "gems"),
-  crotchet::read_image("test_trial_feedback", package = "gems"),
-  nrow = 1
-)
-```
