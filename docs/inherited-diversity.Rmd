@@ -185,6 +185,13 @@ gridExtra::grid.arrange(
 )
 ```
 
+```{r gems-landscape}
+gridExtra::grid.arrange(
+  crotchet::read_image("trial", package = "gems"),
+  simple_hill_landscape
+)
+```
+
 ## Materials {-}
 
 ### Gabors {-}
