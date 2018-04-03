@@ -1,5 +1,6 @@
 name: gems
 root: ~/PhD/gems
+tmux_options: -2
 windows:
   - main:
       layout: 10d3,160x58,0,0{79x58,0,0,0,80x58,80,0[80x28,80,0,2,80x29,80,29,3]}
@@ -11,7 +12,7 @@ windows:
       layout: main-vertical
       panes:
         - cd docs && vim inherited-diversity.Rmd
-        - cd docs && ls
+        - cd docs
   - experiment:
       layout: even-horizontal
       root: ~/PhD/gems/experiment
