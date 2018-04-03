@@ -4,7 +4,20 @@ bibliography: references.bib
 output:
   bookdown::pdf_document2:
     toc: false
-  bookdown::html_document2: {}
+    includes:
+      in_header: templates/header.tex
+abstract: |
+  One of the consequences of our system of cultural inheritance is that problem
+  solvers rarely have to start from scratch when solving new problems. Instead,
+  they start off with solutions that were discovered by a previous generation.
+  Here we investigated the impact of starting off a problem solving task with a
+  partial solution discovered by someone else on future problem solving
+  performance. We found that teams of complementary problem solvers, who learned
+  different but complementary skills, outperformed equally skilled individuals
+  given the same total number of trials. The results illustrate how our system
+  of cultural inheritance can cumulatively improve problem solving performance
+  over generations beyond what would be achieved by individuals working alone.
+keywords: cultural evolution, problem solving, diachronic collaboration
 ---
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
@@ -89,6 +102,18 @@ at the halfway point.
 ```{r methods}
 ```
 
+(ref:gems-team-structures) Team structures. Participants were trained to pay
+attention to either orientation (ori) or bar width (bw), and assigned to
+generations. First generation participants (top row) completed the task as
+**isolated** individuals. Second generation participants were assigned to inherit
+from a first generation participant trained on the same dimension (**congruent**,
+middle row), or on different dimensions (**complementary**, bottom row). Left and
+right panels illustrate counterbalancing conditions.
+
+```{r gems-team-structures, fig.width=8, fig.cap="(ref:gems-team-structures)"}
+crotchet::draw_graphviz("team-structures-counterbalanced", package = "gems")
+```
+
 Participants completed a perceptual discrimination task where they were
 presented displays of sinusoidal gabor patch stimuli that varied in orientation
 and spatial frequency. We asked them to think of the gabors as precious gems on a
@@ -105,46 +130,35 @@ were the most important.
 
 On each trial, participants selected one of six gabor patches they thought was
 the most valuable. The six gabors presented on each trial were sampled within a
-certain distance in the stimulus space of the previously selected gem. In order
-to find the most valuable gems, participants had to traverse the solution
-landscape in a series of incremental steps.
+certain distance from the previously selected gem. The sampling procedure is
+described in the procedure, below. As participants selected gems across trials,
+they effectively traversed the solution landscape in a series of
+incremental steps.
 
 Participants were trained to pay attention to either the orientation or the bar
 width of the gems. The training procedure consisted of written instructions
 and 30 training trials. The training procedure is detailed below.
 
 Participants were also assigned to the first or second generation. First
-generation participants started at the origin `(0,0)` on each landscape. Second
-generation participants were randomly assigned to inherit from a first
-generation participant. They inherited the location on the landscape of the gem
-selected by the first generation participant after a certain number of trials.
-There was no interaction between first and second generation participants other
-than that second generation participants started each landscape off in a
-different part of the landscape than their first generation predecessors.
+generation participants started at the origin $(0_{ori},0_{bw})$ on each
+landscape. Second generation participants were assigned to inherit from a first
+generation participant. They inherited the location on the landscape
+$(x_{ori},y_{bw})$ of the gem selected by the first generation participant after
+a certain number of trials. There was no interaction between first and second
+generation participants other than that second generation participants started
+each landscape off in a different part of the landscape than their first
+generation predecessors.
 
-In our analyses, we compared three problem solving strategies. Congruent teams
-were made of participants trained to pay attention to the same stimulus
-dimension---either orientation or bar width. Complementary teams were made of
-participants trained on different stimulus dimensions. As a control, we also
-compared the performance of individuals trained on a single dimension who
-completed the same total number of trials on their own. We hypothesized that
-complementary teams of problem solvers would be more efficient at traversing
-the solution landscapes than congruent teams or isolated individuals trained
-to discriminate the same stimulus dimensions.
-
-(ref:gems-team-structures-instructions) Team structures by instructions.
-Participants were trained to pay attention to either orientation or bar width,
-and assigned to generations. First generation participants completed the task as
-isolated individuals. Second generation participants were assigned to inherit
-from a first generation participant.
-
-```{r gems-team-structures, fig.width=8, fig.cap="(ref:gems-team-structures-instructions)"}
-gridExtra::grid.arrange(
-  crotchet::read_graphviz("team-structures-instructions", package = "gems"),
-  crotchet::read_graphviz("team-structures-generations", package = "gems"),
-  nrow = 1, widths = c(0.45, 0.55)
-)
-```
+In our analyses, we compared three strategies for finding the most valuable gems
+(Fig. \@ref(fig:gems-team-structures)). Congruent teams were made of
+participants trained to pay attention to the same stimulus dimension---either
+orientation or bar width. Complementary teams were made of participants trained
+on different stimulus dimensions. We also compared the performance of
+individuals trained on a single dimension who completed the same total number of
+trials on their own. We hypothesized that complementary teams of problem solvers
+would be more efficient at traversing the solution landscapes than congruent
+teams or isolated individuals trained to discriminate the same stimulus
+dimension.
 
 ## Materials {-}
 
@@ -157,7 +171,7 @@ were sampled at geometric intervals from `r methods$min_sf` cycles/pixel to
 `r methods$max_sf` cycles/pixel. A geometric progression was used because high
 spatial frequencies are harder to distinguish than low spatial frequencies.
 
-### Solution landscapes {-}
+### Landscapes {-}
 
 The three different solution landscapes we used are show in Fig.
 \@ref(fig:landscapes). There were two training landscapes, and one test
@@ -172,7 +186,7 @@ The simple hill landscape was symmetric with regard to training condition,
 such that both instructions conditions were equally informative about the values
 of the gems in the test landscape.
 
-(ref:landscapes) Training and test landscapes. Participants assigned to the
+(ref:landscapes) Landscapes. Participants assigned to the
 orientation or bar width condition completed the training trials on the
 corresponding landscape. All participants completed the test trials on the same
 simple hill landscape.
@@ -186,7 +200,7 @@ gridExtra::grid.arrange(
 )
 ```
 
-### Post experiment survey {-}
+### Survey {-}
 
 After finishing the main experiment, participants completed a short survey. We
 asked the participants to recall the instructions they received, to describe how
@@ -207,7 +221,7 @@ block of 30 training trials. After the training trials, they completed four
 blocks of 40 test trials. When finished, participants completed the
 post-experiment survey. The experiment took around 30 minutes to complete.
 
-### Training {-}
+### Training trial procedure {-}
 
 Participants were randomly assigned to one of two training conditions. In the
 orientation condition, participants read in their instructions that the value
@@ -222,9 +236,9 @@ that was biased so that the values of the gems were dependent completely on
 spatial frequency and not on orientation.
 
 On the first training trial, participants were shown six gems sampled from
-around the origin `(0,0)` of the stimulus space. On subsequent training trials,
+around the origin $(0_{ori},0_{bw})$ of the stimulus space. On subsequent training trials,
 gems were sampled from around the position of the gem
-$(x_{orientation},y_{bar\ width})$ selected on the previous trial.
+$(x_{ori},y_{bw})$ selected on the previous trial.
 
 In the training trials, after selecting a gem, participants were shown the
 values of all six gems, and had to click on the most valuable gem in the display
@@ -234,7 +248,7 @@ trial. If the participant had correctly selected the most valuable gem in their
 first response, they were congratulated for making the correct choice, and told
 to click on the gem they selected again.
 
-### Test {-}
+### Test trial procedure {-}
 
 After completing the training trials, participants completed four blocks of 40
 test trials. Participants were given a break after each block, and told that for
@@ -243,8 +257,8 @@ the next block, they may encounter gems that they had not seen before.
 All test trials were conducted on the same simple hill landscape, defined above.
 Participants traversed the simple hill landscape four times. First generation
 participants started each block with 6 gems sampled from around the origin
-`(0,0)`. Second generation participants participants started off at the location of
-a first generation participant after 20 trials. First and second generation
+$(0_{ori},0_{bw})$. Second generation participants participants started off at the location of
+a first generation participant after 20 trials, $(x_{ori},y_{bw})$. First and second generation
 participants were yoked over blocks such that second generation participants
 inherited from the same first generation participant a total of four times, one
 for each block.
@@ -256,7 +270,7 @@ completed the experiment in exchange for course credit. We decided to collect
 data for 40 first generation participants, and 80 second generation
 participants. There were twice as many second generation participants because
 each first generation participant was yoked to two second generation
-participants, one in each training condition.
+participants, one in each training condition (see Fig. \@ref(fig:gems-team-structures)).
 
 # Results {-}
 
@@ -265,37 +279,38 @@ participants, one in each training condition.
 
 ## Training {-}
 
-The purpose of the training procedure was to induce participants to pay
-attention to independent dimensions of the gabor stimuli. To verify the success
-of the training procedure, we measured the extent to which participants
-selected stimuli in each training trial corresponding to their training
-condition.
+The purpose of the training procedure was for participants to learn to pay
+attention to independent dimensions of the gabor stimuli corresponding
+to their training condition. To verify the success of the training procedure, we
+measured the extent to which participants selected stimuli in each training
+trial corresponding to their training condition.
 
 Participants in both training conditions traversed the same stimulus space
-in orthogonal directions (Fig. \@ref(fig:gems-training)). Participants selected
-gems that moved them closer to the most valuable gems on their particular
-landscape. The relationship was linear,
-`r r_$training_distance_linear_trial`, with most participants reaching the peak
+in orthogonal directions (Fig. \@ref(fig:gems-training)A). As expected,
+participants selected gems on each trial that were closer to
+the most valuable gems on their assigned training landscape. The relationship was
+linear, `r r_$training_distance_linear_trial`, with most participants reaching the peak
 of the training landscape within 30 trials.
 
 Although participants in both training conditions proceeded in orthogonal
 directions, they did not do so equally. Participants trained on bar width were
-able to move further toward their peak gem in fewer trials than participants
-trained on orientation, `r r_$training_distance_linear_trial_v_instructions`.
-This difference between training conditions was unintentional, but it does not
-challenge the goals of the experiment.
+able to hone in on the optimal stimuli in fewer trials than participants
+trained on orientation, `r r_$training_distance_linear_trial_v_instructions`
+(Fig. \@ref(fig:gems-training)B).
 
-(ref:gems-training) Results of training procedure. Participants were randomly
-assigned to either the orientation or the bar width condition.
-**A. Position.** Participants in either training condition traversed the
-same stimulus space in orthogonal directions, each progressing toward the
-optimal stimulus value in the trained dimension. **B. Distance.** Grid positions
-were converted to distances relative to the optimal value in each dimension.
-**C. Score.** Cumulative increases in score over trials.
+(ref:gems-training) Results of training procedure. Participants were
+randomly assigned to either the orientation or the bar width condition.
+**A. Grid positions.** Participants in both training conditions started at
+$(0_{ori},0_{bw})$ and traversed the same stimulus space in orthogonal
+directions, each progressing toward the optimal stimulus value in the trained
+dimension. **B. Distance.** Grid positions were converted to 1D distances
+relative to the optimal value in each dimension. **C. Score.** Cumulative
+increases in score over trials, indicating that participants were selecting
+incrementally more valuable gems over trials.
 
 ```{r gems-training, fig.width=10, fig.height=4, fig.cap="(ref:gems-training)"}
 gridExtra::grid.arrange(
-  training_positions_plot + ggtitle("A. Position"),
+  training_positions_plot + ggtitle("A. Grid position"),
   training_distance_plot + ggtitle("B. Distance"),
   training_scores_plot + ggtitle("C. Score"),
   nrow = 1
@@ -306,96 +321,68 @@ We also measured the perceptual sensitivity of participants to the different
 stimulus dimensions on a trial-by-trial basis. For this analysis, we transformed
 the stimulus dimensions of the gems displayed on each trial to be relative to
 the optimal value along that dimension. For example, for a participant assigned
-to the orientation training condition, gems with orientations at at grid points
-40 and 60 were both 10 units away from the peak orientation at 50 units. These
-relative values were then mean centered for each trial such that positive values
-indicate that the gem was closer to the optimal gem in that dimension than the
-other gems on that trial. Using these tranformed values, we fit two models, one
+to the orientation training condition, gems with orientations at grid points
+40 and 60 were both 10 units away from the optimal orientation at 50 units. These
+relative values were then centered for each trial such that positive values
+indicated that the gem was an improvement in score relative to the
+other gems on that trial. Using these transformed values, we fit two models, one
 predicting sensitivity to the orientation dimension, and another predicting
-sensitivity to the bar width dimension. In the models, we included the
-instruction condition of the participants. We expected participants in either
-training condition to be more sensitive to to their trained dimension than the
-untrained dimension.
+sensitivity to the bar width dimension. We included the instruction condition
+of the participants in the models. We expected participants in either training
+condition to be more sensitive to to their trained dimension than the untrained
+dimension.
 
 As expected, participants trained on either stimulus dimension selected
 gems on each trial that moved them closer to the optimal stimulus value
-in that dimension, orientation: `r r_$training_sensitivity_ori`, bar width: `r r_$training_sensitivity_sf`.
+in that dimension, orientation: `r r_$training_sensitivity_ori`, bar width:
+`r r_$training_sensitivity_sf`. To compare the effectiveness of either training
+condition, we transformed the sensitivities to be relative to training
+condition. Unlike in the analysis of distance reported above, our
+trial-by-trial analysis failed to reveal a difference between training conditions,
+`r r_$training_sensitivity_trained_dimension_by_instructions`.
 
 (ref:gems-training-sensitivities) Sensitivity to stimulus dimensions in the training
-procedure.
+procedure. Each thin line is the average sensitivity for a single participant.
+Thick lines correspond to the predictions of the hierarchical linear model.
+**A.** Sensitivity to orientation and bar width separated by training condition.
+**B.** Trained dimension collapsed over training condition.
 
-```{r gems-training-sensitivities, fig.width=6, fig.height=3, fig.cap="(ref:gems-training-sensitivities)"}
+```{r gems-training-sensitivities, fig.width=8, fig.height=3, fig.cap="(ref:gems-training-sensitivities)"}
 gridExtra::grid.arrange(
-  training_sensitivity_plot,
-  training_sensitivity_trained_dimensions_plot,
+  training_sensitivity_plot + ggtitle("A. Sensitivity to orientation and bar width"),
+  training_sensitivity_trained_dimensions_plot +
+    ggtitle("B. Trained dimension") +
+    # removing y-axis title and legend because of compound plot
+    theme(
+      axis.title.y = element_blank(),
+      legend.position = "none"
+    ),
   nrow = 1,
   widths = c(0.66, 0.34)
 )
 ```
 
-## First generation {-}
-
-(ref:gen1-results) Results of first generation problem solvers. Each line is a
-participant. **A. Position** on the solution landscape. **B. Distance** between current location and 2D peak. **C. Score** over trials.
-
-```{r gen1-results, fig.width=8, fig.height=10, fig.cap="(ref:gen1-results)"}
-gridExtra::grid.arrange(
-  gen1_positions_plot + ggtitle("A. Position"),
-  gen1_distance_plot + ggtitle("B. Distance"),
-  gen1_scores_plot + ggtitle("C. Score"),
-  nrow = 3
-)
-```
-
-(ref:gen1-final-scores) First generation performance by block.
-
-```{r gen1-final-scores, fig.width=6, fig.cap="(ref:gen1-final-scores)"}
-gridExtra::grid.arrange(
-  gen1_final_scores_plot + ggtitle("A. Final scores"),
-  gen1_final_distances_plot + ggtitle("B. Distance to peak"),
-  nrow = 1
-)
-```
-
-## Second generation {-}
-
-(ref:gen2-results) Second generation results.
-
-```{r gen2-results, fig.width=8, fig.height=10, fig.cap="(ref:gen2-results)"}
-gridExtra::grid.arrange(
-  gen2_positions_plot + ggtitle("A. Position"),
-  gen2_distance_plot + ggtitle("B. Distance"),
-  gen2_scores_plot + ggtitle("C. Score"),
-  nrow = 3
-)
-```
-
-(ref:gen2-final-scores) Second generation performance by block.
-
-```{r gen2-final-scores, fig.width=6, fig.cap="(ref:gen2-final-scores)"}
-gridExtra::grid.arrange(
-  gen2_final_scores_plot + ggtitle("A. Final scores"),
-  gen2_final_distances_plot + ggtitle("B. Distance to peak"),
-  nrow = 1
-)
-```
+The results of the training procedure indicate that participants were
+successfully able to discriminate independent dimensions of the gabor patch
+stimuli. We now turn to our primary hypothesis of whether participants trained
+on independent dimensions were able to coordinate their problem solving
+behavior more effectively than participants trained on the same dimension.
 
 ## Strategies {-}
 
-```{r gems-generation2, fig.width=8}
-Gems %>%
-  filter(subj_id == "GEMS120" | ancestor_id == "GEMS120",
-         landscape_ix != 0, team_trial <= 40) %>%
-  ggplot() +
-    aes(team_trial, score, group = subj_id, color = instructions) +
-    geom_line(aes(linetype = factor(generation))) +
-    facet_wrap("landscape_ix", nrow = 1) +
-    t_$theme +
-    theme(legend.position = "bottom")
-```
+To understand whether complementary problem solvers were able to exceed
+the problem solving performance of the control strategies, we predicted
+performance after 20 trials of the second generation participants to performance
+after the same number of trials of the other conditions.
 
-(ref:strategies) Hill climbing performance. **A. Scores** correspond to heights
-on the landscape, and **C. Distances** correspond to Euclidean distances between
+In terms of score after 20 trials, complementary problem solvers were able
+to achieve higher scores than both isolated and congruent strategies,
+`r r_$strategies_scores_helmert_mod_main`, with no residual difference
+between isolated and congruent strategies, `r r_$strategies_scores_helmert_mod_resid`,
+(Fig. \@ref(fig:strategies)A).
+
+(ref:strategies) Hill climbing performance. **A.** Scores correspond to heights
+on the landscape, and **C.** Distances correspond to Euclidean distances between
 current location and peak in the landscape. **B.** and **D.** show these same
 measures controlling for starting position.
 
@@ -409,34 +396,10 @@ gridExtra::grid.arrange(
 )
 ```
 
-## Post experiment survey {-}
+(ref:sensitivities) Sensitivity to trained and untrained dimensions by team strategy.
 
-```{r survey}
-data("Survey")
-
-questions <- data_frame(question_text = colnames(Survey)) %>%
-  mutate(question_id = c("timestamp", "subj_id", "computer", "age", "gender", paste0("Q", 1:9))) %>%
-  select(question_id, question_text)
-
-get_question_text <- function(question_id) {
-  questions[questions$question_id == question_id, ]$question_text
-}
-
-colnames(Survey) <- questions$question_id
-
-predictable_plot <- ggplot(Survey) +
-  aes(Q7) +
-  geom_bar(stat = "count", width = 0.95) +
-  scale_x_continuous("", breaks = 1:5, labels = c("1\nRandom", 2, 3, 4, "5\nPredictable")) +
-  ggtitle(get_question_text("Q7")) +
-  coord_cartesian(expand = FALSE) +
-  t_$theme +
-  theme(panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank())
+```{r sensitivities, fig.width=8, fig.cap="(ref:sensitivities)"}
+sensitivities_plot
 ```
 
 # Discussion {-}
-
-
-
-
