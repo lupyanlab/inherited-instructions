@@ -126,7 +126,7 @@ generations. First generation participants (top row) completed the task as
 **isolated** individuals. Second generation participants were assigned to inherit
 from a first generation participant trained on the same dimension (**congruent**,
 middle row), or on different dimensions (**complementary**, bottom row). Left and
-right panels illustrate counterbalancing conditions.
+right panels show counterbalanced conditions.
 
 ```{r gems-team-structures, fig.width=8, fig.cap="(ref:gems-team-structures)"}
 crotchet::draw_graphviz("team-structures-counterbalanced", package = "gems")
@@ -152,6 +152,18 @@ certain distance from the previously selected gem. The sampling procedure is
 described in the procedure, below. As participants selected gems across trials,
 they effectively traversed the solution landscape in a series of
 incremental steps.
+
+(ref:gems-trial) Procedure. On each trial, participants were shown six gabor patches
+referred to as "gems". Each gem was assigned a value. As participants selected gems
+across trials, they navigated the stimulus space of all possible gems.
+
+```{r gems-trial, fig.width=6, fig.cap="(ref:gems-trial)"}
+gridExtra::grid.arrange(
+  crotchet::read_image("trial", package = "gems"),
+  trial_plot,
+  nrow = 1
+)
+```
 
 Participants were trained to pay attention to either the orientation or the bar
 width of the gems. The training procedure consisted of written instructions

@@ -30,6 +30,34 @@ orientation_bias_landscape <- make_landscape(OrientationBias, "Orientation bias"
 spatial_frequency_bias_landscape <- make_landscape(SpatialFrequencyBias, "Bar width bias")
 simple_hill_landscape <- make_landscape(SimpleHill, "Simple hill")
 
+# * trial-plot ----
+path_data <- data_frame(
+  x = c(0, 4, 9),
+  xend = c(4, 9, 10),
+  y = c(0, 1, 5),
+  yend = c(1, 5, 10)
+)
+
+gem_data <- data_frame(
+  x = c(7, 8, 14, 6, 17, 10),
+  y = c(3, 6, 12, 13, 8, 17)
+)
+
+radius_data <- data_frame(
+  x0 = 10,
+  y0 = 10,
+  r = 8
+)
+
+trial_plot <- ggplot() +
+  geom_point(aes(x, y), data = gem_data) +
+  geom_segment(aes(x, y, xend = xend, yend = yend), data = path_data) +
+  ggforce::geom_circle(aes(x0 = x0, y0 = y0, r = r), data = radius_data) +
+  coord_fixed(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE) +
+  scale_x_continuous("orientation", breaks = seq(0, 70, by = 10)) +
+  scale_y_continuous("bar width", breaks = seq(0, 70, by = 10)) +
+  t_$theme
+
 # ---- results ----
 data("Gems")
 data("OrientationBias")
