@@ -2,6 +2,11 @@ library(tidyverse)
 library(gems)
 data("Gems")
 
+TestLandscapeCurrentScores <- SimpleHill %>%
+  select(current_x = x, current_y = y, current_score = score)
+TestLandscapeStims <- SimpleHill %>%
+  select(gem_x = x, gem_y = y, gem_score = score, gem_ori = ori, gem_sf = sf)
+
 Search <- Gems %>%
   filter(landscape_ix == 0, team_trial >= 19, team_trial <= 39) %>%
   left_join(TestLandscapeCurrentScores) %>%
