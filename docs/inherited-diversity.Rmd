@@ -38,22 +38,43 @@ problem solving knowledge from one generation to the next. Cultural
 transmission is notoriously imperfect when compared to genetic transmission
 [@Sperber:1996exc; @Claidiere:2010kd]. Yet the human ability to transmit
 cultural information far exceeds the abilities of any non-human animals
-[@Tennie:2009gaa]. Humans have evolved a number of abilities that improve the
-success of cultural transmission, including imitation, teaching, and language
-[@Lewis:2012jg; @Dean:2012gv]. As a result, problem solvers rarely have to
-start from scratch when solving new problems. Instead, they start off with the
-solutions that were inherited from a previous generation. What are the
-consequences of inheriting from a previous generation on future problem
-solving performance?
+[@Tomasello:1993rat; @Tennie:2009gaa; @Dean:2012gv]. As a result, problem
+solvers rarely have to start from scratch when solving new problems, and
+instead can start off with the solutions that were inherited from a previous
+generation. What are the consequences of inheriting from a previous generation
+on future problem solving behavior?
+
+Humans have evolved a number of abilities including imitation, teaching,
+and language that improve the success of cultural inheritance, or what
+is known as high fidelity cultural transmission [@Lewis:2012jg; @Dean:2012gv].
+The idea that some problem solving behaviors can be accurately copied
+by others via social learning is uncontroversial, but what is not fully
+agreed upon is the importance of accurate transmission in explaining
+the nature of human cultural evolution. Sperber and others [-@Sperber:1996exc;
+@Claidiere:2010kd] have argued that accurate copying is rare, and
+that cultural transmission is better understood as a
+transformative process as opposed to a replicative one.
+
+Tomasello and others [-@Tomasello:1993rat; @Tennie:2009gaa] have argued that
+accurate transmission is clearly important in many problem solving domains.
+Accurate transmission of problem solving knowledge is important both because it
+enables others to benefit from complex solutions they themselves could not have
+created, but also because accurate transmission increases the likelihood that
+future generations could cumulatively improve upon the solutions discovered by
+their ancestors. On this view, the human propensity to incrementally improve
+solutions to problems over generations is a driving force in human cultural
+evolution.
 
 The primary benefit to being able to inherit problem solving knowledge from
 a previous generation is believed to be that it gives future generations a head
 start on problem solving. Rather than each new generation striving to solve the
 same problems over and over again, future generations can save the time it
-would have taken to solve some problem on their own, and instead can spend
+would have taken to solve the same problem on their own. Instead, they can spend
 their time solving new problems, not attempted by previous generations. As
 a result, cultural inheritance allows for problem solving to extend far longer
-than any individual lifetime. Over time, we have come to depend on this system
+than any individual lifetime.
+
+Over time, we have come to depend on this system
 of cultural inheritance to the point that human cultures are able to solve
 problems that no individual could attempt on their own [@Henrich:2015srt;
 @Boyd:2017diff].
