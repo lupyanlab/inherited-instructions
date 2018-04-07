@@ -8,17 +8,18 @@ output:
       in_header: templates/header.tex
 abstract: |
   Humans have evolved a system of cultural inheritance that enables the
-  accumulation of problem solving knowledge over generations. As a consequence,
-  problem solvers rarely have to start from scratch when solving new problems.
-  Instead, they start off with solutions that were discovered by a previous
-  generation. Here we investigated the impact of inheritance---starting off
-  a problem solving task with a solution discovered by someone else---on future
-  problem solving performance. We sought to understand the conditions under
-  which inheritance might improve problem solving performance. We found that
-  generations of complementary problem solvers, who learned different but
-  complementary skills, outperformed equally skilled individuals given the same
-  total number of trials. These results illustrate one way in which our system
-  of cultural inheritance results in cumulative improvements in problem solving
+  accumulation of problem solving knowledge over generations such that human
+  problem solvers rarely have to start from scratch when solving problems, and
+  instead can start off with solutions discovered by a previous generation. Here
+  we investigated the impact of inheritance on future problem solving
+  performance. We sought to understand the conditions under which inheritance
+  could improve problem solving performance. In Experiment 1, we simulated the
+  effect of inheritance on problem solving, and discovered that generations of
+  complementary problem solvers, who learned different but complementary skills,
+  outperformed equally skilled individuals given the same total number of
+  trials. In Experiment 2, we tested these predictions in a behavioral
+  experiment. These results illustrate one way in which our system of cultural
+  inheritance may result in cumulative improvements to problem solving
   performance over generations.
 ---
 ```{r inherited-diversity-config, include=FALSE}
@@ -40,7 +41,7 @@ problem solving knowledge from one generation to the next. Cultural
 transmission is notoriously imperfect when compared to genetic transmission
 [@Sperber:1996exc; @Claidiere:2010kd]. Yet the human ability to transmit
 cultural information far exceeds the abilities of any non-human animals
-[@Tomasello:1993rat; @Tennie:2009gaa; @Dean:2012gv]. As a result, problem
+[@Tomasello:1993vh; @Tennie:2009gaa; @Dean:2012gv]. As a result, problem
 solvers rarely have to start from scratch when solving new problems, and
 instead can start off with the solutions that were inherited from a previous
 generation. What are the consequences of inheriting from a previous generation
@@ -56,7 +57,7 @@ others [-@Sperber:1996exc; @Claidiere:2010kd] have argued that accurate copying
 is possible but rare, and that cultural transmission is better understood as a
 transformative process as opposed to a replicative one.
 
-Tomasello and others [-@Tomasello:1993rat; @Tennie:2009gaa] have argued that
+Tomasello and others [-@Tomasello:1993vh; @Tennie:2009gaa] have argued that
 accurate transmission is clearly important in many problem solving domains.
 Accurate transmission of problem solving knowledge is important for two reasons.
 First, it allows others to benefit from complex solutions they themselves could
@@ -139,6 +140,8 @@ Second generation problem solvers attempted the same problem solving
 task but starting at where the first generation problem solvers had been
 at the halfway point.
 
+# General Methods {-}
+
 # Experiment 1 {-}
 
 ```{r peaks-setup}
@@ -154,46 +157,22 @@ The primary constraint on problem solving success is time.
 ```{r peaks-methods}
 ```
 
-### Landscapes {-}
-
-(ref:simple-hill) A simple solution landscape. Agents varied in vision in either
-x or y dimension. On each trial agents sampled a random position within their
-visual range, and if it was higher on the landscape than they were currently, they
-moved there.
-
-```{r simple-hill, fig.cap='(ref:simple-hill)'}
-limits <- seq(-100, 100, by = 10)
-z <- expand.grid(x = limits, y = limits) %>%
-     mutate(z = -x^2 - y^2)
-lattice::wireframe(z ~ x * y, data = z)
-```
-
-### Ability as vision {-}
+Agents attempted to find the peak of a solution landscape via a random walk
+process. In the simulations, for each unit of time, the agents sampled a random
+location in the space of possible solutions in a certain distance of the
+current location.
 
 (ref:ability-as-vision) Ability as vision. Teams of two agents could allocate
 the same total skill in different ways. Identical teams shared the same abilities
 in both dimensions. Complementary teams had "equal but opposite" skills.
 
-```{r ability-as-vision, fig.width=6, fig.height=6, fig.cap='(ref:ability-as-vision)'}
+```{r ability-as-vision, fig.width=6, fig.height=8, fig.cap='(ref:ability-as-vision)'}
 grid.arrange(
-  arrangeGrob(gg_single_dimension, gg_two_dimensions, nrow = 1),
-  gg_differing_skills,
+  gg_two_dimensions + ggtitle("A. Vision in two dimensions"),
+  gg_search_rects + ggtitle("B. Search areas"),
+  gg_differing_skills + ggtitle("C. Two person teams varying in vision distribution"),
   ncol = 1
 )
-```
-
-### Vision and search areas {-}
-
-(ref:search-areas) Search areas for individual agents.
-
-```{r search-areas, fig.width=8, fig.height=2, fig.cap='(ref:search-areas)'}
-gg_search_rects
-```
-
-(ref:search-areas-by-strategy) Search areas for teams of agents.
-
-```{r search-areas-by-strategy, fig.cap='(ref:search-areas-by-strategy)'}
-gg_search_areas_by_strategy
 ```
 
 ## Results {-}
@@ -201,13 +180,20 @@ gg_search_areas_by_strategy
 ```{r peaks-experiments}
 ```
 
-```{r differing-skills, fig.width=10, fig.keep="last"}
-grid.arrange(gg_differing_skills_timeline,
-             gg_differing_skills_final_fitness,
-             nrow = 1)
+(ref:differing-skills) Results of agent-based model simulations.
+
+```{r differing-skills, fig.width=8, fig.height=4, fig.cap="(ref:differing-skills)"}
+limits <- seq(-100, 100, by = 10)
+z <- expand.grid(x = limits, y = limits) %>%
+     mutate(z = -x^2 - y^2)
+simple_hill <- lattice::wireframe(z ~ x * y, data = z)
+
+grid.arrange(simple_hill, gg_differing_skills_timeline, nrow = 1)
 ```
 
-```{r differing-skills-walk, fig.width = 8, fig.height = 5}
+(ref:differing-skills-walk) Grid positions of agent-based models by skill distribution.
+
+```{r differing-skills-walk, fig.width=8, fig.height=2.5, fig.cap="(ref:differing-skills-walk)"}
 gg_differing_skills_walk
 ```
 

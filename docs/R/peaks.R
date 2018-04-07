@@ -9,6 +9,12 @@ library(peaks)
 library(crotchet)
 
 library(RColorBrewer)
+library(lattice)
+
+# Remove bounding box around all lattice plots.
+# Also removes axis arrows!
+trellis.par.set("axis.line",list(col=NA,lty=1,lwd=1))
+
 base_theme <- theme_minimal()
 
 theme_colors <- brewer.pal(4, "Set2")
@@ -113,7 +119,7 @@ tradeoffs_plot <- ggplot() +
            stat = "identity", position = dodge_width) +
   facet_wrap("team_label_rev", nrow = 1) +
   geom_text(aes(label = label), data = legend_text, position = dodge_width,
-            angle = 90, vjust = 0.5, hjust = 0) +
+            angle = 90, vjust = 0.75, hjust = 0) +
   scale_x_continuous(breaks = c(1, 2)) +
   scale_y_continuous("vision", breaks = 1:10, expand = c(0, 0)) +
   scale_fill_brewer(palette = "Set2") +
@@ -130,10 +136,10 @@ tradeoffs_plot <- ggplot() +
 gg_two_dimensions <- (tradeoffs_plot %+% filter(teams, player == 1)) +
   scale_x_continuous("", labels = NULL) +
   theme(strip.text = element_blank()) +
-  labs(title = "Vision in two dimensions")
+  coord_cartesian(xlim = c(0, 2))
 
-gg_differing_skills <- (tradeoffs_plot %+% teams) +
-  labs(title = "Two person teams varying in vision distribution")
+
+gg_differing_skills <- (tradeoffs_plot %+% teams)
 
 # * search-areas ----
 
@@ -231,7 +237,7 @@ max_fitness <- identical_team %>%
   summarize(fitness_pct = max(fitness_pct)) %>%
   recode_strategy()
 
-(gg_identical_team_final_fitness <- ggplot(max_fitness) +
+gg_identical_team_final_fitness <- ggplot(max_fitness) +
   aes(strategy_rev, fitness_pct) +
   geom_bar(aes(fill = strategy), stat = "summary", fun.y = "mean", alpha = 0.5) +
   geom_point(aes(color = strategy), alpha = 0.2,
@@ -242,7 +248,7 @@ max_fitness <- identical_team %>%
   scale_fill_manual(values = get_theme_color_values(c("blue", "green"))) +
   base_theme +
   theme(legend.position = "none",
-        panel.grid.major.x = element_blank()))
+        panel.grid.major.x = element_blank())
 
 # * random-walk-plot ----
 set.seed(782)
@@ -273,6 +279,9 @@ differing_skills %<>%
   recode_team() %>%
   extract_position()
 
+differing_skills %<>%
+  filter(strategy == "diachronic")
+
 gg_differing_skills_timeline <- ggplot(differing_skills) +
   aes(time, fitness_pct, alpha = team_label, color = strategy) +
   geom_line(stat = "summary", fun.y = "mean", size = 1.2) +
@@ -280,9 +289,10 @@ gg_differing_skills_timeline <- ggplot(differing_skills) +
   scale_y_fitness_pct +
   scale_color_strategy +
   scale_alpha_team +
-  guides(color = guide_legend(order = 1),
+  guides(color = "none",
          alpha = guide_legend(order = 2)) +
-  base_theme
+  base_theme +
+  theme(legend.position = c(0.8, 0.1))
 
 max_fitness <- differing_skills %>%
   group_by(sim_id, strategy, team_label) %>%
@@ -306,7 +316,7 @@ gg_differing_skills_final_fitness <- ggplot(max_fitness) +
     theme(panel.grid.major.x = element_blank())
 
 gg_differing_skills_walk <- (random_walk_plot %+% filter(differing_skills, exp_id == 1)) +
-  facet_grid(strategy ~ team_label_rev)
+  facet_wrap("team_label_rev", nrow = 1)
 
 # * solo-teams ----
 data("solo_teams")
