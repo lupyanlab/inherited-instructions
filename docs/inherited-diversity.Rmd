@@ -27,6 +27,7 @@ opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE, results="hi
                fig.height=4, fig.width=4)
 chunks_dir <- "R"
 read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
+read_chunk(file.path(chunks_dir, "peaks.R"))
 ```
 ```{r inherited-diversity}
 ```
@@ -45,25 +46,26 @@ generation. What are the consequences of inheriting from a previous generation
 on future problem solving behavior?
 
 Humans have evolved a number of abilities including imitation, teaching,
-and language that improve the success of cultural inheritance, or what
-is known as high fidelity cultural transmission [@Lewis:2012jg; @Dean:2012gv].
-The idea that some problem solving behaviors can be accurately copied
-by others via social learning is uncontroversial, but what is not fully
-agreed upon is the importance of accurate transmission in explaining
-the nature of human cultural evolution. Sperber and others [-@Sperber:1996exc;
-@Claidiere:2010kd] have argued that accurate copying is rare, and
-that cultural transmission is better understood as a
+and language that improve the success of cultural inheritance. These abilities
+enable high fidelity cultural transmission [@Lewis:2012jg; @Dean:2012gv].
+That some behaviors can be accurately copied through social learning
+is uncontroversial, but what is in active debate is the importance of accurate
+transmission in explaining the nature of human cultural evolution. Sperber and
+others [-@Sperber:1996exc; @Claidiere:2010kd] have argued that accurate copying
+is possible but rare, and that cultural transmission is better understood as a
 transformative process as opposed to a replicative one.
 
 Tomasello and others [-@Tomasello:1993rat; @Tennie:2009gaa] have argued that
 accurate transmission is clearly important in many problem solving domains.
-Accurate transmission of problem solving knowledge is important both because it
-enables others to benefit from complex solutions they themselves could not have
-created, but also because accurate transmission increases the likelihood that
-future generations could cumulatively improve upon the solutions discovered by
-their ancestors. On this view, the human propensity to incrementally improve
-solutions to problems over generations is a driving force in human cultural
-evolution.
+Accurate transmission of problem solving knowledge is important for two reasons.
+First, it allows others to benefit from complex solutions they themselves could
+not have created. Second, it increases the likelihood that future generations
+cumulatively improve upon the solutions discovered by their ancestors. High
+fidelity transmission is important to human cultural evolution because it means
+improvements to tools and other technology can accumulate even if they are
+discovered by chance. On this view, the propensity to incrementally improve
+solutions to problems inherited from others is an important force in human
+cultural evolution.
 
 The primary benefit to being able to inherit problem solving knowledge from
 a previous generation is believed to be that it gives future generations a head
@@ -136,7 +138,115 @@ Second generation problem solvers attempted the same problem solving
 task but starting at where the first generation problem solvers had been
 at the halfway point.
 
-# Methods {-}
+# Experiment 1 {-}
+
+```{r peaks-setup}
+```
+
+## Methods {-}
+
+```{r peaks-methods}
+```
+
+### Landscapes {-}
+
+(ref:simple-hill) A simple solution landscape. Agents varied in vision in either
+x or y dimension. On each trial agents sampled a random position within their
+visual range, and if it was higher on the landscape than they were currently, they
+moved there.
+
+```{r simple-hill, fig.cap='(ref:simple-hill)'}
+limits <- seq(-100, 100, by = 10)
+z <- expand.grid(x = limits, y = limits) %>%
+     mutate(z = -x^2 - y^2)
+lattice::wireframe(z ~ x * y, data = z)
+```
+
+### Ability as vision {-}
+
+(ref:ability-as-vision) Ability as vision. Teams of two agents could allocate
+the same total skill in different ways. Identical teams shared the same abilities
+in both dimensions. Complementary teams had "equal but opposite" skills.
+
+```{r ability-as-vision, fig.width=6, fig.height=6, fig.cap='(ref:ability-as-vision)'}
+grid.arrange(
+  arrangeGrob(gg_single_dimension, gg_two_dimensions, nrow = 1),
+  gg_differing_skills,
+  ncol = 1
+)
+```
+
+### Vision and search areas {-}
+
+(ref:search-areas) Search areas for individual agents.
+
+```{r search-areas, fig.width=8, fig.height=2, fig.cap='(ref:search-areas)'}
+gg_search_rects
+```
+
+(ref:search-areas-by-strategy) Search areas for teams of agents.
+
+```{r search-areas-by-strategy, fig.cap='(ref:search-areas-by-strategy)'}
+gg_search_areas_by_strategy
+```
+
+## Results {-}
+
+```{r peaks-experiments}
+```
+
+### Identical teammates {-}
+
+```{r identical-teammates, fig.keep="last"}
+grid.arrange(gg_identical_team_timeline,
+             gg_identical_team_final_fitness, nrow = 1)
+```
+
+```{r random-walk-plot}
+random_walk_plot
+```
+
+### Differing skills {-}
+
+```{r differing-skills, fig.width=10, fig.keep="last"}
+grid.arrange(gg_differing_skills_timeline,
+             gg_differing_skills_final_fitness,
+             nrow = 1)
+```
+
+```{r differing-skills-walk, fig.width = 8, fig.height = 5}
+gg_differing_skills_walk
+```
+
+### Solo teams {-}
+
+```{r solo-teams, fig.keep="last", fig.width=10}
+grid.arrange(gg_solo_teams_timeline, gg_solo_teams_final_fitness, nrow = 1)
+```
+
+### Number of exchanges {-}
+
+```{r number-of-exchanges}
+```
+
+### Aggregate functions {-}
+
+```{r aggregate-functions}
+gg_aggregate
+```
+
+### Variable feedback {-}
+
+```{r variable-feedback, fig.width=6}
+grid.arrange(feedback_trials_plot, variable_feedback_plot, nrow = 1)
+```
+
+## Discussion
+
+
+# Experiment 2 {-}
+
+### Methods {-}
 
 ```{r methods}
 ```
@@ -211,9 +321,9 @@ would be more efficient at traversing the solution landscapes than congruent
 teams or isolated individuals trained to discriminate the same stimulus
 dimension.
 
-## Materials {-}
+#### Materials {-}
 
-### Gabors {-}
+##### Gabors {-}
 
 We created a $71 \times 71$ grid of `r methods$n_gabors_in_landscape` gabor
 patches that varied in orientation and spatial frequency. Orientations were sampled at regular
@@ -222,7 +332,7 @@ were sampled at geometric intervals from `r methods$min_sf` cycles/pixel to
 `r methods$max_sf` cycles/pixel. A geometric progression was used because high
 spatial frequencies are harder to distinguish than low spatial frequencies.
 
-### Landscapes {-}
+##### Landscapes {-}
 
 The three different solution landscapes we used are show in Fig.
 \@ref(fig:landscapes). There were two training landscapes, and one test
@@ -251,7 +361,7 @@ gridExtra::grid.arrange(
 )
 ```
 
-### Survey {-}
+##### Survey {-}
 
 After finishing the main experiment, participants completed a short survey. We
 asked the participants to recall the instructions they received, to describe how
@@ -260,7 +370,7 @@ gems and scores were random. We were particularly interested in if the
 participants felt they were moving around space of possible gabors of their own
 volition.
 
-## Procedure {-}
+#### Procedure {-}
 
 Participants were randomly assigned to training condition (orientation, bar
 width) and generation (first, second). The researcher told participants
@@ -272,7 +382,7 @@ block of 30 training trials. After the training trials, they completed four
 blocks of 40 test trials. When finished, participants completed the
 post-experiment survey. The experiment took around 30 minutes to complete.
 
-### Training trial procedure {-}
+##### Training trial procedure {-}
 
 Participants were randomly assigned to one of two training conditions. In the
 orientation condition, participants read in their instructions that the value
@@ -299,7 +409,7 @@ trial. If the participant had correctly selected the most valuable gem in their
 first response, they were congratulated for making the correct choice, and told
 to click on the gem they selected again.
 
-### Test trial procedure {-}
+##### Test trial procedure {-}
 
 After completing the training trials, participants completed four blocks of 40
 test trials. Participants were given a break after each block, and told that for
@@ -314,7 +424,7 @@ participants were yoked over blocks such that second generation participants
 inherited from the same first generation participant a total of four times, one
 for each block.
 
-## Participants {-}
+#### Participants {-}
 
 Participants were undergraduates at the University of Wisconsin-Madison who
 completed the experiment in exchange for course credit. We decided to collect
@@ -323,12 +433,12 @@ participants. There were twice as many second generation participants because
 each first generation participant was yoked to two second generation
 participants, one in each training condition (see Fig. \@ref(fig:gems-team-structures)).
 
-# Results {-}
+### Results {-}
 
 ```{r results}
 ```
 
-## Training {-}
+#### Training {-}
 
 The purpose of the training procedure was for participants to learn to pay
 attention to independent dimensions of the gabor stimuli corresponding
@@ -419,7 +529,7 @@ stimuli. We now turn to our primary hypothesis of whether participants trained
 on independent dimensions were able to coordinate their problem solving
 behavior more effectively than participants trained on the same dimension.
 
-## Strategies {-}
+### Strategies {-}
 
 To understand whether complementary problem solvers were able to exceed
 the problem solving performance of the control strategies, we predicted
@@ -453,4 +563,6 @@ gridExtra::grid.arrange(
 sensitivities_plot
 ```
 
-# Discussion {-}
+## Discussion {-}
+
+# General Discussion {-}
