@@ -1,5 +1,5 @@
 ---
-title: Teams of complementary problem solvers outperform equally skilled individuals
+title: Complementary inheritance in iterated problem solving
 bibliography: references.bib
 output:
   bookdown::pdf_document2:
@@ -12,13 +12,14 @@ abstract: |
   problem solvers rarely have to start from scratch when solving new problems.
   Instead, they start off with solutions that were discovered by a previous
   generation. Here we investigated the impact of inheritance---starting off
-  a problem solving task with a solution discovered by someone else---on
-  future problem solving performance. We found that teams of complementary problem
-  solvers, who learned different but complementary skills, outperformed equally
-  skilled individuals given the same total number of trials. These results
-  illustrate how our system of cultural inheritance can cumulatively improve
-  problem solving performance over generations beyond what would be achieved by
-  individuals working alone.
+  a problem solving task with a solution discovered by someone else---on future
+  problem solving performance. We sought to understand the conditions under
+  which inheritance might improve problem solving performance. We found that
+  generations of complementary problem solvers, who learned different but
+  complementary skills, outperformed equally skilled individuals given the same
+  total number of trials. These results illustrate one way in which our system
+  of cultural inheritance results in cumulative improvements in problem solving
+  performance over generations.
 ---
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
@@ -143,6 +144,11 @@ at the halfway point.
 ```{r peaks-setup}
 ```
 
+In Experiment 1, we use agent-based models to simulate the effect of inheritance
+on future problem solving performance. In the models, problem solving is defined
+as a process of searching a space of possible solutions for the best solution.
+The primary constraint on problem solving success is time.
+
 ## Methods {-}
 
 ```{r peaks-methods}
@@ -195,19 +201,6 @@ gg_search_areas_by_strategy
 ```{r peaks-experiments}
 ```
 
-### Identical teammates {-}
-
-```{r identical-teammates, fig.keep="last"}
-grid.arrange(gg_identical_team_timeline,
-             gg_identical_team_final_fitness, nrow = 1)
-```
-
-```{r random-walk-plot}
-random_walk_plot
-```
-
-### Differing skills {-}
-
 ```{r differing-skills, fig.width=10, fig.keep="last"}
 grid.arrange(gg_differing_skills_timeline,
              gg_differing_skills_final_fitness,
@@ -218,35 +211,11 @@ grid.arrange(gg_differing_skills_timeline,
 gg_differing_skills_walk
 ```
 
-### Solo teams {-}
-
-```{r solo-teams, fig.keep="last", fig.width=10}
-grid.arrange(gg_solo_teams_timeline, gg_solo_teams_final_fitness, nrow = 1)
-```
-
-### Number of exchanges {-}
-
-```{r number-of-exchanges}
-```
-
-### Aggregate functions {-}
-
-```{r aggregate-functions}
-gg_aggregate
-```
-
-### Variable feedback {-}
-
-```{r variable-feedback, fig.width=6}
-grid.arrange(feedback_trials_plot, variable_feedback_plot, nrow = 1)
-```
-
-## Discussion
-
+## Discussion {-}
 
 # Experiment 2 {-}
 
-### Methods {-}
+## Methods {-}
 
 ```{r methods}
 ```
@@ -321,9 +290,9 @@ would be more efficient at traversing the solution landscapes than congruent
 teams or isolated individuals trained to discriminate the same stimulus
 dimension.
 
-#### Materials {-}
+### Materials {-}
 
-##### Gabors {-}
+#### Gabors {-}
 
 We created a $71 \times 71$ grid of `r methods$n_gabors_in_landscape` gabor
 patches that varied in orientation and spatial frequency. Orientations were sampled at regular
@@ -332,7 +301,7 @@ were sampled at geometric intervals from `r methods$min_sf` cycles/pixel to
 `r methods$max_sf` cycles/pixel. A geometric progression was used because high
 spatial frequencies are harder to distinguish than low spatial frequencies.
 
-##### Landscapes {-}
+#### Landscapes {-}
 
 The three different solution landscapes we used are show in Fig.
 \@ref(fig:landscapes). There were two training landscapes, and one test
@@ -361,7 +330,7 @@ gridExtra::grid.arrange(
 )
 ```
 
-##### Survey {-}
+#### Survey {-}
 
 After finishing the main experiment, participants completed a short survey. We
 asked the participants to recall the instructions they received, to describe how
@@ -370,7 +339,7 @@ gems and scores were random. We were particularly interested in if the
 participants felt they were moving around space of possible gabors of their own
 volition.
 
-#### Procedure {-}
+### Procedure {-}
 
 Participants were randomly assigned to training condition (orientation, bar
 width) and generation (first, second). The researcher told participants
@@ -382,7 +351,7 @@ block of 30 training trials. After the training trials, they completed four
 blocks of 40 test trials. When finished, participants completed the
 post-experiment survey. The experiment took around 30 minutes to complete.
 
-##### Training trial procedure {-}
+#### Training trial procedure {-}
 
 Participants were randomly assigned to one of two training conditions. In the
 orientation condition, participants read in their instructions that the value
@@ -409,7 +378,7 @@ trial. If the participant had correctly selected the most valuable gem in their
 first response, they were congratulated for making the correct choice, and told
 to click on the gem they selected again.
 
-##### Test trial procedure {-}
+#### Test trial procedure {-}
 
 After completing the training trials, participants completed four blocks of 40
 test trials. Participants were given a break after each block, and told that for
@@ -424,7 +393,7 @@ participants were yoked over blocks such that second generation participants
 inherited from the same first generation participant a total of four times, one
 for each block.
 
-#### Participants {-}
+### Participants {-}
 
 Participants were undergraduates at the University of Wisconsin-Madison who
 completed the experiment in exchange for course credit. We decided to collect
@@ -433,12 +402,12 @@ participants. There were twice as many second generation participants because
 each first generation participant was yoked to two second generation
 participants, one in each training condition (see Fig. \@ref(fig:gems-team-structures)).
 
-### Results {-}
+## Results {-}
 
 ```{r results}
 ```
 
-#### Training {-}
+### Training {-}
 
 The purpose of the training procedure was for participants to learn to pay
 attention to independent dimensions of the gabor stimuli corresponding
