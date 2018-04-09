@@ -8,16 +8,17 @@ output:
       in_header: templates/header.tex
 abstract: |
   Humans have evolved a system of cultural inheritance that enables the
-  accumulation of problem solving knowledge over generations such that human
-  problem solvers rarely have to start from scratch when solving problems, and
-  instead can start off with solutions discovered by a previous generation. Here
-  we investigated the impact of inheritance on future problem solving
-  performance. We sought to understand the conditions under which inheritance
-  could improve problem solving performance. In Experiment 1, we simulated the
-  effect of inheritance on problem solving, and discovered that generations of
-  complementary problem solvers, who learned different but complementary skills,
-  outperformed equally skilled individuals given the same total number of
-  trials. In Experiment 2, we tested these predictions in a behavioral
+  accumulation of problem solving knowledge over generations. As a result of
+  our cultural inheritance, we rarely have to start from scratch when solving
+  new problems, and instead can benefit from solutions discovered by a previous
+  generation. We investigated the impact of inheritance on problem solving
+  performance. Specifically, we explored the conditions under which inheritance
+  might improve problem solving relative to solving the same problems
+  individually. In Experiment 1, we simulated the effect of inheritance on
+  problem solving, and demonstrate that there are some problems for which
+  generations of complementary problem solvers, with who learned different but
+  complementary skills should be able to outperform equally skilled
+  individuals. In Experiment 2, we tested these predictions in a behavioral
   experiment. These results illustrate one way in which our system of cultural
   inheritance may result in cumulative improvements to problem solving
   performance over generations.
@@ -41,11 +42,12 @@ problem solving knowledge from one generation to the next. Cultural
 transmission is notoriously imperfect when compared to genetic transmission
 [@Sperber:1996exc; @Claidiere:2010kd]. Yet the human ability to transmit
 cultural information far exceeds the abilities of any non-human animals
-[@Tomasello:1993vh; @Tennie:2009gaa; @Dean:2012gv]. As a result, problem
-solvers rarely have to start from scratch when solving new problems, and
-instead can start off with the solutions that were inherited from a previous
-generation. What are the consequences of inheriting from a previous generation
-on future problem solving behavior?
+[@Tomasello:1993vh; @Tennie:2009gaa; @Dean:2012gv]. One important consequence
+of our system of cultural inheritance is that we rarely have to start from
+scratch when solving new problems. Instead, we often start off with solutions
+that were inherited from a previous generation. The purpose of this research
+was to investigate whether inheriting from a previous generation could ever
+improve problem solving beyond what could be achieved by an individual.
 
 Humans have evolved a number of abilities including imitation, teaching,
 and language that improve the success of cultural inheritance. These abilities
@@ -140,17 +142,41 @@ Second generation problem solvers attempted the same problem solving
 task but starting at where the first generation problem solvers had been
 at the halfway point.
 
-# General Methods {-}
+
+
+
+iteratively searching a high dimensional landscape of possible solutions,
+each with varying levels of success.
 
 # Experiment 1 {-}
 
 ```{r peaks-setup}
 ```
 
-In Experiment 1, we use agent-based models to simulate the effect of inheritance
-on future problem solving performance. In the models, problem solving is defined
-as a process of searching a space of possible solutions for the best solution.
-The primary constraint on problem solving success is time.
+In Experiment 1, I used agent-based models to simulate the effect of
+inheritance on problem solving. The models assume that problem solving is
+a process of searching a space of possible solutions for better and better
+solutions. To simulate inheritance, the best solution discovered by the
+previous generation is used as a starting point for the next generation.
+
+Different agents differ in abilities along two dimensions. Each agent
+is assigned the same total amount of ability that is dr
+
+In the models, the only difference between first and second generation
+agents is in where they start their search in the solution landscape.
+
+I used the models to understand the conditions under which inheritance
+from a previous generation might improve overall problem solving ability.
+My hypothesis was that 
+
+
+The key question was the effect of skill diversity on the effectiveness
+of inheritance. When inheritance is minimally defined as a starting
+point in a solution landscape, individuals who inherit from others
+with identical skills should not be able to do any better or worse
+than their ancestors. But inheriting from others who have complementary
+skills might allow the team to arrive at solutions that individual
+agents might not have discovered on their own.
 
 ## Methods {-}
 
