@@ -14,8 +14,9 @@ windows:
         - cd docs && vim inherited-diversity.Rmd
         - cd docs
   - experiment:
-      layout: even-horizontal
       root: ~/PhD/gems/experiment
+      layout: ecf7,160x58,0,0{79x58,0,0,2,80x58,80,0[80x45,80,0,6,80x12,80,46,7]}
       panes:
         - source .environment && git status && inv -l
         - source .environment && vim .
+        - cd ~/Dropbox/LupyanExps/gems-experiment && git status
