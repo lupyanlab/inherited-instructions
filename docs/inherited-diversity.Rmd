@@ -151,6 +151,11 @@ solvers increased in skill diversity, the impact of inheritance as a problem
 solving strategy would increase relative to solving the same set of problems as
 individuals.
 
+## Methods {-}
+
+```{r peaks-methods}
+```
+
 The models assume that problem solving can be simulated as a process of
 searching a space of possible solutions for better and better answers. To
 simulate inheritance over generations, the best solution discovered by the
@@ -164,13 +169,6 @@ between the two dimensions. Some agents had equal skill in both dimensions,
 and others had unequal skill in either dimension. We predicted the benefits
 of inheritance would be greatest when agents with diverse skills inherit
 from one another.
-
-## Methods {-}
-
-```{r peaks-methods}
-```
-
-### Procedure {-}
 
 Problem solving agents attempted to find the peak of a solution landscape via a
 random walk process. In the simulations, for each unit of time, the agents
@@ -196,6 +194,8 @@ grid.arrange(
 ```{r peaks-experiments}
 ```
 
+The results of the simulations are shown in Fig. \@ref(fig:differing-skills).
+
 (ref:differing-skills) Results of agent-based model simulations.
 
 ```{r differing-skills, fig.width=8, fig.height=4, fig.cap="(ref:differing-skills)"}
@@ -215,7 +215,29 @@ gg_differing_skills_walk
 
 ## Discussion {-}
 
+Experiment 1 demonstrates the process by which inheritance may result in teams of
+problem solvers may come to outperform individuals trained on the same skills and
+given the same amount of time. In the simulations, this improvement in performance
+is the result of the first generation putting later generations in a part of the
+problem space that would be unlikely to be achieved individually.
+
+However, the value of the agent-based model is limited, especially since the
+problem solving process is simulated as a random walk process. A more realistic
+test of whether inheritance can improve team performance requires a task in
+which new solutions are tested by participants seeking to answer the same problems.
+In Experiment 2, we test the predictions drawn from Experiment 1 in a behavioral
+in lab experiment.
+
 # Experiment 2 {-}
+
+In Experiment 2 we tested the predictions from the agent-based model presented
+in Experiment 1 in a behavioral experiment. Participants were randomly assigned
+to learn equal but independent skills in a perceptual discrimination task. In
+the task, participants had to solve a problem by searching a space of possible
+solutions looking for the best solutions. We expected to find that teams of
+complementary problem solvers, trained on independent skills, could coordinate
+their labor so as to improve problem solving performance beyond what either
+individual could have achieved on their own.
 
 ## Methods {-}
 
@@ -536,4 +558,11 @@ sensitivities_plot
 
 ## Discussion {-}
 
+In Experiment 2, we sought to test whether teams of participants trained on
+different but complementary skills could work together resulting in performance
+that was better than independent individuals attempting the same task. We
+found support for our hypothesis that problem solving with inheritance can
+result in an improvement in performance.
+
 # General Discussion {-}
+
