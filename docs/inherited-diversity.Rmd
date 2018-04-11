@@ -27,7 +27,8 @@ abstract: |
 library(knitr)
 library(kableExtra)
 opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE, results="hide",
-               fig.height=4, fig.width=4)
+               fig.height=4, fig.width=4,
+               autodep = TRUE)
 chunks_dir <- "R"
 read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
 read_chunk(file.path(chunks_dir, "peaks.R"))
@@ -180,7 +181,7 @@ This distance is referred to as the agent's search area (Fig.
 the same total skill in different ways. Identical teams shared the same abilities
 in both dimensions. Complementary teams had "equal but opposite" skills.
 
-```{r ability-as-vision, fig.width=6, fig.height=8, fig.cap='(ref:ability-as-vision)'}
+```{r ability-as-vision, fig.width=8, fig.height=8, fig.cap='(ref:ability-as-vision)'}
 grid.arrange(
   gg_two_dimensions + ggtitle("A. Vision in two dimensions"),
   gg_search_rects + ggtitle("B. Search areas"),
