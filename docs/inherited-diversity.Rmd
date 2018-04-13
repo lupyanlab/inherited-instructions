@@ -8,20 +8,20 @@ output:
       in_header: templates/header.tex
 abstract: |
   Humans have evolved a system of cultural inheritance that enables the
-  accumulation of problem solving knowledge over generations. As a result of
-  our cultural inheritance, we rarely have to start from scratch when solving
-  new problems, and instead can benefit from solutions discovered by a previous
-  generation. We investigated the impact of inheritance on problem solving
-  performance. Specifically, we explored the conditions under which inheritance
-  might improve problem solving relative to solving the same problems
-  individually. In Experiment 1, we simulated the effect of inheritance on
-  problem solving using agent-based models, and demonstrate that there are some
-  problems for which generations of complementary problem solvers, who
-  learn independent and complementary skills, are able to outperform
-  equally skilled individuals. In Experiment 2, we tested these predictions in
-  a behavioral experiment. These results illustrate one way in which our system
-  of cultural inheritance may result in cumulative improvements to problem
-  solving performance over generations.
+  accumulation of problem solving knowledge over generations. As a result,
+  we rarely have to start from scratch when solving new problems, and instead
+  can benefit from solutions discovered by a previous generation. We
+  investigated the impact of inheritance on problem solving performance.
+  Specifically, we explored the conditions under which inheritance might
+  improve problem solving relative to solving the same problems individually.
+  In Experiment 1, we simulated the effect of inheritance on problem solving
+  using agent-based models, and demonstrate some problems for
+  which generations of complementary problem solvers, who learn independent and
+  complementary skills, are able to outperform equally skilled individuals. In
+  Experiment 2, we tested these predictions in a behavioral experiment. These
+  results illustrate one way in which our system of cultural inheritance may
+  result in cumulative improvements to problem solving performance over
+  generations.
 ---
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
