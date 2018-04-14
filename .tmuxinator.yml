@@ -20,3 +20,9 @@ windows:
         - source .environment && git status && inv -l
         - source .environment && vim .
         - cd ~/Dropbox/LupyanExps/gems-experiment && git status
+  - peaks:
+      root: ~/PhD/peaks
+      layout: even-horizontal
+      panes:
+          - source .environment && git status && inv -l
+          - source .environment && vim .
