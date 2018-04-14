@@ -241,14 +241,14 @@ in lab experiment.
 
 # Experiment 2 {-}
 
-In Experiment 2 we tested the predictions from the agent-based model presented
-in Experiment 1 in a behavioral experiment. Participants were randomly assigned
+In Experiment 2 we tested the predictions of the agent-based model presented
+in Experiment 1 with a behavioral experiment. Participants were randomly assigned
 to learn equal but independent skills in a perceptual discrimination task. In
-the task, participants had to solve a problem by searching a space of possible
-solutions looking for the best solutions. We expected to find that teams of
+the task, participants searched a space of possible
+solutions looking for the best ones. We expected to find that teams of
 complementary problem solvers, trained on independent skills, could coordinate
 their labor so as to improve problem solving performance beyond what either
-individual could have achieved on their own.
+individual would have achieved on their own.
 
 ## Methods {-}
 
@@ -274,23 +274,24 @@ foreign planet. Their task was to learn which gems were more valuable than
 others.
 
 The value of each gem was determined by its orientation and spatial frequency.
-The space of possible gems and their associated values can be visualized as a
-three dimensional landscape. As participants selected gems across trials, they
-effectively explored different parts of this landscape, looking for the highest
-peaks, corresponding to the most valuable gems. In order to select the most
-valuable gems on each trial, participants had to learn which stimulus dimensions
-were the most important.
+The space of possible gems and their associated values can be visualized as
+a three dimensional landscape. As participants selected gems across trials,
+they effectively searched the landscape for the highest peaks corresponding
+to the most valuable gems. In order to select the most valuable gems on each
+trial, participants had to learn which stimulus dimensions were the most
+important.
 
-On each trial, participants selected one of six gabor patches they thought was
-the most valuable. The six gabors presented on each trial were sampled within a
-certain distance from the previously selected gem. The sampling procedure is
-described in the procedure, below. As participants selected gems across trials,
-they effectively traversed the solution landscape in a series of
-incremental steps.
+On each trial, participants were presented six gems and they selected the one
+they thought was the most valuable. The six gems presented on each trial were
+sampled within a certain distance from the previously selected gem. The
+sampling procedure is described in the procedure, below. As participants
+selected gems across trials, they effectively traversed the solution landscape
+in a series of incremental steps.
 
-(ref:gems-trial) Procedure. On each trial, participants were shown six gabor patches
-referred to as "gems". Each gem was assigned a value. As participants selected gems
-across trials, they navigated the stimulus space of all possible gems.
+(ref:gems-trial) Procedure. **A.** On each trial, participants were shown six gabor
+patches referred to as "gems". Each gem was assigned a value based on its
+orientation and spatial frequency. **B.** As participants selected gems across trials,
+they effectively traversed the solution landscape, looking for the highest peaks.
 
 ```{r gems-trial, fig.width=6, fig.cap="(ref:gems-trial)"}
 gridExtra::grid.arrange(
@@ -340,9 +341,9 @@ spatial frequencies are harder to distinguish than low spatial frequencies.
 
 The three different solution landscapes we used are show in Fig.
 \@ref(fig:landscapes). There were two training landscapes, and one test
-landscape. The training landscapes were constructed so that the value of a
-gem was determined completely by one dimension (either orientation or spatial
-frequency) and not influenced by the other dimension. For these landscapes, the
+landscape. The training landscapes were constructed so that the value of the
+gems was determined completely by one dimension (either orientation or spatial
+frequency) and not the other. For the training landscapes, the
 peak value was set at 50 units in either stimulus dimension.
 
 Values in the test landscape were determined by both orientation and spatial
@@ -371,7 +372,7 @@ After finishing the main experiment, participants completed a short survey. We
 asked the participants to recall the instructions they received, to describe how
 they approached the experiment, and to rate the extent to which they thought the
 gems and scores were random. We were particularly interested in if the
-participants felt they were moving around space of possible gabors of their own
+participants felt they were moving around space of possible gems of their own
 volition.
 
 ### Procedure {-}
@@ -406,33 +407,39 @@ gems were sampled from around the position of the gem
 $(x_{ori},y_{bw})$ selected on the previous trial.
 
 In the training trials, after selecting a gem, participants were shown the
-values of all six gems, and had to click on the most valuable gem in the display
-to continue. This second response was to encourage participants to learn which
-gabors were the most valuable so they could select the most valuable gem on each
-trial. If the participant had correctly selected the most valuable gem in their
-first response, they were congratulated for making the correct choice, and told
-to click on the gem they selected again.
+values of all six gems, and had to click on the most valuable gem in the
+display to continue. This second response was required to encourage
+participants to pay attention to which gabors were the most valuable so they
+could more easily learn to select the most valuable gem on each trial. If the
+participant had correctly selected the most valuable gem in their first
+response, they were congratulated for making the correct choice, and told to
+click on the gem they selected again.
 
 #### Test trial procedure {-}
 
 After completing the training trials, participants completed four blocks of 40
-test trials. Participants were given a break after each block, and told that for
+test trials. All test trials were conducted on the same simple hill landscape, defined above.
+Participants traversed the simple hill landscape four times, once for each block of
+40 trials. First generation participants started each block with 6 gems sampled
+from around the origin $(0_{ori},0_{bw})$. Second generation participants
+participants started off at the location of a first generation participant
+after 20 trials, $(x_{ori},y_{bw})$. First and second generation participants
+were yoked over blocks such that second generation participants inherited from
+the same first generation participant four times total, one for each
+block. Participants were given a break after each block, and told that for
 the next block, they may encounter gems that they had not seen before.
 
-All test trials were conducted on the same simple hill landscape, defined above.
-Participants traversed the simple hill landscape four times. First generation
-participants started each block with 6 gems sampled from around the origin
-$(0_{ori},0_{bw})$. Second generation participants participants started off at the location of
-a first generation participant after 20 trials, $(x_{ori},y_{bw})$. First and second generation
-participants were yoked over blocks such that second generation participants
-inherited from the same first generation participant a total of four times, one
-for each block.
+In the test trials, after selecting a gem, participants were shown only the
+value of the gem they selected, and not the values of the gems they did not
+select. The value were transformed to be relative to the value of the
+gem selected on the previous trial such that positive numbers indicated
+an increase in overall score, and negative numbers indicated a decrease.
 
 ### Participants {-}
 
 Participants were undergraduates at the University of Wisconsin-Madison who
 completed the experiment in exchange for course credit. We decided to collect
-data for 40 first generation participants, and 80 second generation
+data for 20 first generation participants, and 40 second generation
 participants. There were twice as many second generation participants because
 each first generation participant was yoked to two second generation
 participants, one in each training condition (see Fig. \@ref(fig:gems-team-structures)).
@@ -444,7 +451,7 @@ participants, one in each training condition (see Fig. \@ref(fig:gems-team-struc
 
 ### Training {-}
 
-The purpose of the training procedure was for participants to learn to pay
+The purpose of the training procedure was to induce participants to learn to pay
 attention to independent dimensions of the gabor stimuli corresponding
 to their training condition. To verify the success of the training procedure, we
 measured the extent to which participants selected stimuli in each training
@@ -465,11 +472,11 @@ trained on orientation, `r r_$training_distance_linear_trial_v_instructions`
 
 (ref:gems-training) Results of training procedure. Participants were
 randomly assigned to either the orientation or the bar width condition.
-**A. Grid positions.** Participants in both training conditions started at
+**A.** Grid positions. Participants in both training conditions started at
 $(0_{ori},0_{bw})$ and traversed the same stimulus space in orthogonal
 directions, each progressing toward the optimal stimulus value in the trained
-dimension. **B. Distance.** Grid positions were converted to 1D distances
-relative to the optimal value in each dimension. **C. Score.** Cumulative
+dimension. **B.** Distance. Grid positions were converted to 1D distances
+relative to the optimal value in each dimension. **C.** Score. Cumulative
 increases in score over trials, indicating that participants were selecting
 incrementally more valuable gems over trials.
 
@@ -498,12 +505,13 @@ condition to be more sensitive to to their trained dimension than the untrained
 dimension.
 
 As expected, participants trained on either stimulus dimension selected
-gems on each trial that moved them closer to the optimal stimulus value
-in that dimension, orientation: `r r_$training_sensitivity_ori`, bar width:
-`r r_$training_sensitivity_sf`. To compare the effectiveness of either training
+gems on each trial corresponding to their trained dimension and were
+uninfluenced by variability in the untrained dimension, orientation:
+`r r_$training_sensitivity_ori`, bar width: `r r_$training_sensitivity_sf`.
+To compare the effectiveness of either training
 condition, we transformed the sensitivities to be relative to training
-condition. Unlike in the analysis of distance reported above, our
-trial-by-trial analysis failed to reveal a difference between training conditions,
+condition. Unlike in the analysis of grid positions reported above, our
+trial-by-trial analysis did not reveal a difference between training conditions,
 `r r_$training_sensitivity_trained_dimension_by_instructions`.
 
 (ref:gems-training-sensitivities) Sensitivity to stimulus dimensions in the training
@@ -528,17 +536,33 @@ gridExtra::grid.arrange(
 ```
 
 The results of the training procedure indicate that participants were
-successfully able to discriminate independent dimensions of the gabor patch
+successfully induced to discriminate independent dimensions of the gabor patch
 stimuli. We now turn to our primary hypothesis of whether participants trained
 on independent dimensions were able to coordinate their problem solving
 behavior more effectively than participants trained on the same dimension.
 
-### Strategies {-}
+### Performance {-}
 
-To understand whether complementary problem solvers were able to exceed
-the problem solving performance of the control strategies, we predicted
-performance after 20 trials of the second generation participants to performance
-after the same number of trials of the other conditions.
+In our first analysis, we ask whether individuals completing this problem
+solving task benefited from inheritance, or whether they would have been better
+off completing the same number of trials as isolated individuals. To test this,
+we compared first generation performance after 40 trials in each of the four
+test blocks to second generation performance after 20 trials. Since second
+generation participants start off where a particular first generation
+participant was after 20 trials, our analysis effectively asks whether first
+generation individuals, after completing 20 trials, are better off passing
+their partial solution on to the next generation, or if they are better off
+completing the additional 20 trials themselves.
+
+We focus on two separate but related scoring metrics: 2D distance, corresponding
+to the Euclidean distance between each participant and the peak of the test landscape
+at $(50,50)$, and score, corresponding to the height or value of the gem
+last selected. Each scoring metric can be taken in absolute units,
+or in relative units. Relative distance and relative score correspond
+to the difference between the starting point and the current point
+in terms of distance and score, such that positive numbers mean
+the participant was able to move closer to the target and also to improve
+the overall score.
 
 In terms of score after 20 trials, complementary problem solvers were able
 to achieve higher scores than both isolated and congruent strategies,
@@ -561,6 +585,29 @@ gridExtra::grid.arrange(
 )
 ```
 
+### Sensitivity {-}
+
+In addition to measuring the impact of inheritance on final team performance,
+we also analyzed whether complementary inheritance resulted in second generation
+participants becoming more sensitive to either the trained or untrained dimensions.
+We hypothesized that complementary problem solvers who start off in a part of the
+solution landscape that would be unlikely to reached alone become exposed to
+a wider variety of different gem stimuli than either a first generation individual
+or an individual who inherits from a congruent ancestor.
+
+To test this, we used the same sensitivity measure as reported in the Training
+procedure above. The sensitivity measure reflects the extent to which participants
+select gems in each trial corresponding to it's value along a particular dimension.
+We expected all participants in the test trials to be more sensitive to their
+trained dimension than their untrained dimension. Note that this is true even
+though in the test landscape, both dimensions are weighted equally.
+
+We also compared the sensitivity to trained and untrained dimensions across team
+strategies. We hypothesized that complementary problem solvers, by being exposed
+to a wider range of gems, might become more sensitive not only to their trained
+dimension, but also their untrained dimension. To test this, we compared sensitivity
+in trained and untrained dimensions across team conditions.
+
 (ref:sensitivities) Sensitivity to trained and untrained dimensions by team strategy.
 
 ```{r sensitivities, fig.width=8, fig.cap="(ref:sensitivities)"}
@@ -569,11 +616,48 @@ sensitivities_plot
 
 ## Discussion {-}
 
-In Experiment 2, we sought to test whether teams of participants trained on
-different but complementary skills could work together resulting in performance
-that was better than independent individuals attempting the same task. We
-found support for our hypothesis that problem solving with inheritance can
-result in an improvement in performance.
+Experiment 2 was designed to test whether teams of participants trained on
+different but complementary skills could work together to achieve performance
+that was greater than either individual could have achieved on their own.
+We found support for our hypothesis that problem solving with inheritance can
+result in an improvement in performance. In the experiment, second generation
+problem solvers who inherited from a previous generation were able to
+progress closer to the optimal peak than problem solvers working in isolation
+or who inherit from a congruent problem solver trained on the same skills.
+These results validate the main conclusions drawn in Experiment 1 in a behavioral
+experiment.
 
 # General Discussion {-}
 
+The ability to pass problem solving knowledge on to future generations is
+fundamental to human problem solving ability. Yet usually the inheritance of
+problem solving knowledge is conceived as being an imperfect process, unable to
+result in problem solving performance beyond what could be achieved by
+individuals working alone. Here we demonstrate that the inheritance of problem
+solving knowledge can in some cases result in team performance greater than
+what either individual would have achieved on their own.
+
+In Experiment 1 we used an agent-based model to explore the conditions under
+which inheritance of complementary problem solving knowledge might prove
+effective over alternative strategies. We found that teams of complementary
+problem solvers might start future generations off in a part of the problem
+space that they were unlikely to achieve on their own. In some cases, this
+novel starting position puts problem solvers in a location where they are
+better situated to find the globally optimal solution.
+
+Although the results of the agent-based models were suggestive, they needed to
+be verified using a more ecologically valid experiment. In Experiment 2, we
+test the main predictions drawn from Experiment 1 about the conditions under
+which complementary inheritance might prove effective. We find support for our
+primary hypothesis that there are some problems for which teams of
+complementary problem solvers can enable problem solving behaviors that no
+individual could achieve on their own.
+
+These results add to a growing body of literature that aims to understand why
+and how human problem solvers are so good at inheriting and adapting the tools
+and other solutions to problems that were originally discovered by someone
+else. Although for many researchers, the advantages of being able to inherit
+problem solving knowledge from someone else are not that inheritance affects
+your own problem solving ability, only that it gives you a head start on
+problem solving, these assumptions need to be tested in rigorous lab
+experiments.
