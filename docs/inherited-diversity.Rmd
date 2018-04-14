@@ -138,13 +138,19 @@ Second generation problem solvers attempted the same problem solving
 task but starting at where the first generation problem solvers had been
 at the halfway point.
 
-# Experiment 1 {-}
+# Experiment 1: Agent-based models {-}
 
 ```{r peaks-setup}
 ```
 
 In Experiment 1, we used agent-based models to simulate the effect of
 inheritance on problem solving performance. We intended to demonstrate how
+skill diversity among generations of problem solvers results in problem
+solving performance that no individual could achieve on their own.
+To test this, we created problem solving agents that varied in skill
+along two independent dimensions. 
+
+
 inheritance can affect future generations of problem solving by starting the
 next generation off in a part of the solution landscape that would be unlikely
 to be reached independently. We predicted that as generations of problem
