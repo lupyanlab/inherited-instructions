@@ -9,12 +9,6 @@ library(peaks)
 library(crotchet)
 
 library(RColorBrewer)
-library(lattice)
-
-# Remove bounding box around all lattice plots.
-# Also removes axis arrows!
-trellis.par.set("axis.line",list(col=NA,lty=1,lwd=1))
-
 base_theme <- theme_minimal()
 
 theme_colors <- brewer.pal(4, "Set2")
@@ -79,23 +73,6 @@ calculate_team_search_area <- function(p1_vision_x, p1_vision_y,
 # ---- peaks-methods ----
 
 # * ability-as-vision ----
-ability <- data_frame(vision = 1:9)
-
-gg_single_dimension <- ggplot(ability) +
-  aes(vision, vision) +
-  geom_bar(aes(alpha = vision), stat = "identity", fill = theme_colors[["blue"]]) +
-  scale_x_continuous("", breaks = NULL) +
-  scale_y_continuous("vision", breaks = 1:9) +
-  scale_alpha_continuous(range = c(0.5, 1.0)) +
-  guides(alpha = "none") +
-  coord_cartesian(xlim = c(1, 9.2), ylim = c(0, 9.6)) +
-  base_theme +
-  theme(
-    panel.grid.minor.y = element_blank()
-  ) +
-  ggtitle("Vision in a single dimension")
-
-
 data("differing_skills")
 teams <- differing_skills %>%
   get_team_info() %>%
@@ -137,7 +114,6 @@ gg_two_dimensions <- (tradeoffs_plot %+% filter(teams, player == 1)) +
   scale_x_continuous("", labels = NULL) +
   theme(strip.text = element_blank()) +
   coord_cartesian(xlim = c(0, 2))
-
 
 gg_differing_skills <- (tradeoffs_plot %+% teams)
 
@@ -210,76 +186,13 @@ gg_search_areas_by_strategy <- ggplot(search_areas_by_strategy) +
 
 # ---- peaks-experiments ----
 
-# * identical-teammates ----
-data("identical_team")
-
-identical_team %<>%
-  recode_fitness_as_pct() %>%
-  recode_strategy() %>%
-  extract_position()
-
-gg_identical_team_timeline <- ggplot(identical_team) +
-  aes(time, fitness_pct, color = strategy) +
-  geom_line(stat = "summary", fun.y = "mean", size = 1.2) +
-  scale_x_continuous("calendar hours") +
-  scale_y_continuous("fitness", labels = scales::percent) +
-  scale_color_manual(
-    "strategy",
-    labels = c("diachronic", "synchronic"),
-    values = get_theme_color_values(c("blue", "green")),
-    guide = guide_legend(reverse = TRUE)
-  ) +
-  base_theme +
-  theme(legend.position = "top")
-
-max_fitness <- identical_team %>%
-  group_by(sim_id, strategy) %>%
-  summarize(fitness_pct = max(fitness_pct)) %>%
-  recode_strategy()
-
-gg_identical_team_final_fitness <- ggplot(max_fitness) +
-  aes(strategy_rev, fitness_pct) +
-  geom_bar(aes(fill = strategy), stat = "summary", fun.y = "mean", alpha = 0.5) +
-  geom_point(aes(color = strategy), alpha = 0.2,
-             position = position_jitter(width = 0.2, height = 0.0)) +
-  scale_x_strategy_rev +
-  scale_y_fitness_pct +
-  scale_color_manual(values = get_theme_color_values(c("blue", "green"))) +
-  scale_fill_manual(values = get_theme_color_values(c("blue", "green"))) +
-  base_theme +
-  theme(legend.position = "none",
-        panel.grid.major.x = element_blank())
-
-# * random-walk-plot ----
-set.seed(782)
-sample_sim_ids <- identical_team %>%
-  filter(exp_id == 1) %>%
-  group_by(strategy, starting_pos) %>%
-  sample_n(1) %>%
-  .$sim_id
-
-random_walk_plot <- ggplot(identical_team %>% filter(exp_id == 1)) +
-  aes(pos_x, pos_y, group = sim_id, color = strategy) +
-  geom_path(alpha = 0.2) +
-  annotate("point", x = 0, y = 0, shape = 4) +
-  annotate("point", x = -127.3, y = -127.3, shape = 1) +
-  coord_equal() +
-  facet_wrap("strategy_rev") +
-  scale_x_continuous("", labels = NULL) +
-  scale_y_continuous("", labels = NULL) +
-  scale_color_strategy +
-  base_theme +
-  theme(legend.position = "none")
-
- # * differing-skills ----
+# * differing-skills ----
 data("differing_skills")
 
 differing_skills %<>%
   recode_fitness_as_pct() %>%
   recode_team() %>%
-  extract_position()
-
-differing_skills %<>%
+  extract_position() %>%
   filter(strategy == "diachronic")
 
 gg_differing_skills_timeline <- ggplot(differing_skills) +
@@ -297,113 +210,35 @@ gg_differing_skills_timeline <- ggplot(differing_skills) +
 max_fitness <- differing_skills %>%
   group_by(sim_id, strategy, team_label) %>%
   summarize(fitness_pct = max(fitness_pct)) %>%
-  recode_strategy()
+  peaks::recode_strategy()
 
 dodge_width <- 0.9
 team_dodge <- position_dodge(width = dodge_width)
 sim_dodge <- position_jitterdodge(dodge.width = dodge_width, jitter.width = 0.4)
 
 gg_differing_skills_final_fitness <- ggplot(max_fitness) +
-    aes(x = strategy, fitness_pct, alpha = team_label) +
-    scale_y_fitness_pct +
-    # geom_point(aes(color = strategy), position = sim_dodge) +
-    geom_bar(aes(fill = strategy),
-             stat = "summary", fun.y = "mean", position = team_dodge) +
-    scale_alpha_team +
-    scale_fill_strategy +
-    guides(fill = "none") +
-    base_theme +
-    theme(panel.grid.major.x = element_blank())
+  aes(x = strategy, fitness_pct, alpha = team_label) +
+  scale_y_fitness_pct +
+  # geom_point(aes(color = strategy), position = sim_dodge) +
+  geom_bar(aes(fill = strategy),
+           stat = "summary", fun.y = "mean", position = team_dodge) +
+  scale_alpha_team +
+  scale_fill_strategy +
+  guides(fill = "none") +
+  base_theme +
+  theme(panel.grid.major.x = element_blank())
 
-gg_differing_skills_walk <- (random_walk_plot %+% filter(differing_skills, exp_id == 1)) +
-  facet_wrap("team_label_rev", nrow = 1)
-
-# * solo-teams ----
-data("solo_teams")
-
-solo_teams %<>%
-  recode_fitness_as_pct() %>%
-  recode_team()
-
-gg_solo_teams_timeline <- ggplot(solo_teams) +
-    aes(time, fitness_pct, alpha = team_label, color = strategy) +
-    geom_line(stat = "summary", fun.y = "mean", size = 1.2) +
-    scale_x_continuous("calendar hours") +
-    scale_y_continuous("fitness", labels = scales::percent) +
-    scale_color_manual("strategy", values = get_theme_color_values(c("blue", "green"))) +
-    scale_alpha_team +
-    guides(color = guide_legend(order = 1),
-           alpha = guide_legend(order = 2)) +
-    base_theme
-
-max_fitness <- solo_teams %>%
-  group_by(sim_id, strategy, team_label) %>%
-  summarize(fitness_pct = max(fitness_pct))
-
-gg_solo_teams_final_fitness <- (gg_differing_skills_final_fitness %+% max_fitness)
-
-# * number-of-exchanges ----
-data("alternating")
-
-exchange_rate_strategies <- c("diachronic", "diachronic_2", "diachronic_3", "diachronic_4", "diachronic_max")
-exchange_rate_labels <- c(1:4, "max")
-exchange_rate_map <- data_frame(
-  strategy = exchange_rate_strategies,
-  exchange_rate = factor(exchange_rate_strategies, levels = exchange_rate_strategies,
-                         labels = exchange_rate_labels)
-)
-
-alternating %<>%
-  recode_fitness_as_pct() %>%
-  left_join(exchange_rate_map)
-
-# * aggregate ----
-data("aggregate_fns")
-
-aggregate_fns %<>%
-  recode_fitness_as_pct()
-
-gg_aggregate <- ggplot(aggregate_fns) +
-  aes(time, fitness_pct, color = aggregate_fn) +
-  geom_line(stat = "summary", fun.y = "mean", size = 1.2) +
-  scale_x_continuous("calendar hours") +
-  scale_y_continuous("fitness", labels = scales::percent) +
-  scale_color_brewer("aggregate function", palette = "Set2") +
-  base_theme
-
-gg_alternating <- ggplot(alternating) +
-  aes(time, fitness_pct, color = exchange_rate) +
-  geom_line(stat = "summary", fun.y = "mean", size = 1.2) +
-  scale_x_continuous("calendar hours") +
-  scale_y_continuous("fitness", labels = scales::percent) +
-  scale_color_brewer("exchanges", palette = "Set2", guide = guide_legend(reverse = TRUE)) +
-  base_theme
-
-# * variable-feedback ----
-data("variable_feedback")
-
-variable_feedback %<>%
-  recode_fitness_as_pct()
-
-feedback_trials_plot <- ggplot(variable_feedback) +
-  aes(factor(strategy, levels = c("synchronic", "diachronic")), feedback, fill = strategy) +
-  geom_bar(aes(alpha = factor(p_feedback, levels = c(0.1, 0.5, 1.0))),
-           stat = "summary", fun.y = "sum", position = "dodge") +
-  scale_x_discrete("strategy") +
-  scale_y_continuous("feedback trials", labels = NULL) +
-  scale_fill_manual(values = get_theme_color_values(c("blue", "green"))) +
-  scale_alpha_discrete("prob feedback", labels = c("10%", "50%", "100%"), range = c(0.4, 1.0)) +
-  base_theme
-
-variable_feedback_plot <- ggplot(variable_feedback) +
-  aes(time, fitness_pct, color = strategy, alpha = factor(p_feedback)) +
-  geom_line(stat = "summary", fun.y = "mean", size = 1.2) +
-  scale_x_continuous("calendar hours") +
-  scale_y_continuous("fitness", labels = scales::percent) +
+gg_differing_skills_walk <- ggplot(filter(differing_skills, exp_id == 1)) +
+  aes(pos_x, pos_y, group = sim_id, color = strategy) +
+  geom_path(alpha = 0.2) +
+  annotate("point", x = 0, y = 0, shape = 4) +
+  annotate("point", x = -127.3, y = -127.3, shape = 1) +
+  coord_equal() +
+  facet_wrap("team_label_rev", nrow = 1) +
+  scale_x_continuous("", labels = NULL) +
+  scale_y_continuous("", labels = NULL) +
   scale_color_strategy +
-  scale_alpha_discrete("prob feedback", labels = c("10%", "50%", "100%"), range = c(0.6, 1.0)) +
-  guides(
-    color = guide_legend(order = 1),
-    alpha = guide_legend(order = 2, reverse = TRUE)
-  ) +
-  base_theme
+  base_theme +
+  theme(legend.position = "none")
+
+# * same-skills ----

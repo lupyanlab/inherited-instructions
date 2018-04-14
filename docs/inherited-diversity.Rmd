@@ -8,20 +8,19 @@ output:
       in_header: templates/header.tex
 abstract: |
   Humans have evolved a system of cultural inheritance that enables the
-  accumulation of problem solving knowledge over generations. As a result,
-  we rarely have to start from scratch when solving new problems, and instead
-  can benefit from solutions discovered by a previous generation. We
-  investigated the impact of inheritance on problem solving performance.
-  Specifically, we explored the conditions under which inheritance might
-  improve problem solving relative to solving the same problems individually.
-  In Experiment 1, we simulated the effect of inheritance on problem solving
-  using agent-based models, and demonstrate some problems for
-  which generations of complementary problem solvers, who learn independent and
-  complementary skills, are able to outperform equally skilled individuals. In
-  Experiment 2, we tested these predictions in a behavioral experiment. These
-  results illustrate one way in which our system of cultural inheritance may
-  result in cumulative improvements to problem solving performance over
-  generations.
+  accumulation of problem solving knowledge over generations. As a result, we
+  rarely have to start from scratch when solving new problems, and instead can
+  benefit from solutions inherited from a previous generation. We investigated
+  the impact of inheritance on problem solving performance. Specifically, we
+  explored the conditions under which inheritance might improve problem solving
+  performance relative to solving the same problems individually. In Experiment 1, we
+  simulated the effect of inheritance on problem solving using agent-based
+  models, and demonstrate some problems for which generations of complementary
+  problem solvers, who possess independent and complementary skills, are able to
+  outperform equally skilled individuals. In Experiment 2, we tested these
+  predictions in a behavioral experiment. These results illustrate one way in
+  which our system of cultural inheritance may result in cumulative
+  improvements to problem solving performance over generations.
 ---
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
@@ -52,14 +51,15 @@ improve problem solving beyond what could be achieved individually.
 
 Humans have evolved a number of abilities including imitation, teaching,
 and language that improve the success of cultural inheritance. These abilities
-enable high fidelity cultural transmission [@Lewis:2012jg; @Dean:2012gv].
+are said to enable high fidelity cultural transmission [@Lewis:2012jg; @Dean:2012gv].
 That some behaviors can be accurately copied through social learning
-is uncontroversial, but what is in active debate is the importance of accurate
-transmission in explaining the nature of human cultural evolution. For instance,
-Sperber and others [-@Sperber:1996exc; @Claidiere:2010kd] have argued that
-accurate copying is possible but rare, and that cultural transmission is better
-understood as an inferential and transformative process as opposed to a
-replicative one.
+is uncontroversial. What is still in activate debate is the importance of accurate
+transmission in explaining the nature of human cultural evolution.
+
+For instance, Sperber and others [-@Sperber:1996exc; @Claidiere:2010kd] have
+argued that accurate copying is possible but rare. and that cultural
+transmission is better understood as an inferential and transformative process
+as opposed to a replicative one.
 
 Tomasello and others [-@Tomasello:1993vh; @Tennie:2009gaa] have argued that
 accurate transmission is clearly important in many problem solving domains.
