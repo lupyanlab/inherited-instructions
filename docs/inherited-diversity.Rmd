@@ -25,9 +25,8 @@ abstract: |
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
 library(kableExtra)
-opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE, results="hide",
-               fig.height=4, fig.width=4,
-               autodep = TRUE)
+opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, results="hide",
+               fig.height=4, fig.width=4)
 chunks_dir <- "R"
 read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
 read_chunk(file.path(chunks_dir, "peaks.R"))
@@ -252,7 +251,7 @@ individual would have achieved on their own.
 
 ## Methods {-}
 
-```{r methods, cache=FALSE}
+```{r methods}
 ```
 
 (ref:gems-team-structures) Team structures. Participants were trained to pay
