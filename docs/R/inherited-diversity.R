@@ -22,7 +22,7 @@ data("SimpleHill")
 methods <- list(min_ori = 10,
                 max_ori = 90,
                 min_sf = 0.04,
-                max_sf = 0.18) 
+                max_sf = 0.18)
 
 methods$n_gabors_in_landscape <- nrow(SimpleHill)
 
@@ -359,7 +359,7 @@ gen1_scores_plot <- ggplot(Gen1) +
   t_$theme +
   theme(legend.position = "top",
         panel.spacing.x = unit(1, "lines"))
-  
+
 # * gen1-distance ----
 gen1_distance_plot <- ggplot(Gen1) +
   aes(trial, distance_2d, color = instructions) +

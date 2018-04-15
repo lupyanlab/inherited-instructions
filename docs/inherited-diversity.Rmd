@@ -252,7 +252,7 @@ individual would have achieved on their own.
 
 ## Methods {-}
 
-```{r methods}
+```{r methods, cache=FALSE}
 ```
 
 (ref:gems-team-structures) Team structures. Participants were trained to pay
