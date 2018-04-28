@@ -108,7 +108,7 @@ individuals results in performance greater than either individual could achieve
 on their own. We hypothesized that as the could result in performance greater
 than either individual could achieve on their own.
 
-# Experiment 1 {-}
+# Experiment 1: Agent-based model of complementary inheritance {-}
 
 ```{r peaks-setup}
 ```
@@ -204,7 +204,7 @@ which new solutions are tested by participants seeking to answer the same proble
 In Experiment 2, we test the predictions drawn from Experiment 1 in a behavioral
 in lab experiment.
 
-# Experiment 2 {-}
+# Experiment 2: Behavioral test of complementary inheritance {-}
 
 In Experiment 2 we tested the predictions of the agent-based model presented
 in Experiment 1 with a behavioral experiment. Participants were randomly assigned
@@ -592,7 +592,7 @@ or who inherit from a congruent problem solver trained on the same skills.
 These results validate the main conclusions drawn in Experiment 1 in a behavioral
 experiment.
 
-# General Discussion {-}
+# Discussion {-}
 
 The ability to pass problem solving knowledge on to future generations is
 fundamental to human problem solving ability. Yet usually the inheritance of
