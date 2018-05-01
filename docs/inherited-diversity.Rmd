@@ -107,14 +107,14 @@ than either individual could achieve on their own.
 ```
 
 In Experiment 1, we used an agent-based model to simulate the effect of
-inheritance on problem solving performance. Agents were assigned skills in two
-independent dimensions. Some agents had equal skill in both dimensions, while
-others had unequal skill, specializing along one dimension at the expense of
-skill in the other. Agents with each type of skill distribution were arranged
-in pairs with other agents, forming two agent teams that varied in overall
+inheritance on problem solving performance. Agents were assigned skills corresponding
+to vision in two dimensions. Some agents had equal vision in both dimensions, while
+others had unequal vision, specializing along one dimension at the expense of
+vision in the other. Agents with each type of skill distribution were arranged
+in pairs with other agents, forming two agent teams that varied in team
 skill distribution. For identical teams, both agents had equal skills along
 both dimensions. For diverse teams, each agent specialized in a different
-skill. We tested whether skill diversity resulted in better problem solving
+skill. We explored whether skill diversity resulted in better problem solving
 performance than equally skilled individuals.
 
 ## Methods {-}
@@ -122,14 +122,13 @@ performance than equally skilled individuals.
 ```{r peaks-methods}
 ```
 
-In the simulations, agents completed a problem solving task by searching
-a space of possible solutions, looking for the best ones. Agents navigated the
-solution landscape using a simple hill climbing procedure. For each time step,
-agents randomly sampled a solution within their range of vision (described
-below). If the sampled solution corresponded to a higher position on the
-landscape than the previous best solution, then the agent moved to the new
-position. On the next time step, a solution was sampled relative to the new
-position.
+In the simulations, agents completed a problem solving task by searching a space
+of possible solutions, looking for the best ones. Agents navigated the solution
+landscape using a simple hill climbing procedure. For each time step, agents
+randomly sampled a position on the landscape within their range of vision
+(described below). If the sampled position was higher on the landscape than the
+previous position, then the agent moved to the new position. For the next time
+step, a solution was sampled relative to the new position.
 
 Agents were assigned skill values in two dimensions (Fig.
 \@ref(fig:ability-as-vision)). Each skill value corresponded to vision along
@@ -142,19 +141,20 @@ skills had a rectangular range of vision, and were more likely to sample in one
 dimension over the other.
 
 (ref:ability-as-vision) Methods for agent-based models. **A.** Each agent was
-assigned skills in two dimensions. **B.** Skill values in both dimensions were
-combined to form each agent's search areas, corresponding to the range of
-solutions that could be sampled relative to any point on the landscape. **C.**
-Teams of two agents differing in skill diversity. Identical teams shared the
-same abilities in both dimensions. Complementary teams had "equal but opposite"
-skills.
+assigned skill corresponding to vision in two dimensions. **B.** Skill values in
+both dimensions were combined to form each agent's search areas, corresponding
+to the range of solutions that could be sampled relative to any point on the
+landscape. **C.** Teams of two agents differing in skill diversity. Identical
+teams shared the same abilities in both dimensions. Complementary teams had
+"equal but opposite" skills.
 
 ```{r ability-as-vision, fig.width=8, fig.height=8, fig.cap='(ref:ability-as-vision)'}
 grid.arrange(
   gg_two_dimensions + ggtitle("A. Vision in two dimensions"),
   gg_search_rects + ggtitle("B. Search areas"),
   gg_differing_skills + ggtitle("C. Two person teams varying in vision distribution"),
-  ncol = 1
+  ncol = 1,
+  heights = c(0.35, 0.3, 0.35)
 )
 ```
 
@@ -199,14 +199,14 @@ in lab experiment.
 
 # Experiment 2: Behavioral test of complementary inheritance {-}
 
-In Experiment 2 we tested the predictions of the agent-based model presented
-in Experiment 1 with a behavioral experiment. Participants were randomly assigned
+In Experiment 2 we tested the predictions of the agent-based model presented in
+Experiment 1 in a behavioral experiment. Participants were randomly assigned
 to learn equal but independent skills in a perceptual discrimination task. In
-the task, participants searched a space of possible
-solutions looking for the best ones. We expected to find that teams of
-complementary problem solvers, trained on independent skills, could coordinate
-their labor so as to improve problem solving performance beyond what either
-individual would have achieved on their own.
+the task, participants searched a space of possible solutions looking for the
+best ones. We expected to find that teams of complementary problem solvers,
+trained on independent skills, could coordinate their labor so as to improve
+problem solving performance beyond what either individual would have achieved on
+their own.
 
 ## Methods {-}
 
@@ -286,18 +286,14 @@ dimension.
 
 ### Materials {-}
 
-#### Gabors {-}
-
-We created a $71 \times 71$ grid of `r methods$n_gabors_in_landscape` gabor
+**Gabors.** We created a $71 \times 71$ grid of `r methods$n_gabors_in_landscape` gabor
 patches that varied in orientation and spatial frequency. Orientations were sampled at regular
 intervals from `r methods$min_ori`° to `r methods$max_ori`°. Spatial frequencies
 were sampled at geometric intervals from `r methods$min_sf` cycles/pixel to
 `r methods$max_sf` cycles/pixel. A geometric progression was used because high
 spatial frequencies are harder to distinguish than low spatial frequencies.
 
-#### Landscapes {-}
-
-The three different solution landscapes we used are show in Fig.
+**Landscapes.** The three different solution landscapes we used are show in Fig.
 \@ref(fig:landscapes). There were two training landscapes, and one test
 landscape. The training landscapes were constructed so that the value of the
 gems was determined completely by one dimension (either orientation or spatial
@@ -324,9 +320,7 @@ gridExtra::grid.arrange(
 )
 ```
 
-#### Survey {-}
-
-After finishing the main experiment, participants completed a short survey. We
+**Survey.** After finishing the main experiment, participants completed a short survey. We
 asked the participants to recall the instructions they received, to describe how
 they approached the experiment, and to rate the extent to which they thought the
 gems and scores were random. We were particularly interested in if the
@@ -345,9 +339,7 @@ block of 30 training trials. After the training trials, they completed four
 blocks of 40 test trials. When finished, participants completed the
 post-experiment survey. The experiment took around 30 minutes to complete.
 
-#### Training trial procedure {-}
-
-Participants were randomly assigned to one of two training conditions. In the
+**Training trial procedure.** Participants were randomly assigned to one of two training conditions. In the
 orientation condition, participants read in their instructions that the value
 of each gem was determined by the orientation of the stripes. In the bar width
 condition, they read that the value was determined by the width of the bars.
@@ -373,9 +365,7 @@ participant had correctly selected the most valuable gem in their first
 response, they were congratulated for making the correct choice, and told to
 click on the gem they selected again.
 
-#### Test trial procedure {-}
-
-After completing the training trials, participants completed four blocks of 40
+**Test trial procedure.** After completing the training trials, participants completed four blocks of 40
 test trials. All test trials were conducted on the same simple hill landscape, defined above.
 Participants traversed the simple hill landscape four times, once for each block of
 40 trials. First generation participants started each block with 6 gems sampled
@@ -541,6 +531,17 @@ gridExtra::grid.arrange(
   strategies_relative_distance_plot + ggtitle("D. Relative distance"),
   nrow = 2
 )
+```
+
+### Inherited distance {-}
+
+(ref:achieved-distance-to-1d) Performance relative to inherited position. Inherited distance
+to trained peak is the distance toward the trained peak that was inherited, where larger numbers
+indicate that the ancestor proceeded further to the 1D peak. Achieved distance shows the distance
+moved toward the peak.
+
+```{r achieved-distance-to-1d, fig.cap="(ref:achieved-distance-to-1d)"}
+achieved_to_inherited_1d_plot
 ```
 
 ### Sensitivity {-}

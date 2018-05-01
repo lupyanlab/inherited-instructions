@@ -627,11 +627,34 @@ strategies_relative_distance_plot <- ggplot(Strategies) +
 # * strategies-correlations ----
 achieved_to_inherited_plot <- ggplot(Strategies) +
   aes(inherited_distance, achieved_distance) +
-  geom_point(aes(color = team_strategy_label))
+  geom_point(aes(color = team_strategy_label)) +
+  geom_smooth(aes(color = team_strategy_label), se = FALSE, method = "lm")
 
+achieved_to_inherited_1d_mod <- lm(
+  achieved_distance ~ inherited_distance_1d * (isolated_v_complementary + congruent_v_complementary),
+  data = Strategies)
+
+achieved_to_inherited_1d_preds <- expand.grid(
+    team_strategy = c("isolated", "congruent", "complementary"),
+    inherited_distance_1d = seq(-10, 50, by = 1),
+    stringsAsFactors = FALSE
+  ) %>%
+  recode_team_strategy() %>%
+  cbind(., predict(achieved_to_inherited_1d_mod, newdata = ., se = TRUE)) %>%
+  rename(achieved_distance = fit, se = se.fit)
+  
 achieved_to_inherited_1d_plot <- ggplot(Strategies) +
   aes(inherited_distance_1d, achieved_distance) +
-  geom_point(aes(color = team_strategy_label))
+  geom_point(aes(color = team_strategy_label)) +
+  geom_ribbon(aes(fill = team_strategy_label, ymin = achieved_distance-se, ymax = achieved_distance+se), stat = "identity",
+              data = achieved_to_inherited_1d_preds, alpha = 0.5) +
+  scale_x_continuous("Inherited distance to trained peak") +
+  scale_y_continuous("Achieved distance") +
+  t_$scale_color_strategy +
+  t_$scale_fill_strategy +
+  t_$theme +
+  guides(fill = "none") +
+  theme(legend.position = "top")
 
 # * strategies-sensitivity ----
 sensitivities_plot <- ggplot(Sensitivities) +
