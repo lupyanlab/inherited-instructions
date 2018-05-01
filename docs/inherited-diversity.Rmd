@@ -53,47 +53,40 @@ solutions from a previous generation on future problem solving. Specifically,
 we were interested in the conditions under which problem solving organized
 around inheritance resulted in more effective problem solving than would be
 achieved by solving the same problems individually. To test this, we compared
-the performance of individuals working alone to teams of individuals.
+the performance of individuals working alone to teams of individuals who
+hand off partial solutions to the next generation.
 
 Although the human capacity to work together in teams to solve large problems
-is evident in many scientific and technological domains, teamwork is rarely
+is evident in many scientific and technological domains, teamwork is not usually 
 considered to be an effective means of improving individual problem solving
 performance. When both teams and individuals complete tasks that individuals
 can complete alone, teamwork does not usually improve performance over what
-could have been accomplished individually. Part of the reason is due to the
-social dynamics of teamwork. Large teams are subject to effects such as social
-loafing that decrease motivation and performance. Teamwork may be inefficient
-for other reasons, as well. For example, on software development projects,
-adding more team members can sometimes slow the speed at which new changes can
-be implemented, due to increasing costs of communication among team members
-working independently.
+could have been accomplished individually.
 
-A notable exception is a study by @Bahrami:2010jl who found that teams of two
-individuals or dyads performed better than individuals in a perceptual judgment
-task. In the experiment, participants searched for an oddball target and
-responded with a binary judgment corresponding to which of two displays
-contained the oddball target. If the dyad disagreed about which display
-contained the target, they were allowed to confer and make a joint decision.
-Because participants made both individual and team responses on each trial, the
-researchers were able to compare the performance of the team to the performance
-of best individual in each team. The results showed a clear benefit to teamwork
-over what would have been achieved by the best individual in each dyad
-completing the task alone. Additional studies have shown that dyads were able
-to improve team performance through confidence matching, which is improved by
-settling on a common vocabulary to use to communicate uncertainty, but
-confidence matching also occurs when using non-linguistic indicators of
-uncertainty.
+One way in which teamwork has been shown to improve performance over what could
+have been accomplished individually is through confidence matching.
+@Bahrami:2010jl found that teams of two individuals or dyads performed better
+than individuals in a perceptual judgment task. On each trial, participants
+searched for an oddball target and responded with a binary judgment. If the
+dyad disagreed about which display contained the target, they were allowed to
+confer and make a joint decision. Because participants made both individual and
+team responses on the same trials, the researchers were able to compare the
+performance of the team to the performance of best individual in each team. The
+results showed a benefit to teamwork over what would have been achieved by the
+best individual in each dyad completing the task alone. Follow-up studies have
+shown that dyads were able to improve team performance through confidence
+matching. Confidence matching can occur through settling on a common vocabulary
+to use when discussing uncertainty, but confidence matching also occurs when
+using non-linguistic indicators of uncertainty.
 
-In confidence matching tasks, teamwork improves performance specifically when
-the members of the team have similar perceptual abilities. This finding
-contrasts with other research on teamwork that has found a benefit to diversity
-among team members. In tasks requiring problem solvers to search a space of
-possible solutions, homogeneous teams of problem solvers, where all team members
-have equal skill, may prematurely convergence on suboptimal solutions, whereas
-heterogeneous teams are able to avoid these pitfalls, and maintain a wider
-search for globally optimal solutions. These results have been used to argue
-that diversity among team members is an effective means of improving team
-performance.
+In tasks involving confidence matching, teamwork improves performance
+specifically when the members of the team have similar perceptual abilities.
+Other research has found a benefit to diversity among team members. Diversity
+among team members has been argued to be beneficial in tasks that require
+searching a space of possible solutions, looking for the best ones. For these
+types of problems, teams of equally skilled problem solvers may get stuck on
+suboptimal solutions, where diverse teams are able to maintain a wider search
+and in some cases can discover globally optimal solutions.
 
 To answer this question, we had participants complete a problem solving task
 either as first or second generation problem solvers. First generation problem
