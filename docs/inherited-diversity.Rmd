@@ -107,38 +107,45 @@ than either individual could achieve on their own.
 ```
 
 In Experiment 1, we used an agent-based model to simulate the effect of
-inheritance on problem solving performance. Agents were assigned skills corresponding
-to vision in two dimensions. Some agents had equal vision in both dimensions, while
-others had unequal vision, specializing along one dimension at the expense of
-vision in the other. Agents with each type of skill distribution were arranged
-in pairs with other agents, forming two agent teams that varied in team
-skill distribution. For identical teams, both agents had equal skills along
-both dimensions. For diverse teams, each agent specialized in a different
-skill. We explored whether skill diversity resulted in better problem solving
-performance than equally skilled individuals.
+inheritance on problem solving performance. In the model, agents attempted to
+solve a problem by searching a space of possible solutions looking for the best
+ones. After a certain number of attempts, the best solutions discovered by each
+agent were passed on to serve as the starting point for attempts by a new agent.
+These second generation agents had either the same or different problem solving
+skills. We explored whether skill diversity among generatiosn of agents resulted
+in better problem solving performance than equally skilled individuals given the
+same total number of attempts.
 
 ## Methods {-}
 
 ```{r peaks-methods}
 ```
 
-In the simulations, agents completed a problem solving task by searching a space
-of possible solutions, looking for the best ones. Agents navigated the solution
-landscape using a simple hill climbing procedure. For each time step, agents
-randomly sampled a position on the landscape within their range of vision
-(described below). If the sampled position was higher on the landscape than the
-previous position, then the agent moved to the new position. For the next time
-step, a solution was sampled relative to the new position.
-
-Agents were assigned skill values in two dimensions (Fig.
-\@ref(fig:ability-as-vision)). Each skill value corresponded to vision along
-a particular dimension in the solution landscape. All agents were allotted the
+Agents were assigned skill values in two dimensions, corresponding to vision in
+a particular dimension of the solution landscape. All agents were allotted the
 same total amount of skill, which was distributed between the two dimensions.
 Some agents had equal skill in both dimensions, and others had unequal skill in
-either dimension. Agents with equal skill in both dimensions had a square range
-of vision, and could sample equally in any direction. Agents with unequal
-skills had a rectangular range of vision, and were more likely to sample in one
-dimension over the other.
+either dimension (Fig. \@ref(fig:ability-as-vision)A).
+
+Agents with equal skill in both dimensions had a square range of vision, and
+could sample solutions equally in any direction. Agents with unequal skills had
+a rectangular range of vision, and were more likely to sample solutions along
+one dimension over the other (Fig. \@ref(fig:ability-as-vision)B).
+
+Agents with each type of skill distribution were arranged in pairs with other
+agents, forming two-agent teams that varied in team skill distribution (Fig.
+\@ref(fig:ability-as-vision)C). For identical teams, both agents had equal
+skills along both dimensions. For diverse teams, each agent specialized in a
+different skill.
+
+Agents searched for better solutions using a simple hill-climbing procedure.
+For each time step, agents randomly sampled a solution within their range of
+vision relative to their previous best solution. If the sampled solution was
+better quality than their current best solution, i.e. it was higher on the
+landscape, then the agent moved to the new position. For the next time step, a
+solution was sampled relative to the new position. If the sampled solution
+was not an improvement, agents sampled from the previous best solution again
+on the next time step.
 
 (ref:ability-as-vision) Methods for agent-based models. **A.** Each agent was
 assigned skill corresponding to vision in two dimensions. **B.** Skill values in
@@ -154,7 +161,7 @@ grid.arrange(
   gg_search_rects + ggtitle("B. Search areas"),
   gg_differing_skills + ggtitle("C. Two person teams varying in vision distribution"),
   ncol = 1,
-  heights = c(0.35, 0.3, 0.35)
+  heights = c(0.375, 0.25, 0.375)
 )
 ```
 
@@ -164,6 +171,12 @@ grid.arrange(
 ```
 
 The results of the simulations are shown in Fig. \@ref(fig:differing-skills).
+When considering just the performance of the first generation agents, skill diversity was found
+to negatively impact overall problem solving performance, such that agents with
+unequal skill achieved lower performance scores than agents with equal skills,
+`r exp1$gen1`. In contrast, after handing off to the second generation, skill
+diversity significantly improved performance, `r exp1$gen2`, resulting in
+a crossover effect, `r exp1$crossover`.
 
 (ref:differing-skills) Results of agent-based model simulations.
 
@@ -176,6 +189,17 @@ simple_hill <- lattice::wireframe(z ~ x * y, data = z)
 grid.arrange(simple_hill, gg_differing_skills_timeline, nrow = 1)
 ```
 
+The reason skill diversity improved overall team performance even
+though it decreased individual performance is shown in Fig.
+\@ref(fig:differing-skills-walk). As skill diversity increases, first generation
+agents proceed to parts of the solution landscape that individuals with equal
+skill are unlikely to reach on their own. This means that second generation
+agents, who inherit these positions, start off in a different part of the
+solution space than they would have reached on their own. In this case, this
+novel starting point positions second generation problem solvers so that they
+are better able to reach the globally optimal solutions as compared to equally
+skilled individuals.
+
 (ref:differing-skills-walk) Grid positions of agent-based models by skill distribution.
 
 ```{r differing-skills-walk, fig.width=8, fig.height=2.5, fig.cap="(ref:differing-skills-walk)"}
@@ -184,18 +208,19 @@ gg_differing_skills_walk
 
 ## Discussion {-}
 
-Experiment 1 demonstrates the process by which inheritance may result in teams of
-problem solvers may come to outperform individuals trained on the same skills and
-given the same amount of time. In the simulations, this improvement in performance
-is the result of the first generation putting later generations in a part of the
-problem space that would be unlikely to be achieved individually.
+The results of Experiment 1 depict the phenomena of complementary inheritance,
+by which inheritance over generations results in teams of problem solvers
+outperforming individuals trained on the same skills and given the same number
+of attempts. In the simulations, this improvement in performance is the result
+of the first generation putting later generations in a part of the problem space
+that would be unlikely to be achieved individually.
 
 However, the value of the agent-based model is limited, especially since the
 problem solving process is simulated as a random walk process. A more realistic
 test of whether inheritance can improve team performance requires a task in
-which new solutions are tested by participants seeking to answer the same problems.
-In Experiment 2, we test the predictions drawn from Experiment 1 in a behavioral
-in lab experiment.
+which new solutions are tested by participants seeking to answer the same
+problems. In Experiment 2, we test these predictions in a behavioral in
+experiment.
 
 # Experiment 2: Behavioral test of complementary inheritance {-}
 
@@ -339,10 +364,11 @@ block of 30 training trials. After the training trials, they completed four
 blocks of 40 test trials. When finished, participants completed the
 post-experiment survey. The experiment took around 30 minutes to complete.
 
-**Training trial procedure.** Participants were randomly assigned to one of two training conditions. In the
-orientation condition, participants read in their instructions that the value
-of each gem was determined by the orientation of the stripes. In the bar width
-condition, they read that the value was determined by the width of the bars.
+**Training trial procedure.** Participants were randomly assigned to one of two
+training conditions. In the orientation condition, participants read in their
+instructions that the value of each gem was determined by the orientation of the
+stripes. In the bar width condition, they read that the value was determined by
+the width of the bars.
 
 After reading the instructions, participants completed a block of 30 training
 trials. Across the 30 trials, participants traversed a landscape corresponding
@@ -352,8 +378,8 @@ that was biased so that the values of the gems were dependent completely on
 spatial frequency and not on orientation.
 
 On the first training trial, participants were shown six gems sampled from
-around the origin $(0_{ori},0_{bw})$ of the stimulus space. On subsequent training trials,
-gems were sampled from around the position of the gem
+around the origin $(0_{ori},0_{bw})$ of the stimulus space. On subsequent
+training trials, gems were sampled from around the position of the gem
 $(x_{ori},y_{bw})$ selected on the previous trial.
 
 In the training trials, after selecting a gem, participants were shown the
@@ -365,17 +391,18 @@ participant had correctly selected the most valuable gem in their first
 response, they were congratulated for making the correct choice, and told to
 click on the gem they selected again.
 
-**Test trial procedure.** After completing the training trials, participants completed four blocks of 40
-test trials. All test trials were conducted on the same simple hill landscape, defined above.
-Participants traversed the simple hill landscape four times, once for each block of
-40 trials. First generation participants started each block with 6 gems sampled
-from around the origin $(0_{ori},0_{bw})$. Second generation participants
-participants started off at the location of a first generation participant
-after 20 trials, $(x_{ori},y_{bw})$. First and second generation participants
-were yoked over blocks such that second generation participants inherited from
-the same first generation participant four times total, one for each
-block. Participants were given a break after each block, and told that for
-the next block, they may encounter gems that they had not seen before.
+**Test trial procedure.** After completing the training trials, participants
+completed four blocks of 40 test trials. All test trials were conducted on the
+same simple hill landscape, defined above. Participants traversed the simple
+hill landscape four times, once for each block of 40 trials. First generation
+participants started each block with 6 gems sampled from around the origin
+$(0_{ori},0_{bw})$. Second generation participants participants started off at
+the location of a first generation participant after 20 trials,
+$(x_{ori},y_{bw})$. First and second generation participants were yoked over
+blocks such that second generation participants inherited from the same first
+generation participant four times total, one for each block. Participants were
+given a break after each block, and told that for the next block, they may
+encounter gems that they had not seen before.
 
 In the test trials, after selecting a gem, participants were shown only the
 value of the gem they selected, and not the values of the gems they did not
@@ -512,11 +539,20 @@ in terms of distance and score, such that positive numbers mean
 the participant was able to move closer to the target and also to improve
 the overall score.
 
-In terms of score after 20 trials, complementary problem solvers were able
-to achieve higher scores than both isolated and congruent strategies,
-`r r_$strategies_scores_helmert_mod_main`, with no residual difference
+After 20 trials, complementary problem solvers were able
+to achieve slightly higher absolute scores than both isolated and congruent strategies,
+although this difference was not statistically significant,
+`r r_$strategies_scores_helmert_mod_main`. There was no residual difference
 between isolated and congruent strategies, `r r_$strategies_scores_helmert_mod_resid`,
-(Fig. \@ref(fig:strategies)A).
+(Fig. \@ref(fig:strategies)A). Complementary problem solvers were
+able to achieve higher relative scores than both isolated and congruent strategies,
+although this difference was only marginal, `r r_$strategies_relative_scores_helmert_mod_main`.
+Again, there was no residual difference between the isolated and congruent strategies,
+`r_$strategies_relative_scores_helmert_mod_resid` (Fig. \@ref(fig:strategies)B).
+
+In terms of distance, a similar pattern was found. Complementary problem
+solvers got closer to the best solution than isolated individuals and congruent
+strategies.
 
 (ref:strategies) Hill climbing performance. **A.** Scores correspond to heights
 on the landscape, and **C.** Distances correspond to Euclidean distances between
@@ -566,6 +602,14 @@ strategies. We hypothesized that complementary problem solvers, by being exposed
 to a wider range of gems, might become more sensitive not only to their trained
 dimension, but also their untrained dimension. To test this, we compared sensitivity
 in trained and untrained dimensions across team conditions.
+
+We found that a complementary strategy resulted in second generation participants
+becoming more sensitive to their trained dimension, `r r_$trained_sensitivity_main`,
+with no residual difference between isolated and congruent strategies, `r r_$trained_sensitivity_resid`.
+
+We did not find any evidence that complementary inheritance affected overall
+sensitivity, `r r_$overall_sensitivity_main` or sensitivity in the untrained
+dimension, `r r_$untrained_sensitivity_main`.
 
 (ref:sensitivities) Sensitivity to trained and untrained dimensions by team strategy.
 

@@ -186,6 +186,8 @@ gg_search_areas_by_strategy <- ggplot(search_areas_by_strategy) +
 
 # ---- peaks-experiments ----
 
+exp1 <- list()
+
 # * differing-skills ----
 data("differing_skills")
 
@@ -195,17 +197,51 @@ differing_skills %<>%
   extract_position() %>%
   filter(strategy == "diachronic")
 
+recode_team_label <- function(frame) {
+  team_label_levels <- c("e", "d", "c", "b", "a")
+  poly_contr <- as.data.frame(contr.poly(team_label_levels))
+  names(poly_contr) <- c("team_label.L", "team_label.Q", "team_label.C", "team_label.4")
+  poly_contr$team_label <- factor(team_label_levels, levels = team_label_levels)
+  
+  if(missing(frame)) return(poly_contr)
+  left_join(frame, poly_contr)
+}
+
+recode_time <- function(frame) {
+  time_map <- data_frame(time = c(49, 99), time_c = c(-0.5, 0.5))
+  if(missing(frame)) return(time_map)
+  left_join(frame, time_map)
+}
+
+differing_skills %<>%
+  recode_team_label() %>%
+  recode_time()
+
+gen1_mod <- lm(fitness_pct ~ team_label.L + team_label.Q + team_label.C + team_label.4,
+               data = filter(differing_skills, time_c == -0.5))
+exp1$gen1 <- report_lm_mod(gen1_mod, "team_label.L")
+
+gen2_mod <- lm(fitness_pct ~ team_label.L + team_label.Q + team_label.C + team_label.4,
+               data = filter(differing_skills, time_c == 0.5))
+exp1$gen2 <- report_lm_mod(gen2_mod, "team_label.L")
+
+crossover_mod <- lm(fitness_pct ~ (team_label.L + team_label.Q + team_label.C + team_label.4) * time_c,
+                    data = filter(differing_skills, time_c %in% c(-0.5, 0.5)))
+exp1$crossover <- report_lm_mod(crossover_mod, "team_label.L:time_c")
+
+
 gg_differing_skills_timeline <- ggplot(differing_skills) +
-  aes(time, fitness_pct, alpha = team_label, color = strategy) +
+  aes(I(time+1), fitness_pct, alpha = team_label, color = strategy) +
   geom_line(stat = "summary", fun.y = "mean", size = 1.2) +
-  scale_x_continuous("calendar hours") +
+  geom_vline(xintercept = 50, linetype = 2, color = "gray") +
+  scale_x_continuous("attempts") +
   scale_y_fitness_pct +
   scale_color_strategy +
   scale_alpha_team +
   guides(color = "none",
          alpha = guide_legend(order = 2)) +
   base_theme +
-  theme(legend.position = c(0.8, 0.1))
+  theme(legend.position = c(0.8, 0.15))
 
 max_fitness <- differing_skills %>%
   group_by(sim_id, strategy, team_label) %>%

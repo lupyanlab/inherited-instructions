@@ -510,10 +510,10 @@ strategies_scores_plot <- ggplot(Strategies) +
   geom_bar(aes(fill = team_strategy_label),
            stat = "summary", fun.y = "mean",
            alpha = 0.4) +
-  geom_errorbar(aes(ymin = score-se, ymax = score+se),
-                width = 0.2, data = strategies_scores_preds) +
   geom_point(aes(color = team_strategy_label),
              position = position_jitter(width = 0.2, height = 0)) +
+  geom_errorbar(aes(ymin = score-se, ymax = score+se),
+              width = 0.2, data = strategies_scores_preds) +
   geom_hline(yintercept = 100, linetype = 2) +
   coord_cartesian(ylim = c(0, 100), expand = FALSE) +
   labs(x = "") +
@@ -533,7 +533,7 @@ r_$strategies_relative_scores_mod_congruent_v_complementary <- totems::report_lm
   strategies_relative_scores_treat_mod, "congruent_v_complementary")
 
 strategies_relative_scores_helmert_mod <- lm(
-  score ~ helmert_isolated_v_congruent + helmert_complementary_v_all,
+  achieved_score ~ helmert_isolated_v_congruent + helmert_complementary_v_all,
   data = Strategies)
 
 r_$strategies_relative_scores_helmert_mod_main <- totems::report_lm_mod(
@@ -550,10 +550,10 @@ strategies_relative_scores_plot <- ggplot(Strategies) +
   geom_bar(aes(fill = team_strategy_label),
            stat = "summary", fun.y = "mean",
            alpha = 0.4) +
-  geom_errorbar(aes(ymin = achieved_score-se, ymax = achieved_score+se),
-                width = 0.2, data = strategies_relative_scores_preds) +
   geom_point(aes(color = team_strategy_label),
              position = position_jitter(width = 0.2, height = 0)) +
+  geom_errorbar(aes(ymin = achieved_score-se, ymax = achieved_score+se),
+              width = 0.2, data = strategies_relative_scores_preds) +
   labs(x = "", y = "relative score") +
   guides(fill = "none", color = "none") +
   t_$scale_color_strategy +
@@ -631,8 +631,14 @@ achieved_to_inherited_plot <- ggplot(Strategies) +
   geom_smooth(aes(color = team_strategy_label), se = FALSE, method = "lm")
 
 achieved_to_inherited_1d_mod <- lm(
-  achieved_distance ~ inherited_distance_1d * (isolated_v_complementary + congruent_v_complementary),
+  achieved_distance ~ inherited_distance_1d * (helmert_complementary_v_all + helmert_isolated_v_congruent),
   data = Strategies)
+
+r_$inherited_1d_main <- totems::report_lm_mod(achieved_to_inherited_1d_mod,
+                                                    "inherited_distance_1d:helmert_complementary_v_all")
+r_$inherited_1d_resid <- totems::report_lm_mod(achieved_to_inherited_1d_mod,
+                                         "inherited_distance_1d:helmert_isolated_v_congruent")
+
 
 achieved_to_inherited_1d_preds <- expand.grid(
     team_strategy = c("isolated", "congruent", "complementary"),
@@ -657,14 +663,39 @@ achieved_to_inherited_1d_plot <- ggplot(Strategies) +
   theme(legend.position = "top")
 
 # * strategies-sensitivity ----
+trained_sensitivity_mod <- lm(relative ~ helmert_complementary_v_all + helmert_isolated_v_congruent,
+                              data = filter(Sensitivities, trained_dimension == "trained"))
+untrained_sensitivity_mod <- lm(relative ~ helmert_complementary_v_all + helmert_isolated_v_congruent,
+                                data = filter(Sensitivities, trained_dimension == "untrained"))
+overall_sensitivity_mod <- lm(relative ~ helmert_complementary_v_all + helmert_isolated_v_congruent,
+                              data = Sensitivities)
+
+r_$trained_sensitivity_main <- totems::report_lm_mod(trained_sensitivity_mod, "helmert_complementary_v_all")
+r_$trained_sensitivity_resid <- totems::report_lm_mod(trained_sensitivity_mod, "helmert_isolated_v_congruent")
+r_$untrained_sensitivity_main <- totems::report_lm_mod(untrained_sensitivity_mod, "helmert_complementary_v_all")
+r_$overall_sensitivity_main <- totems::report_lm_mod(overall_sensitivity_mod, "helmert_complementary_v_all")
+
+sensitivity_mod <- lm(relative ~ (helmert_complementary_v_all + helmert_isolated_v_congruent) * trained_dimension_c,
+                      data = Sensitivities)
+sensitivity_preds <- expand.grid(
+    team_strategy = c("isolated", "congruent", "complementary"),
+    trained_dimension = c("untrained", "trained"),
+    stringsAsFactors = FALSE
+  ) %>%
+  recode_team_strategy() %>%
+  recode_trained_dimension() %>%
+  cbind(., predict(sensitivity_mod, newdata = ., se = TRUE)) %>%
+  rename(relative = fit, se = se.fit)
+
 sensitivities_plot <- ggplot(Sensitivities) +
-  aes(trained_dimension_label, relative, color = instructions) +
-  geom_line(aes(group = subj_id),
+  aes(trained_dimension_label, relative) +
+  geom_line(aes(group = subj_id, color = instructions),
             size = 0.3, stat = "summary", fun.y = "mean") +
-  # geom_smooth(aes(group = instructions, ymin = relative - se, ymax = relative + se),
-  #             stat = "identity",
-  #             data = training_sensitivity_trained_dimensions_preds,
-  #             size = 1.5) +
+  geom_ribbon(aes(ymin = relative - se, ymax = relative + se, group = 1),
+              stat = "identity",
+              data = sensitivity_preds,
+              fill = "gray", alpha = 0.6,
+              size = 1.5) +
   geom_hline(yintercept = 0, linetype = 2) +
   scale_x_discrete("") +
   scale_y_continuous("sensitivity") +
