@@ -51,21 +51,28 @@ made by previous generations.
 The purpose of this research was to investigate the consequences of inheriting
 solutions from a previous generation on future problem solving. Specifically,
 we were interested in the conditions under which problem solving organized
-around inheritance resulted in more effective problem solving than would be
+around inheritance may result in more effective problem solving than would be
 achieved by solving the same problems individually. To test this, we compared
 the performance of individuals working alone to teams of individuals who
-hand off partial solutions to the next generation.
+hand off partial solutions to be continued by the next generation.
 
-Although the human capacity to work together in teams to solve large problems
-is evident in many scientific and technological domains, teamwork is not usually 
+Although the capacity to work together in teams to solve large problems is
+evident in many scientific and technological domains, teamwork is not always
 considered to be an effective means of improving individual problem solving
-performance. When both teams and individuals complete tasks that individuals
-can complete alone, teamwork does not usually improve performance over what
-could have been accomplished individually.
+performance [@Propp:2003kj; @Tindale:1992ub]. When both teams and individuals
+complete tasks that individuals can complete alone, teamwork does not usually
+improve performance over what could have been accomplished individually.
+Teamwork often introduces social factors such as free-riding
+[@Holmstrom:1982cp], social loafing [@Latane:1979in], and bias
+[@Lorenz:2011jn] that decrease motivation and performance in the group. Other
+factors that reduce the effectiveness of teamwork include the increased cost of
+communication among larger teams [@Brooks:1975mmm]. As a result, even if larger
+teams are able to accomplish more than individuals, the contribution of each
+individual team member may be smaller in a group setting.
 
-One way in which teamwork has been shown to improve performance over what could
-have been accomplished individually is through confidence matching.
-@Bahrami:2010jl found that teams of two individuals or dyads performed better
+One situation in which teamwork has been shown to improve performance
+over what could have been accomplished individually is in confidence matching.
+@Bahrami:2010jl found that teams of two individuals ("dyads") performed better
 than individuals in a perceptual judgment task. On each trial, participants
 searched for an oddball target and responded with a binary judgment. If the
 dyad disagreed about which display contained the target, they were allowed to
@@ -73,48 +80,78 @@ confer and make a joint decision. Because participants made both individual and
 team responses on the same trials, the researchers were able to compare the
 performance of the team to the performance of best individual in each team. The
 results showed a benefit to teamwork over what would have been achieved by the
-best individual in each dyad completing the task alone. Follow-up studies have
-shown that dyads were able to improve team performance through confidence
-matching. Confidence matching can occur through settling on a common vocabulary
-to use when discussing uncertainty, but confidence matching also occurs when
-using non-linguistic indicators of uncertainty.
+best individual in each dyad completing the task alone [cf. @Sniezek:1989hn].
+Follow-up studies have confirmed that dyads were able to improve team
+performance through confidence matching. Confidence matching can occur through
+settling on a common vocabulary to use when discussing uncertainty
+[@Fusaroli:2012jf], but confidence matching also occurs when using
+non-linguistic indicators of uncertainty [@Bang:2017cm].
 
 In tasks involving confidence matching, teamwork improves performance
 specifically when the members of the team have similar perceptual abilities.
-Other research has found a benefit to diversity among team members. Diversity
-among team members has been argued to be beneficial in tasks that require
-searching a space of possible solutions, looking for the best ones. For these
-types of problems, teams of equally skilled problem solvers may get stuck on
-suboptimal solutions, where diverse teams are able to maintain a wider search
-and in some cases can discover globally optimal solutions.
+When members of the team have different perceptual abilities, they are unable
+to effectively combine their confidences in order to arrive at an optimal
+decision [@Bahrami:2012dya; @DuncanReid:2017eo]. This finding contrasts with
+other research that has argued for a benefit to diversity among team members.
+For example, a common argument in economics is that division of labor raises
+collective productivity [@Becker:1992fd; @VonHippel:1994jc]. In problem solving
+contexts, diversity among team members has been argued to be beneficial in
+tasks that require searching a space of possible solutions, looking for the
+best ones. For these types of problems, teams of equally skilled problem
+solvers may get stuck on suboptimal solutions, where diverse teams are able to
+maintain a wider search and in some cases can discover globally optimal
+solutions.
 
-To answer this question, we had participants complete a problem solving task
-either as first or second generation problem solvers. First generation problem
-solvers attempted a problem solving task that simulated a hill climbing
-procedure. All first generation problem solvers started off from the same
-Second generation problem solvers attempted the same problem solving
-task but starting at where the first generation problem solvers had been
-at the halfway point.
+As evidence of this, @Hong:2004gt modeled groups of problem solvers, and showed
+that groups of diverse problem solvers, with less ability overall, could outperform
+higher ability groups. The reason was that high ability groups were necessarily
+more similar in problem solving strategy, and thus were more likely to become
+stuck on suboptimal solutions to problems. The more diverse group was able
+to maintain a wider search, and was less likely to get stuck.
 
-We wanted to understand the conditions under which inheritance across
-individuals results in performance greater than either individual could achieve
-on their own. We hypothesized that as the could result in performance greater
-than either individual could achieve on their own.
+However, a benefit to diversity among group members has not been shown
+experimentally. We hypothesized that diversity among group members would
+become advantageous in tasks involving the transmission of problem solving
+knowledge from one generation to the next. In these cases, the first
+generation of problem solvers in a group can search for the best solution
+before passing it off to the next generation. Because each generation
+has different skills, the first generation can put the second generation
+in a part of the solution landscape they would be unlikely to reach on their
+own. As a result, the performance of the team may result in better performance
+than either individual working alone.
+
+In Experiment 1, we demonstrate the phenomena of complementary inheritance
+using an agent-based model. In the model, problem solving agents traverse
+a solution landscape looking for the best solutions. After a certain number
+of guesses, they pass off their best guess to the next generation. This
+next generation, who either has the same or different skills, continues the
+work. We find that diverse teams of agents outperform teams of equally
+skilled individuals, demonstrating complementary inheritance.
+
+In Experiment 2, we test these predictions in a behavioral experiment.
+Participants completed a perceptual decision-making task in which
+they navigated a solution landscape looking for the highest quality
+space gems. After a certain number of guesses, they pass of their best
+guess to the next generation. The next generation, trained on the same
+or different skills, continues the work. We predicted that teams
+trained on complementary skills would outperform equally skilled individuals.
+
 
 # Experiment 1: Agent-based model of complementary inheritance {-}
 
 ```{r peaks-setup}
 ```
 
-In Experiment 1, we used an agent-based model to simulate the effect of
+In Experiment 1, we used an agent-based model to illustrate the effect of
+complementary inheritance. The model was designed to simulate the effect of
 inheritance on problem solving performance. In the model, agents attempted to
 solve a problem by searching a space of possible solutions looking for the best
 ones. After a certain number of attempts, the best solutions discovered by each
-agent were passed on to serve as the starting point for attempts by a new agent.
-These second generation agents had either the same or different problem solving
-skills. We explored whether skill diversity among generatiosn of agents resulted
-in better problem solving performance than equally skilled individuals given the
-same total number of attempts.
+agent were passed on to serve as the starting point for attempts by a new
+agent. These second generation agents had either the same or different problem
+solving skills. We explored whether skill diversity among generations of agents
+resulted in better problem solving performance than equally skilled individuals
+given the same total number of attempts.
 
 ## Methods {-}
 
@@ -165,7 +202,7 @@ grid.arrange(
 )
 ```
 
-## Results {-}
+## Results and Discussion {-}
 
 ```{r peaks-experiments}
 ```
@@ -173,7 +210,7 @@ grid.arrange(
 The results of the simulations are shown in Fig. \@ref(fig:differing-skills).
 When considering just the performance of the first generation agents, skill diversity was found
 to negatively impact overall problem solving performance, such that agents with
-unequal skill achieved lower performance scores than agents with equal skills,
+unequal vision in both dimensions achieved lower performance scores than agents with equal skills,
 `r exp1$gen1`. In contrast, after handing off to the second generation, skill
 diversity significantly improved performance, `r exp1$gen2`, resulting in
 a crossover effect, `r exp1$crossover`.
@@ -206,9 +243,7 @@ skilled individuals.
 gg_differing_skills_walk
 ```
 
-## Discussion {-}
-
-The results of Experiment 1 depict the phenomena of complementary inheritance,
+The results of Experiment 1 demonstrate the phenomena of complementary inheritance,
 by which inheritance over generations results in teams of problem solvers
 outperforming individuals trained on the same skills and given the same number
 of attempts. In the simulations, this improvement in performance is the result
@@ -216,11 +251,11 @@ of the first generation putting later generations in a part of the problem space
 that would be unlikely to be achieved individually.
 
 However, the value of the agent-based model is limited, especially since the
-problem solving process is simulated as a random walk process. A more realistic
-test of whether inheritance can improve team performance requires a task in
-which new solutions are tested by participants seeking to answer the same
-problems. In Experiment 2, we test these predictions in a behavioral in
-experiment.
+problem solving process is simulated as a random walk process, where solutions
+are selected at random. A more realistic test of whether inheritance can
+improve team performance requires a task in which new solutions are selected by
+participants seeking to answer the same problems. In Experiment 2, we test
+these predictions in a behavioral experiment.
 
 # Experiment 2: Behavioral test of complementary inheritance {-}
 
@@ -229,7 +264,7 @@ Experiment 1 in a behavioral experiment. Participants were randomly assigned
 to learn equal but independent skills in a perceptual discrimination task. In
 the task, participants searched a space of possible solutions looking for the
 best ones. We expected to find that teams of complementary problem solvers,
-trained on independent skills, could coordinate their labor so as to improve
+trained on independent skills, would coordinate their labor so as to improve
 problem solving performance beyond what either individual would have achieved on
 their own.
 
@@ -238,7 +273,7 @@ their own.
 ```{r methods}
 ```
 
-(ref:gems-team-structures) Team structures. Participants were trained to pay
+(ref:gems-team-structures) Team structures in Experiment 2. Participants were trained to pay
 attention to either orientation (ori) or bar width (bw), and assigned to
 generations. First generation participants (top row) completed the task as
 **isolated** individuals. Second generation participants were assigned to inherit
@@ -266,10 +301,10 @@ important.
 
 On each trial, participants were presented six gems and they selected the one
 they thought was the most valuable. The six gems presented on each trial were
-sampled within a certain distance from the previously selected gem. The
-sampling procedure is described in the procedure, below. As participants
-selected gems across trials, they effectively traversed the solution landscape
-in a series of incremental steps.
+sampled within a certain distance from the previously selected gem (Fig.
+\@ref(fig:gems-trial)). The sampling procedure is described in the procedure,
+below. As participants selected gems across trials, they effectively traversed
+the solution landscape in a series of incremental steps.
 
 (ref:gems-trial) Procedure. **A.** On each trial, participants were shown six gabor
 patches referred to as "gems". Each gem was assigned a value based on its
@@ -483,6 +518,7 @@ As expected, participants trained on either stimulus dimension selected
 gems on each trial corresponding to their trained dimension and were
 uninfluenced by variability in the untrained dimension, orientation:
 `r r_$training_sensitivity_ori`, bar width: `r r_$training_sensitivity_sf`.
+
 To compare the effectiveness of either training
 condition, we transformed the sensitivities to be relative to training
 condition. Unlike in the analysis of grid positions reported above, our
@@ -548,11 +584,7 @@ between isolated and congruent strategies, `r r_$strategies_scores_helmert_mod_r
 able to achieve higher relative scores than both isolated and congruent strategies,
 although this difference was only marginal, `r r_$strategies_relative_scores_helmert_mod_main`.
 Again, there was no residual difference between the isolated and congruent strategies,
-`r_$strategies_relative_scores_helmert_mod_resid` (Fig. \@ref(fig:strategies)B).
-
-In terms of distance, a similar pattern was found. Complementary problem
-solvers got closer to the best solution than isolated individuals and congruent
-strategies.
+`r r_$strategies_relative_scores_helmert_mod_resid` (Fig. \@ref(fig:strategies)B).
 
 (ref:strategies) Hill climbing performance. **A.** Scores correspond to heights
 on the landscape, and **C.** Distances correspond to Euclidean distances between
@@ -633,34 +665,34 @@ experiment.
 # Discussion {-}
 
 The ability to pass problem solving knowledge on to future generations is
-fundamental to human problem solving ability. Yet usually the inheritance of
-problem solving knowledge is conceived as being an imperfect process, unable to
-result in problem solving performance beyond what could be achieved by
-individuals working alone. Here we demonstrate that the inheritance of problem
-solving knowledge can in some cases result in team performance greater than
-what either individual would have achieved on their own.
+fundamental to human problem solving ability [@Boyd:2011gp]. Yet the inheritance of
+problem solving knowledge can be costly, and it may take years to develop
+expertise [@Stout:2002iu]. Here we investigated whether inheritance
+can in some cases result in team performance greater than what could be achieved
+by individuals working alone. We hypothesized that complementary inheritance,
+whereby individuals with independent but complementary skills collaborate
+over generations, may result in an overall advantage to inheritance in a
+problem solving context.
 
 In Experiment 1 we used an agent-based model to explore the conditions under
 which inheritance of complementary problem solving knowledge might prove
 effective over alternative strategies. We found that teams of complementary
-problem solvers might start future generations off in a part of the problem
-space that they were unlikely to achieve on their own. In some cases, this
+problem solvers can start future generations off in a part of the problem
+space that they would be unlikely to reach on their own. In some cases, this
 novel starting position puts problem solvers in a location where they are
 better situated to find the globally optimal solution.
 
 Although the results of the agent-based models were suggestive, they needed to
 be verified using a more ecologically valid experiment. In Experiment 2, we
 test the main predictions drawn from Experiment 1 about the conditions under
-which complementary inheritance might prove effective. We find support for our
-primary hypothesis that there are some problems for which teams of
+which complementary inheritance might prove effective. We found initial support
+for our primary hypothesis that there are some problems for which teams of
 complementary problem solvers can enable problem solving behaviors that no
 individual could achieve on their own.
 
 These results add to a growing body of literature that aims to understand why
-and how human problem solvers are so good at inheriting and adapting the tools
+and how human problem solvers are exceptionally skilled at inheriting and adapting the tools
 and other solutions to problems that were originally discovered by someone
-else. Although for many researchers, the advantages of being able to inherit
-problem solving knowledge from someone else are not that inheritance affects
-your own problem solving ability, only that it gives you a head start on
-problem solving, these assumptions need to be tested in rigorous lab
-experiments.
+else. Here we demonstrate that inheritance over generations may result
+in an improvement to problem solving performance, beyond what could be
+achieved individually.
