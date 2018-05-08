@@ -51,10 +51,11 @@ made by previous generations.
 The purpose of this research was to investigate the consequences of inheriting
 solutions from a previous generation on future problem solving. Specifically,
 we were interested in the conditions under which problem solving organized
-around inheritance may result in more effective problem solving than would be
+around inheritance may result in more effective problem solving than could be
 achieved by solving the same problems individually. To test this, we compared
-the performance of individuals working alone to teams of individuals who
-hand off partial solutions to be continued by the next generation.
+the performance of teams organized around inheritance, in which one person
+hands off a partial solution to be continued by the next generation, to
+individuals working alone.
 
 Although the capacity to work together in teams to solve large problems is
 evident in many scientific and technological domains, teamwork is not always
@@ -62,16 +63,16 @@ considered to be an effective means of improving individual problem solving
 performance [@Propp:2003kj; @Tindale:1992ub]. When both teams and individuals
 complete tasks that individuals can complete alone, teamwork does not usually
 improve performance over what could have been accomplished individually.
-Teamwork often introduces social factors such as free-riding
+Teamwork can introduce social factors such as free-riding
 [@Holmstrom:1982cp], social loafing [@Latane:1979in], and bias
-[@Lorenz:2011jn] that decrease motivation and performance in the group. Other
+[@Lorenz:2011jn] that decrease motivation and group performance. Other
 factors that reduce the effectiveness of teamwork include the increased cost of
 communication among larger teams [@Brooks:1975mmm]. As a result, even if larger
 teams are able to accomplish more than individuals, the contribution of each
-individual team member may be smaller in a group setting.
+individual team member may be smaller in a group setting [@Mao:2016ds].
 
-One situation in which teamwork has been shown to improve performance
-over what could have been accomplished individually is in confidence matching.
+One situation in which teamwork has been shown to reliably improve performance
+over what could have been accomplished individually is in perceptual judgment tasks.
 @Bahrami:2010jl found that teams of two individuals ("dyads") performed better
 than individuals in a perceptual judgment task. On each trial, participants
 searched for an oddball target and responded with a binary judgment. If the
@@ -92,57 +93,57 @@ specifically when the members of the team have similar perceptual abilities.
 When members of the team have different perceptual abilities, they are unable
 to effectively combine their confidences in order to arrive at an optimal
 decision [@Bahrami:2012dya; @DuncanReid:2017eo]. This finding contrasts with
-other research that has argued for a benefit to diversity among team members.
-For example, a common argument in economics is that division of labor raises
-collective productivity [@Becker:1992fd; @VonHippel:1994jc]. In problem solving
-contexts, diversity among team members has been argued to be beneficial in
-tasks that require searching a space of possible solutions, looking for the
-best ones. For these types of problems, teams of equally skilled problem
-solvers may get stuck on suboptimal solutions, where diverse teams are able to
-maintain a wider search and in some cases can discover globally optimal
-solutions.
+other research that has argued for a benefit to diversity among team members
+[@Jackson:2003hq; @Mathieu:2008gl]. For example, a common argument in economics
+is that division of labor and specialization raises collective productivity
+[@Becker:1992fd; @VonHippel:1994jc]. In problem solving contexts, diversity
+among team members has been argued to be beneficial in tasks that require
+searching a space of possible solutions, looking for the best ones. For these
+types of problems, teams of equally skilled problem solvers may get stuck on
+suboptimal solutions, where diverse teams are able to maintain a wider search
+and in some cases can discover globally optimal solutions.
 
 As evidence of this, @Hong:2004gt modeled groups of problem solvers, and showed
-that groups of diverse problem solvers, with less ability overall, could outperform
-higher ability groups. The reason was that high ability groups were necessarily
-more similar in problem solving strategy, and thus were more likely to become
-stuck on suboptimal solutions to problems. The more diverse group was able
-to maintain a wider search, and was less likely to get stuck.
+that groups of diverse problem solvers could outperform higher ability groups.
+The reason was that the high ability groups were necessarily more similar in
+problem solving strategy, and thus were more likely to become stuck on
+suboptimal solutions to problems. The more diverse group was able to maintain
+a wider search, and was less likely to get stuck.
 
-However, a benefit to diversity among group members has not been shown
-experimentally. We hypothesized that diversity among group members would
-become advantageous in tasks involving the transmission of problem solving
-knowledge from one generation to the next. In these cases, the first
-generation of problem solvers in a group can search for the best solution
-before passing it off to the next generation. Because each generation
-has different skills, the first generation can put the second generation
-in a part of the solution landscape they would be unlikely to reach on their
-own. As a result, the performance of the team may result in better performance
-than either individual working alone.
+We hypothesized that diversity among group members could become advantageous in
+tasks involving the transmission of problem solutions from one generation to
+the next. In these cases, the first generation of problem solvers in a group
+can search for the best solution before passing it off to the next generation.
+Because each generation has different skills, the first generation can start
+the second generation off in a part of the solution landscape they would be
+unlikely to reach on their own. As a result, there should be some classes of
+problems for which team of diverse problem solvers may outperform than either
+individual working alone.
 
 In Experiment 1, we demonstrate the phenomena of complementary inheritance
 using an agent-based model. In the model, problem solving agents traverse
 a solution landscape looking for the best solutions. After a certain number
 of guesses, they pass off their best guess to the next generation. This
 next generation, who either has the same or different skills, continues the
-work. We find that diverse teams of agents outperform teams of equally
-skilled individuals, demonstrating complementary inheritance.
+work from the inherited location. We find that diverse teams of agents
+outperform teams of equally skilled individuals, demonstrating complementary
+inheritance.
 
 In Experiment 2, we test these predictions in a behavioral experiment.
-Participants completed a perceptual decision-making task in which
-they navigated a solution landscape looking for the highest quality
-space gems. After a certain number of guesses, they pass of their best
-guess to the next generation. The next generation, trained on the same
-or different skills, continues the work. We predicted that teams
-trained on complementary skills would outperform equally skilled individuals.
-
+Participants completed a perceptual judgment task in which they searched for
+the highest quality "space gems" (sinusoidal gabor patches) that varied in two
+continuous dimensions. After a certain number of attempts, they passed their
+best guess to the next generation. The next generation, who was trained to pay
+attention to the same or different dimension of the gems, continues the search
+from the inherited point. We predicted that teams trained on complementary
+skills would outperform equally skilled individuals.
 
 # Experiment 1: Agent-based model of complementary inheritance {-}
 
 ```{r peaks-setup}
 ```
 
-In Experiment 1, we used an agent-based model to illustrate the effect of
+In Experiment 1, we used an agent-based model to illustrate the phenomenon of
 complementary inheritance. The model was designed to simulate the effect of
 inheritance on problem solving performance. In the model, agents attempted to
 solve a problem by searching a space of possible solutions looking for the best
@@ -150,7 +151,7 @@ ones. After a certain number of attempts, the best solutions discovered by each
 agent were passed on to serve as the starting point for attempts by a new
 agent. These second generation agents had either the same or different problem
 solving skills. We explored whether skill diversity among generations of agents
-resulted in better problem solving performance than equally skilled individuals
+could result in better problem solving performance than equally skilled individuals
 given the same total number of attempts.
 
 ## Methods {-}
@@ -158,14 +159,14 @@ given the same total number of attempts.
 ```{r peaks-methods}
 ```
 
-Agents were assigned skill values in two dimensions, corresponding to vision in
-a particular dimension of the solution landscape. All agents were allotted the
-same total amount of skill, which was distributed between the two dimensions.
-Some agents had equal skill in both dimensions, and others had unequal skill in
-either dimension (Fig. \@ref(fig:ability-as-vision)A).
+Agents were assigned skill values corresponding to vision in two dimensions of
+the solution landscape. All agents were allotted the same total amount of
+skill, which was distributed between the two dimensions. Some agents had equal
+skill in both dimensions, and others had unequal skill in either dimension
+(Fig. \@ref(fig:ability-as-vision)A).
 
 Agents with equal skill in both dimensions had a square range of vision, and
-could sample solutions equally in any direction. Agents with unequal skills had
+sampled solutions equally in all directions. Agents with unequal skills had
 a rectangular range of vision, and were more likely to sample solutions along
 one dimension over the other (Fig. \@ref(fig:ability-as-vision)B).
 
@@ -177,12 +178,12 @@ different skill.
 
 Agents searched for better solutions using a simple hill-climbing procedure.
 For each time step, agents randomly sampled a solution within their range of
-vision relative to their previous best solution. If the sampled solution was
+vision, centered on their previous best solution. If the sampled solution was
 better quality than their current best solution, i.e. it was higher on the
 landscape, then the agent moved to the new position. For the next time step, a
 solution was sampled relative to the new position. If the sampled solution
-was not an improvement, agents sampled from the previous best solution again
-on the next time step.
+was not an improvement, agents did not move, and sampled from the previous best
+solution again on the next time step.
 
 (ref:ability-as-vision) Methods for agent-based models. **A.** Each agent was
 assigned skill corresponding to vision in two dimensions. **B.** Skill values in
@@ -213,7 +214,9 @@ to negatively impact overall problem solving performance, such that agents with
 unequal vision in both dimensions achieved lower performance scores than agents with equal skills,
 `r exp1$gen1`. In contrast, after handing off to the second generation, skill
 diversity significantly improved performance, `r exp1$gen2`, resulting in
-a crossover effect, `r exp1$crossover`.
+a crossover effect, `r exp1$crossover`. That is, inheriting a lower quality solution
+from an agent with unequal skills actually improved the performance of the next
+generation, beyond what would have been achieved individually.
 
 (ref:differing-skills) Results of agent-based model simulations.
 
@@ -243,19 +246,20 @@ skilled individuals.
 gg_differing_skills_walk
 ```
 
-The results of Experiment 1 demonstrate the phenomena of complementary inheritance,
-by which inheritance over generations results in teams of problem solvers
-outperforming individuals trained on the same skills and given the same number
-of attempts. In the simulations, this improvement in performance is the result
-of the first generation putting later generations in a part of the problem space
-that would be unlikely to be achieved individually.
+The results of Experiment 1 demonstrate the phenomena of complementary
+inheritance, by which inheritance over generations of diverse problem solvers
+results in teams of problem solvers outperforming individuals trained on the
+same skills and given the same number of attempts. In the simulations, this
+improvement in performance is the result of the first generation putting later
+generations in a part of the problem space that would be unlikely to be
+achieved individually.
 
-However, the value of the agent-based model is limited, especially since the
-problem solving process is simulated as a random walk process, where solutions
-are selected at random. A more realistic test of whether inheritance can
-improve team performance requires a task in which new solutions are selected by
-participants seeking to answer the same problems. In Experiment 2, we test
-these predictions in a behavioral experiment.
+However, there are a number of limitations to this model. Most importantly,
+problem solving is simulated as a random walk process, where solutions are
+selected at random and only accepted if they improve performance. A more
+ecologically valid test of whether inheritance can improve the performance of
+diverse teams requires a task in which new solutions are selected strategically.
+In Experiment 2, we test these predictions in a behavioral experiment.
 
 # Experiment 2: Behavioral test of complementary inheritance {-}
 
@@ -264,25 +268,13 @@ Experiment 1 in a behavioral experiment. Participants were randomly assigned
 to learn equal but independent skills in a perceptual discrimination task. In
 the task, participants searched a space of possible solutions looking for the
 best ones. We expected to find that teams of complementary problem solvers,
-trained on independent skills, would coordinate their labor so as to improve
-problem solving performance beyond what either individual would have achieved on
-their own.
+trained on independent skills, would be able to coordinate their labor so as to
+improve problem solving performance beyond what either individual would have
+achieved on their own.
 
 ## Methods {-}
 
 ```{r methods}
-```
-
-(ref:gems-team-structures) Team structures in Experiment 2. Participants were trained to pay
-attention to either orientation (ori) or bar width (bw), and assigned to
-generations. First generation participants (top row) completed the task as
-**isolated** individuals. Second generation participants were assigned to inherit
-from a first generation participant trained on the same dimension (**congruent**,
-middle row), or on different dimensions (**complementary**, bottom row). Left and
-right panels show counterbalanced conditions.
-
-```{r gems-team-structures, fig.width=8, fig.cap="(ref:gems-team-structures)"}
-crotchet::draw_graphviz("team-structures-counterbalanced", package = "gems")
 ```
 
 Participants completed a perceptual discrimination task where they were
@@ -294,7 +286,7 @@ others.
 The value of each gem was determined by its orientation and spatial frequency.
 The space of possible gems and their associated values can be visualized as
 a three dimensional landscape. As participants selected gems across trials,
-they effectively searched the landscape for the highest peaks corresponding
+they effectively traversed the landscape for the highest peaks corresponding
 to the most valuable gems. In order to select the most valuable gems on each
 trial, participants had to learn which stimulus dimensions were the most
 important.
@@ -328,10 +320,22 @@ generation participants started at the origin $(0_{ori},0_{bw})$ on each
 landscape. Second generation participants were assigned to inherit from a first
 generation participant. They inherited the location on the landscape
 $(x_{ori},y_{bw})$ of the gem selected by the first generation participant after
-a certain number of trials. There was no interaction between first and second
+a certain number of trials. **There was no interaction between first and second
 generation participants other than that second generation participants started
 each landscape off in a different part of the landscape than their first
-generation predecessors.
+generation predecessors.**
+
+(ref:gems-team-structures) Conditions in Experiment 2. Participants were
+trained to pay attention to either orientation (ori) or bar width (bw), and
+assigned to generations. First generation participants (top row) completed the
+task as **isolated** individuals. Second generation participants were assigned
+to inherit from a first generation participant trained on the same dimension
+(**congruent**, middle row), or on different dimensions (**complementary**,
+bottom row). Left and right panels show counterbalanced conditions.
+
+```{r gems-team-structures, fig.width=8, fig.cap="(ref:gems-team-structures)"}
+crotchet::draw_graphviz("team-structures-counterbalanced", package = "gems")
+```
 
 In our analyses, we compared three strategies for finding the most valuable gems
 (Fig. \@ref(fig:gems-team-structures)). Congruent teams were made of
@@ -443,13 +447,13 @@ In the test trials, after selecting a gem, participants were shown only the
 value of the gem they selected, and not the values of the gems they did not
 select. The value were transformed to be relative to the value of the
 gem selected on the previous trial such that positive numbers indicated
-an increase in overall score, and negative numbers indicated a decrease.
+an increase in overall score.
 
 ### Participants {-}
 
-Participants were undergraduates at the University of Wisconsin-Madison who
-completed the experiment in exchange for course credit. We decided to collect
-data for 20 first generation participants, and 40 second generation
+Participants (N=`r methods$n_participants`) were undergraduates at the University of Wisconsin-Madison who
+completed the experiment in exchange for course credit. We collected
+data for `r methods$n_first_gen` first generation participants, and `r methods$n_second_gen` second generation
 participants. There were twice as many second generation participants because
 each first generation participant was yoked to two second generation
 participants, one in each training condition (see Fig. \@ref(fig:gems-team-structures)).
@@ -458,6 +462,18 @@ participants, one in each training condition (see Fig. \@ref(fig:gems-team-struc
 
 ```{r results}
 ```
+
+In our analyses, we report performance on each trial and across trials. For
+performance on each trial, we analyzed which of the six gems presented on each
+trial was selected based on the attributes of that gem (orientation and bar
+width). For performance across trials, we analyzed how participants traversed
+the solution landscape, in particular their distance to the optimal values in
+each dimension.
+
+Before comparing the performance of complementary, congruent, and isolated strategies,
+we first verified the success of the training procedure. After showing the that
+the training procedure was successful, we turn to analyzing performance in the
+test trials.
 
 ### Training {-}
 
@@ -506,8 +522,8 @@ the optimal value along that dimension. For example, for a participant assigned
 to the orientation training condition, gems with orientations at grid points
 40 and 60 were both 10 units away from the optimal orientation at 50 units. These
 relative values were then centered for each trial such that positive values
-indicated that the gem was an improvement in score relative to the
-other gems on that trial. Using these transformed values, we fit two models, one
+indicated that the gem was an improvement in score relative to the previous
+position. Using these transformed values, we fit two models, one
 predicting sensitivity to the orientation dimension, and another predicting
 sensitivity to the bar width dimension. We included the instruction condition
 of the participants in the models. We expected participants in either training
@@ -521,7 +537,7 @@ uninfluenced by variability in the untrained dimension, orientation:
 
 To compare the effectiveness of either training
 condition, we transformed the sensitivities to be relative to training
-condition. Unlike in the analysis of grid positions reported above, our
+condition. Unlike in the analysis of performance across trials reported above, our
 trial-by-trial analysis did not reveal a difference between training conditions,
 `r r_$training_sensitivity_trained_dimension_by_instructions`.
 
@@ -565,15 +581,15 @@ generation individuals, after completing 20 trials, are better off passing
 their partial solution on to the next generation, or if they are better off
 completing the additional 20 trials themselves.
 
-We focus on two separate but related scoring metrics: 2D distance, corresponding
-to the Euclidean distance between each participant and the peak of the test landscape
-at $(50,50)$, and score, corresponding to the height or value of the gem
-last selected. Each scoring metric can be taken in absolute units,
-or in relative units. Relative distance and relative score correspond
-to the difference between the starting point and the current point
-in terms of distance and score, such that positive numbers mean
-the participant was able to move closer to the target and also to improve
-the overall score.
+We focus on two separate but related scoring metrics: 2D distance,
+corresponding to the Euclidean distance between the participants last selected
+gem and the peak of the test landscape at $(50,50)$, and score, corresponding
+to the height or value of the gem last selected. Each scoring metric can be
+taken in absolute units, or in relative units. Relative distance and relative
+score correspond to the difference between the starting point and the current
+point in terms of distance and score, such that positive numbers mean the
+participant was able to move closer to the target and to improve their overall
+score.
 
 After 20 trials, complementary problem solvers were able
 to achieve slightly higher absolute scores than both isolated and congruent strategies,
@@ -654,7 +670,7 @@ sensitivities_plot
 Experiment 2 was designed to test whether teams of participants trained on
 different but complementary skills could work together to achieve performance
 that was greater than either individual could have achieved on their own.
-We found support for our hypothesis that problem solving with inheritance can
+We found some support for our hypothesis that problem solving with inheritance can
 result in an improvement in performance. In the experiment, second generation
 problem solvers who inherited from a previous generation were able to
 progress closer to the optimal peak than problem solvers working in isolation
@@ -665,16 +681,16 @@ experiment.
 # Discussion {-}
 
 The ability to pass problem solving knowledge on to future generations is
-fundamental to human problem solving ability [@Boyd:2011gp]. Yet the inheritance of
-problem solving knowledge can be costly, and it may take years to develop
-expertise [@Stout:2002iu]. Here we investigated whether inheritance
-can in some cases result in team performance greater than what could be achieved
-by individuals working alone. We hypothesized that complementary inheritance,
-whereby individuals with independent but complementary skills collaborate
-over generations, may result in an overall advantage to inheritance in a
-problem solving context.
+fundamental to human problem solving ability [@Boyd:2011gp]. Yet the
+inheritance of problem solving knowledge can be costly, and it may take years
+to develop expertise [@Stout:2002iu]. Here we investigated whether inheritance
+can in some cases result in team performance greater than what could be
+achieved by individuals working alone. We hypothesized that complementary
+inheritance, whereby individuals with independent but complementary skills
+collaborate over generations, may result in an overall advantage to inheritance
+in a problem solving context.
 
-In Experiment 1 we used an agent-based model to explore the conditions under
+In Experiment 1 we used an agent-based model to illustrate the conditions under
 which inheritance of complementary problem solving knowledge might prove
 effective over alternative strategies. We found that teams of complementary
 problem solvers can start future generations off in a part of the problem
@@ -691,8 +707,8 @@ complementary problem solvers can enable problem solving behaviors that no
 individual could achieve on their own.
 
 These results add to a growing body of literature that aims to understand why
-and how human problem solvers are exceptionally skilled at inheriting and adapting the tools
-and other solutions to problems that were originally discovered by someone
-else. Here we demonstrate that inheritance over generations may result
-in an improvement to problem solving performance, beyond what could be
-achieved individually.
+and how human problem solvers are exceptionally skilled at inheriting and
+adapting the tools and other solutions to problems that were originally
+discovered by someone else. Here we demonstrate that inheritance over
+generations may result in an improvement to problem solving performance, beyond
+what could be achieved individually.
