@@ -26,7 +26,7 @@ abstract: |
 library(knitr)
 library(kableExtra)
 opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, results="hide",
-               fig.height=4, fig.width=4)
+               fig.height=3, fig.width=3, fig.crop=F)
 chunks_dir <- "R"
 read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
 read_chunk(file.path(chunks_dir, "peaks.R"))
@@ -193,7 +193,7 @@ landscape. **C.** Teams of two agents differing in skill diversity. Identical
 teams shared the same abilities in both dimensions. Complementary teams had
 "equal but opposite" skills.
 
-```{r ability-as-vision, fig.width=8, fig.height=8, fig.cap='(ref:ability-as-vision)'}
+```{r ability-as-vision, fig.width=6, fig.height=6, fig.cap='(ref:ability-as-vision)'}
 grid.arrange(
   gg_two_dimensions + ggtitle("A. Vision in two dimensions"),
   gg_search_rects + ggtitle("B. Search areas"),
@@ -220,7 +220,7 @@ generation, beyond what would have been achieved individually.
 
 (ref:differing-skills) Results of agent-based model simulations.
 
-```{r differing-skills, fig.width=8, fig.height=4, fig.cap="(ref:differing-skills)"}
+```{r differing-skills, fig.width=6, fig.cap="(ref:differing-skills)"}
 limits <- seq(-100, 100, by = 10)
 z <- expand.grid(x = limits, y = limits) %>%
      mutate(z = -x^2 - y^2)
@@ -242,7 +242,7 @@ skilled individuals.
 
 (ref:differing-skills-walk) Grid positions of agent-based models by skill distribution.
 
-```{r differing-skills-walk, fig.width=8, fig.height=2.5, fig.cap="(ref:differing-skills-walk)"}
+```{r differing-skills-walk, fig.width=6, fig.height=2, fig.cap="(ref:differing-skills-walk)"}
 gg_differing_skills_walk
 ```
 
@@ -333,7 +333,7 @@ to inherit from a first generation participant trained on the same dimension
 (**congruent**, middle row), or on different dimensions (**complementary**,
 bottom row). Left and right panels show counterbalanced conditions.
 
-```{r gems-team-structures, fig.width=8, fig.cap="(ref:gems-team-structures)"}
+```{r gems-team-structures, fig.width=6, fig.cap="(ref:gems-team-structures)"}
 crotchet::draw_graphviz("team-structures-counterbalanced", package = "gems")
 ```
 
@@ -375,7 +375,7 @@ orientation or bar width condition completed the training trials on the
 corresponding landscape. All participants completed the test trials on the same
 simple hill landscape.
 
-```{r landscapes, fig.width=8, fig.cap="(ref:landscapes)"}
+```{r landscapes, fig.width=6, fig.cap="(ref:landscapes)"}
 gridExtra::grid.arrange(
   orientation_bias_landscape,
   spatial_frequency_bias_landscape,
@@ -607,7 +607,7 @@ on the landscape, and **C.** Distances correspond to Euclidean distances between
 current location and peak in the landscape. **B.** and **D.** show these same
 measures controlling for starting position.
 
-```{r strategies, fig.width=7, fig.height=7, fig.cap="(ref:strategies)"}
+```{r strategies, fig.width=6, fig.height=6, fig.cap="(ref:strategies)"}
 gridExtra::grid.arrange(
   strategies_scores_plot + ggtitle("A. Final score"),
   strategies_relative_scores_plot + ggtitle("B. Relative score"),
@@ -661,7 +661,7 @@ dimension, `r r_$untrained_sensitivity_main`.
 
 (ref:sensitivities) Sensitivity to trained and untrained dimensions by team strategy.
 
-```{r sensitivities, fig.width=8, fig.cap="(ref:sensitivities)"}
+```{r sensitivities, fig.width=6, fig.cap="(ref:sensitivities)"}
 sensitivities_plot
 ```
 
@@ -678,7 +678,7 @@ or who inherit from a congruent problem solver trained on the same skills.
 These results validate the main conclusions drawn in Experiment 1 in a behavioral
 experiment.
 
-# Discussion {-}
+# General Discussion {-}
 
 The ability to pass problem solving knowledge on to future generations is
 fundamental to human problem solving ability [@Boyd:2011gp]. Yet the
