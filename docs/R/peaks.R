@@ -229,14 +229,16 @@ crossover_mod <- lm(fitness_pct ~ (team_label.L + team_label.Q + team_label.C + 
                     data = filter(differing_skills, time_c %in% c(-0.5, 0.5)))
 exp1$crossover <- report_lm_mod(crossover_mod, "team_label.L:time_c")
 
+# label first and second gen
+differing_skills$generation <- ifelse(differing_skills$time < 49, "gen1", "gen2")
 
 gg_differing_skills_timeline <- ggplot(differing_skills) +
-  aes(I(time+1), fitness_pct, alpha = team_label, color = strategy) +
+  aes(I(time+1), fitness_pct, alpha = team_label, color = generation, group = team_label) +
   geom_line(stat = "summary", fun.y = "mean", size = 1.2) +
   geom_vline(xintercept = 50, linetype = 2, color = "gray") +
   scale_x_continuous("attempts") +
   scale_y_fitness_pct +
-  scale_color_strategy +
+  scale_color_manual(values = get_theme_color_values(c("blue", "green"))) +
   scale_alpha_team +
   guides(color = "none",
          alpha = guide_legend(order = 2)) +
@@ -265,7 +267,7 @@ gg_differing_skills_final_fitness <- ggplot(max_fitness) +
   theme(panel.grid.major.x = element_blank())
 
 gg_differing_skills_walk <- ggplot(filter(differing_skills, exp_id == 1)) +
-  aes(pos_x, pos_y, group = sim_id, color = strategy) +
+  aes(pos_x, pos_y, group = sim_id, color = generation) +
   geom_path(alpha = 0.2) +
   annotate("point", x = 0, y = 0, shape = 4) +
   annotate("point", x = -127.3, y = -127.3, shape = 1) +
@@ -273,7 +275,7 @@ gg_differing_skills_walk <- ggplot(filter(differing_skills, exp_id == 1)) +
   facet_wrap("team_label_rev", nrow = 1) +
   scale_x_continuous("", labels = NULL) +
   scale_y_continuous("", labels = NULL) +
-  scale_color_strategy +
+  scale_color_manual(values = get_theme_color_values(c("blue", "green"))) +
   base_theme +
   theme(legend.position = "none")
 

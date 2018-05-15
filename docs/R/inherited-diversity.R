@@ -32,20 +32,20 @@ simple_hill_landscape <- make_landscape(SimpleHill, "Simple hill")
 
 # * trial-plot ----
 path_data <- data_frame(
-  x = c(0, 4, 9),
-  xend = c(4, 9, 10),
-  y = c(0, 1, 5),
-  yend = c(1, 5, 10)
+  x = c(0, 4, 9, 11, 8, 16, 21, 18),
+  xend = c(4, 9, 11, 8, 16, 21, 18, 19),
+  y = c(0, 1, 5, 10, 15, 16, 21, 26),
+  yend = c(1, 5, 10, 15, 16, 21, 26, 31)
 )
 
 gem_data <- data_frame(
-  x = c(7, 8, 14, 6, 17, 10),
-  y = c(3, 6, 12, 13, 8, 17)
+  x = c(7, 8, 14, 6, 17, 10) + 9,
+  y = c(4, 6, 12, 13, 8, 17) + 21
 )
 
 radius_data <- data_frame(
-  x0 = 10,
-  y0 = 10,
+  x0 = 19,
+  y0 = 31,
   r = 8
 )
 
@@ -53,6 +53,9 @@ trial_plot <- ggplot() +
   geom_point(aes(x, y), data = gem_data) +
   geom_segment(aes(x, y, xend = xend, yend = yend), data = path_data) +
   ggforce::geom_circle(aes(x0 = x0, y0 = y0, r = r), data = radius_data) +
+  annotate("point", x = 50, y = 50, shape = 4, size = 4) +
+  geom_vline(xintercept = 50, linetype = 2, color = "gray") +
+  geom_hline(yintercept = 50, linetype = 2, color = "gray") +
   coord_fixed(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE) +
   scale_x_continuous("orientation", breaks = seq(0, 70, by = 10)) +
   scale_y_continuous("bar width", breaks = seq(0, 70, by = 10)) +
@@ -116,9 +119,9 @@ training_positions_plot <- ggplot(Training) +
   scale_y_continuous(breaks = seq(0, 70, by = 10)) +
   geom_hline(yintercept = 50, linetype = 2, color = t_$get_colors("blue")) +
   geom_vline(xintercept = 50, linetype = 2, color = t_$get_colors("green")) +
-  annotate("text", x = 30, y = 50, label = "peak sf",
+  annotate("text", x = 60, y = 50, label = "peak bw",
            vjust = 1.3, color = t_$get_colors("blue")) +
-  annotate("text", x = 50, y = 30, label = "peak ori", angle = 90,
+  annotate("text", x = 50, y = 60, label = "peak ori", angle = 90,
            vjust = -0.5, color = t_$get_colors("green")) +
   labs(x = "orientation", y = "bar width") +
   coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE) +
@@ -704,3 +707,5 @@ sensitivities_plot <- ggplot(Sensitivities) +
   t_$scale_color_instructions +
   theme(legend.position = "bottom") +
   facet_wrap("team_strategy")
+
+# survey-data ----

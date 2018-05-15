@@ -39,7 +39,7 @@ read_chunk(file.path(chunks_dir, "peaks.R"))
 One of the fundamental processes in cultural evolution is the transmission of
 problem solving knowledge from one generation to the next. Cultural
 transmission is notoriously imperfect when compared to genetic transmission
-[@Sperber:1996exc; @Claidiere:2010kd]. Yet the human ability to transmit
+[@Sperber:1996exc; @Atran:2001dy]. Yet the human ability to transmit
 cultural information far exceeds the abilities of any non-human animals
 [@Tomasello:1993vh; @Tennie:2009gaa]. Humans have evolved a number of abilities
 that improve the fidelity of cultural transmission, including imitation,
@@ -69,7 +69,7 @@ Teamwork can introduce social factors such as free-riding
 factors that reduce the effectiveness of teamwork include the increased cost of
 communication among larger teams [@Brooks:1975mmm]. As a result, even if larger
 teams are able to accomplish more than individuals, the contribution of each
-individual team member may be smaller in a group setting [@Mao:2016ds].
+individual team member may be smaller in a group setting.
 
 One situation in which teamwork has been shown to reliably improve performance
 over what could have been accomplished individually is in perceptual judgment tasks.
@@ -83,7 +83,7 @@ performance of the team to the performance of best individual in each team. The
 results showed a benefit to teamwork over what would have been achieved by the
 best individual in each dyad completing the task alone [cf. @Sniezek:1989hn].
 Follow-up studies have confirmed that dyads were able to improve team
-performance through confidence matching. Confidence matching can occur through
+performance through a process called confidence matching. Confidence matching can occur through
 settling on a common vocabulary to use when discussing uncertainty
 [@Fusaroli:2012jf], but confidence matching also occurs when using
 non-linguistic indicators of uncertainty [@Bang:2017cm].
@@ -131,7 +131,7 @@ inheritance.
 
 In Experiment 2, we test these predictions in a behavioral experiment.
 Participants completed a perceptual judgment task in which they searched for
-the highest quality "space gems" (sinusoidal gabor patches) that varied in two
+the highest value "gems" (sinusoidal gabor patches) that varied in two
 continuous dimensions. After a certain number of attempts, they passed their
 best guess to the next generation. The next generation, who was trained to pay
 attention to the same or different dimension of the gems, continues the search
@@ -185,13 +185,13 @@ solution was sampled relative to the new position. If the sampled solution
 was not an improvement, agents did not move, and sampled from the previous best
 solution again on the next time step.
 
-(ref:ability-as-vision) Methods for agent-based models. **A.** Each agent was
-assigned skill corresponding to vision in two dimensions. **B.** Skill values in
-both dimensions were combined to form each agent's search areas, corresponding
-to the range of solutions that could be sampled relative to any point on the
-landscape. **C.** Teams of two agents differing in skill diversity. Identical
-teams shared the same abilities in both dimensions. Complementary teams had
-"equal but opposite" skills.
+(ref:ability-as-vision) Methods for agent-based models presented in Experiment
+1. **A.** Each agent was assigned skill corresponding to vision in two
+dimensions. **B.** Skill values in both dimensions were combined to form each
+agent's search areas, corresponding to the range of solutions that could be
+sampled relative to any point on the landscape. **C.** Teams of two agents
+differing in skill diversity. Identical teams shared the same abilities in both
+dimensions. Complementary teams had "equal but opposite" skills.
 
 ```{r ability-as-vision, fig.width=6, fig.height=6, fig.cap='(ref:ability-as-vision)'}
 grid.arrange(
@@ -209,14 +209,15 @@ grid.arrange(
 ```
 
 The results of the simulations are shown in Fig. \@ref(fig:differing-skills).
-When considering just the performance of the first generation agents, skill diversity was found
-to negatively impact overall problem solving performance, such that agents with
-unequal vision in both dimensions achieved lower performance scores than agents with equal skills,
-`r exp1$gen1`. In contrast, after handing off to the second generation, skill
-diversity significantly improved performance, `r exp1$gen2`, resulting in
-a crossover effect, `r exp1$crossover`. That is, inheriting a lower quality solution
-from an agent with unequal skills actually improved the performance of the next
-generation, beyond what would have been achieved individually.
+When considering just the performance of the first generation agents, skill
+diversity was found to negatively impact overall problem solving performance,
+such that agents with unequal vision in both dimensions achieved lower
+performance scores than agents with equal skills, `r exp1$gen1`. In contrast,
+after handing off to the second generation, skill diversity significantly
+improved performance, `r exp1$gen2`, resulting in a crossover effect,
+`r exp1$crossover`. That is, inheriting a lower quality solution from an agent with
+unequal skills actually improved the performance of the next generation, beyond
+what would have been achieved individually.
 
 (ref:differing-skills) Results of agent-based model simulations.
 
@@ -229,16 +230,15 @@ simple_hill <- lattice::wireframe(z ~ x * y, data = z)
 grid.arrange(simple_hill, gg_differing_skills_timeline, nrow = 1)
 ```
 
-The reason skill diversity improved overall team performance even
-though it decreased individual performance is shown in Fig.
+The reason skill diversity improved overall team performance even though it
+decreased individual performance is shown in Fig.
 \@ref(fig:differing-skills-walk). As skill diversity increases, first generation
 agents proceed to parts of the solution landscape that individuals with equal
 skill are unlikely to reach on their own. This means that second generation
-agents, who inherit these positions, start off in a different part of the
-solution space than they would have reached on their own. In this case, this
-novel starting point positions second generation problem solvers so that they
-are better able to reach the globally optimal solutions as compared to equally
-skilled individuals.
+agents, who inherit these positions, start off in a unique position of the
+solution space. In this case, this novel starting point positions second
+generation problem solvers so that they are better able to reach the globally
+optimal solutions as compared to equally skilled individuals.
 
 (ref:differing-skills-walk) Grid positions of agent-based models by skill distribution.
 
@@ -248,29 +248,30 @@ gg_differing_skills_walk
 
 The results of Experiment 1 demonstrate the phenomena of complementary
 inheritance, by which inheritance over generations of diverse problem solvers
-results in teams of problem solvers outperforming individuals trained on the
-same skills and given the same number of attempts. In the simulations, this
-improvement in performance is the result of the first generation putting later
-generations in a part of the problem space that would be unlikely to be
-achieved individually.
+results in teams of problem solvers outperforming individuals with equivalent
+skills given the same number of attempts. In the simulations, this improvement
+in performance is the result of the first generation putting later generations
+in a part of the problem space that would be unlikely to be achieved
+individually.
 
 However, there are a number of limitations to this model. Most importantly,
 problem solving is simulated as a random walk process, where solutions are
 selected at random and only accepted if they improve performance. A more
 ecologically valid test of whether inheritance can improve the performance of
-diverse teams requires a task in which new solutions are selected strategically.
-In Experiment 2, we test these predictions in a behavioral experiment.
+diverse teams requires a task in which solutions are selected strategically on
+each trial. In Experiment 2, we test these predictions in a behavioral
+experiment.
 
 # Experiment 2: Behavioral test of complementary inheritance {-}
 
-In Experiment 2 we tested the predictions of the agent-based model presented in
-Experiment 1 in a behavioral experiment. Participants were randomly assigned
-to learn equal but independent skills in a perceptual discrimination task. In
-the task, participants searched a space of possible solutions looking for the
-best ones. We expected to find that teams of complementary problem solvers,
-trained on independent skills, would be able to coordinate their labor so as to
-improve problem solving performance beyond what either individual would have
-achieved on their own.
+In Experiment 2 we tested the predictions of the agent-based model in a
+behavioral experiment. Participants were randomly assigned to learn equal but
+independent skills in a perceptual discrimination task. In the task,
+participants searched a space of possible solutions looking for the best ones.
+We expected to find that teams of complementary problem solvers, trained on
+independent skills, would be able to coordinate their labor so as to improve
+problem solving performance beyond what either individual would have achieved on
+their own.
 
 ## Methods {-}
 
@@ -333,7 +334,7 @@ to inherit from a first generation participant trained on the same dimension
 (**congruent**, middle row), or on different dimensions (**complementary**,
 bottom row). Left and right panels show counterbalanced conditions.
 
-```{r gems-team-structures, fig.width=6, fig.cap="(ref:gems-team-structures)"}
+```{r gems-team-structures, fig.width=8, fig.cap="(ref:gems-team-structures)"}
 crotchet::draw_graphviz("team-structures-counterbalanced", package = "gems")
 ```
 
@@ -384,12 +385,12 @@ gridExtra::grid.arrange(
 )
 ```
 
-**Survey.** After finishing the main experiment, participants completed a short survey. We
-asked the participants to recall the instructions they received, to describe how
-they approached the experiment, and to rate the extent to which they thought the
-gems and scores were random. We were particularly interested in if the
-participants felt they were moving around space of possible gems of their own
-volition.
+**Survey.** After finishing the main experiment, participants completed a short
+survey. We asked the participants to recall the instructions they received, to
+describe how they approached the experiment, and to rate the extent to which
+they thought the gems and scores were random. We were particularly interested in
+if the participants felt they were moving around space of possible gems of their
+own volition.
 
 ### Procedure {-}
 
@@ -506,7 +507,7 @@ relative to the optimal value in each dimension. **C.** Score. Cumulative
 increases in score over trials, indicating that participants were selecting
 incrementally more valuable gems over trials.
 
-```{r gems-training, fig.width=10, fig.height=4, fig.cap="(ref:gems-training)"}
+```{r gems-training, fig.width=6, fig.cap="(ref:gems-training)"}
 gridExtra::grid.arrange(
   training_positions_plot + ggtitle("A. Grid position"),
   training_distance_plot + ggtitle("B. Distance"),
@@ -547,7 +548,7 @@ Thick lines correspond to the predictions of the hierarchical linear model.
 **A.** Sensitivity to orientation and bar width separated by training condition.
 **B.** Trained dimension collapsed over training condition.
 
-```{r gems-training-sensitivities, fig.width=8, fig.height=3, fig.cap="(ref:gems-training-sensitivities)"}
+```{r gems-training-sensitivities, fig.width=6, fig.cap="(ref:gems-training-sensitivities)"}
 gridExtra::grid.arrange(
   training_sensitivity_plot + ggtitle("A. Sensitivity to orientation and bar width"),
   training_sensitivity_trained_dimensions_plot +
