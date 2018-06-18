@@ -7,3 +7,6 @@
 [submodule "data"]
 	path = data
 	url = git@gitlab.com:pedmiston/gems-data.git
+[submodule "peaks"]
+	path = peaks
+	url = git@github.com:pedmiston/mountain-climbers.git
