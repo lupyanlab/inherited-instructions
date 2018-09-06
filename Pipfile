@@ -8,6 +8,8 @@ gspread = "*"
 "oauth2client" = "*"
 ansible-vault = "*"
 "Jinja2" = "*"
+invoke = "*"
+pandas = "*"
 
 [dev-packages]
 

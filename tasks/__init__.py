@@ -12,14 +12,10 @@ from tasks.googledrive import get_subj_info, get_survey_responses
 @task
 def configure(ctx):
     """Create environment file for working on this project."""
-    dst = '.environment'
-    template = jinja2.Template(open('environment.j2', 'r').read())
-
-    proj_root = str(Path(__file__).absolute().parent.parent)
-    venv = input("Path to venv: ")
+    dst = '.env'
+    template = jinja2.Template("export ANSIBLE_VAULT_PASSWORD_FILE={{ password_file }}")
     password_file = input("Path to password file: ")
-
-    kwargs = dict(venv=venv, password_file=password_file, proj_root=proj_root)
+    kwargs = dict(password_file=password_file)
     with open(dst, 'w') as f:
         f.write(template.render(**kwargs))
 
