@@ -1,4 +1,0 @@
-Jinja2
-gspread
-oauth2client
-ansible-vault
