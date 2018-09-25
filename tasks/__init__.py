@@ -32,6 +32,12 @@ def save_exp(ctx, no_subj_info=False, no_survey=False):
                   r_pkg_data_raw=r_pkg_data_raw)
     ctx.run(cmd.format(**kwargs), echo=True)
 
+    instructions_dir = Path('experiment/data/instructions')
+    r_pkg_instructions_dir = Path('data/data-raw/instructions')
+    if not r_pkg_instructions_dir.is_dir():
+        os.mkdir(str(r_pkg_instructions_dir))
+    ctx.run(f'cp {instructions_dir}/*.txt {r_pkg_instructions_dir}', echo=True)
+
     if not no_subj_info:
         get_subj_info(move_to_r_pkg=True)
 
@@ -87,4 +93,3 @@ ns.add_collection(data_tasks, 'R')
 
 # from bots import tasks as bots_tasks
 # ns.add_collection(bots_tasks, 'bots')
-

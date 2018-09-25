@@ -25,11 +25,10 @@ def get_subj_info(move_to_r_pkg=False):
         Path(dst_dir).mkdir()
 
     workbook = gc.open('gems-subj-info')
-    for sheet_name in ['generation1', 'generation2', 'pilot']:
-        dst = os.path.join(dst_dir, 'subj-info-%s.csv' % sheet_name)
-        wks = workbook.worksheet(sheet_name)
-        with open(dst, 'wb') as f:
-          f.write(wks.export())
+    dst = os.path.join(dst_dir, 'subj-info.csv')
+    wks = workbook.worksheet('Fall2018')
+    with open(dst, 'wb') as f:
+      f.write(wks.export())
 
 def get_survey_responses(move_to_r_pkg=False):
     """Download responses to post-experiment questionnaires as csvs."""
@@ -43,4 +42,3 @@ def get_survey_responses(move_to_r_pkg=False):
     wks = gc.open('gems-survey-responses').sheet1
     with open(dst, 'wb') as f:
         f.write(wks.export())
-
