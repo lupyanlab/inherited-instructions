@@ -13,7 +13,8 @@ def connect_google_sheets():
     json_data = Vault(password).load(open('secrets/lupyanlab.json').read())
     credentials = ServiceAccountCredentials.from_json_keyfile_dict(
             json_data,
-            ['https://spreadsheets.google.com/feeds'])
+            ['https://spreadsheets.google.com/feeds',
+             'https://www.googleapis.com/auth/drive'])
     return gspread.authorize(credentials)
 
 def get_subj_info(move_to_r_pkg=False):
@@ -27,8 +28,8 @@ def get_subj_info(move_to_r_pkg=False):
     workbook = gc.open('gems-subj-info')
     dst = os.path.join(dst_dir, 'subj-info.csv')
     wks = workbook.worksheet('Fall2018')
-    with open(dst, 'wb') as f:
-      f.write(wks.export())
+    df = pandas.DataFrame(wks.get_all_records())
+    df.to_csv(dst, index=False)
 
 def get_survey_responses(move_to_r_pkg=False):
     """Download responses to post-experiment questionnaires as csvs."""
@@ -40,5 +41,5 @@ def get_survey_responses(move_to_r_pkg=False):
 
     dst = os.path.join(dst_dir, 'responses.csv')
     wks = gc.open('gems-survey-responses').sheet1
-    with open(dst, 'wb') as f:
-        f.write(wks.export())
+    df = pandas.DataFrame(wks.get_all_records())
+    df.to_csv(dst, index=False)
