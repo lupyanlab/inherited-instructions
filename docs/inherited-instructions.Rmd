@@ -6,11 +6,12 @@ output:
 ---
 ```{r config, include=FALSE}
 library(knitr)
-opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE)
+opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE)
 read_chunk("R/inherited-instructions.R")
 
 library(patchwork)
 library(pander)
+panderOptions("table.alignment.default", "left")
 ```
 ```{r inherited-instructions, include=FALSE}
 ```
@@ -42,38 +43,79 @@ Participants are assigned to Generation 1 or Generation 2.
 
 # Results
 
-## Generation 1
+## V1.1
 
-```{r gen1, include=FALSE}
+```{r v1-1, include=FALSE}
 ```
 
-```{r gen1-results, fig.width=8, fig.height=8}
-gen1_positions_plot + gen1_scores_plot + gen1_distance_plot + plot_layout(nrow = 3)
+```{r v1-1-results, fig.width=8, fig.height=8}
+v1.1_positions_plot + v1.1_scores_plot + v1.1_distance_plot + plot_layout(nrow = 3)
 ```
 
-```{r gen1-final, fig.width=6}
-gen1_final_scores_plot + gen1_final_distances_plot
+```{r v1-1-final, fig.width=6}
+v1.1_final_scores_plot + v1.1_final_distances_plot
 ```
 
-### Instructions
+## Comparing V1.1 to V1.2 (Generation 1 only)
+
+```{r v1-v2-trials, fig.width=8}
+gridExtra::grid.arrange(
+  crotchet::read_image("img/trial-v1-1.png", width = 0.8),
+  crotchet::read_image("img/trial-v1-2.png", width = 0.8),
+  nrow = 1
+)
+```
+
+```{r v1-2, include=FALSE}
+```
+
+```{r v1-results, fig.width=8, fig.height=8}
+v1_positions_plot + v1_scores_plot + v1_distance_plot + plot_layout(nrow = 3)
+```
+
+```{r v1-final, fig.width=6}
+v1_final_scores_plot + v1_final_distances_plot
+```
+
+## Instructions
 
 ```{r instructions}
 data("Instructions")
 data("Survey")
 
-panderOptions("table.alignment.default", "left")
-left_join(Instructions, Survey[,c("subj_id", "instructions_2")]) %>%
-  pander(split.cell = 25)
+subj_map <- select(Gems, subj_id, version, generation) %>% unique() %>% drop_na()
+inheritance_map <- select(Gems, subj_id, version, generation, inherit_from) %>% unique() %>% drop_na()
+
+Survey <- left_join(Survey, subj_map)
+Instructions <- left_join(Instructions, subj_map) %>%
+  select(subj_id, version, generation, instructions)
+
+pander(Instructions, split.cells = c(1, 1, 1, 40))
 ```
 
-### Survey
+\newpage
 
-```{r survey}
-data("Survey")
+```{r gen1-gen2-instructions}
+V1.1_Gen1 <- Instructions %>%
+  filter(version == 1.1, generation == 1) %>%
+  select(-version, -generation)
 
+V1.1_Gen2 <- Instructions %>%
+  filter(version == 1.1, generation == 2) %>%
+  left_join(inheritance_map) %>%
+  select(-version, -generation)
+
+left_join(V1.1_Gen1, V1.1_Gen2, by = c("subj_id" = "inherit_from"), suffix = c("_gen1", "_gen2")) %>%
+  pander(split.cells = c(5, 25, 5, 25))
+```
+
+## Survey
+
+```{r survey, fig.height=8}
 predictable <- ggplot(Survey) +
   aes(predictable) +
   geom_histogram(binwidth = 1, color = "white") +
+  facet_grid(version ~ generation) +
   labs(title = "How predictable or random did you\nfeel the values of the gems were?") +
   scale_x_continuous(breaks = 1:5) +
   coord_cartesian(xlim = c(0.5,5.5))
@@ -81,11 +123,12 @@ predictable <- ggplot(Survey) +
 effort <- ggplot(Survey) +
   aes(effort) +
   geom_histogram(binwidth = 1, color = "white") +
+  facet_grid(version ~ generation) +
   labs(title = "Please rate your overall effort\nin this experiment.") +
   scale_x_continuous(breaks = 1:5) +
   coord_cartesian(xlim = c(0.5,5.5))
 
-predictable + effort
+predictable + effort + plot_layout(nrow = 2)
 ```
 
 ## Generation 2
