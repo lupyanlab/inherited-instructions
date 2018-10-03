@@ -6,4 +6,4 @@ docs/*.pdf
 .Rproj.user
 *.html
 .env
-
+.Rhistory
