@@ -1,12 +1,8 @@
-# ---- inherited-instructions ----
+# ---- v1-1 ----
 library(tidyverse)
 library(gems)
-
 data("Gems")
 data("SimpleHill")
-data("Survey")
-data("Instructions")
-
 t_ <- get_theme()
 
 TestLandscapeCurrentScores <- SimpleHill %>%
@@ -15,13 +11,13 @@ TestLandscapeGemScores <- SimpleHill %>%
   transmute(gem_x = x, gem_y = y, gem_score = score)
 
 recode_generation <- function(frame) {
-  map <- data_frame(generation = 1:2, generation_f = factor(c(1, 2)), generation_c = c(-0.5, 0.5))
+  map <- data_frame(generation = 1:2, generation_f = factor(c(1, 2)))
   if(missing(frame)) return(map)
   left_join(frame, map)
 }
 
-Gems <- Gems %>%
-  filter(version == 1.2) %>%
+GemsV1.1 <- Gems %>%
+  filter(version == 1.1, !is.na(selected)) %>%
   mutate_distance_2d() %>%
   left_join(TestLandscapeCurrentScores) %>%
   melt_trial_stims() %>%
@@ -30,25 +26,13 @@ Gems <- Gems %>%
   filter(selected == gem_pos) %>%
   recode_generation()
 
-GemsFinal <- Gems %>%
+GemsV1.1Final <- GemsV1.1 %>%
   group_by(generation, subj_id, block_ix) %>%
   filter(trial == max(trial)) %>%
   ungroup()
 
-subj_map <- select(Gems, subj_id, version, generation) %>% unique() %>% drop_na()
-inheritance_map <- select(Gems, subj_id, version, generation, inherit_from) %>% unique() %>% drop_na()
-
-Survey <- Survey %>%
-  left_join(subj_map) %>%
-  filter(version == 1.2) %>%
-  recode_generation()
-
-Instructions <- left_join(Instructions, subj_map) %>%
-  select(subj_id, version, generation, instructions) %>%
-  filter(version == 1.2)
-
-# * positions ----
-positions_plot <- ggplot(Gems) +
+# * v1-1-positions ----
+v1.1_positions_plot <- ggplot(GemsV1.1) +
   aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y) +
   geom_segment(aes(group = subj_id, color = generation_f)) +
   facet_wrap("block_ix", nrow = 1) +
@@ -61,8 +45,8 @@ positions_plot <- ggplot(Gems) +
   labs(x = "orientation", y = "bar width") +
   coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
 
-# * scores ----
-scores_plot <- ggplot(Gems) +
+# * v1-1-scores ----
+v1.1_scores_plot <- ggplot(GemsV1.1) +
   aes(trial, score) +
   geom_line(aes(group = interaction(subj_id, block_ix), color = generation_f), size = 0.2) +
   geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2,
@@ -72,8 +56,8 @@ scores_plot <- ggplot(Gems) +
   theme(legend.position = "top",
         panel.spacing.x = unit(1, "lines"))
 
-# * distance ----
-distance_plot <- ggplot(Gems) +
+# * v1-1-distance ----
+v1.1_distance_plot <- ggplot(GemsV1.1) +
   aes(trial, distance_2d) +
   geom_line(aes(group = subj_id, color = generation_f), size = 0.25) +
   geom_line(aes(group = generation_f, color = generation_f),
@@ -87,8 +71,8 @@ distance_plot <- ggplot(Gems) +
   theme(legend.position = "top",
         panel.spacing.x = unit(1, "lines"))
 
-# * final ----
-final_scores_plot <- ggplot(GemsFinal) +
+# * v1.1-final ----
+v1.1_final_scores_plot <- ggplot(GemsV1.1Final) +
   aes(block_ix, score) +
   geom_line(aes(group = subj_id, color = generation_f), size = 0.2) +
   geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2) +
@@ -97,7 +81,7 @@ final_scores_plot <- ggplot(GemsFinal) +
   t_$theme +
   theme(legend.position = "bottom")
 
-final_distances_plot <- ggplot(GemsFinal) +
+v1.1_final_distances_plot <- ggplot(GemsV1.1Final) +
   aes(block_ix, distance_2d) +
   geom_line(aes(group = subj_id, color = generation_f), size = 0.2) +
   geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2) +

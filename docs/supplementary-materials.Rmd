@@ -2,168 +2,31 @@
 title: Supplementary materials
 output:
   bookdown::pdf_document2:
-    toc: true
+    toc: no
 ---
 ```{r inherited-diversity-config, include=FALSE}
 library(knitr)
 library(kableExtra)
 opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE, results="hide",
                fig.height=4, fig.width=4)
-chunks_dir <- "R"
-read_chunk(file.path(chunks_dir, "inherited-diversity.R"))
+read_chunk("R/supplemental-v1-1.R")
+
+library(patchwork)
+library(pander)
+panderOptions("table.alignment.default", "left")
 ```
 
-# Methods
+# Results
 
-## Materials
+## V1.1
 
-### Gabors
-
-(ref:gabors) Sampled space of possible gabor patches. Gabor patches varied
-in orientation and spatial frequency.
-
-```{r gabors, fig.cap="(ref:gabors)"}
-draw_image("SimpleHillGems", package = "gems")
+```{r v1-1, include=FALSE}
 ```
 
-### Post experiment survey questions
-
-(ref:survey-questions) Questions asked in the post-experiment survey.
-
-```{r survey-questions, results='asis'}
-data("Survey")
-data_frame(question_text = colnames(Survey)) %>%
-  mutate(question_id = c("timestamp", "subj_id", "computer", "age", "gender", paste0("Q", 1:9))) %>%
-  filter(grepl("Q", question_id)) %>%
-  select(`#` = question_id, `Text` = question_text) %>%
-  kable(caption="(ref:survey-questions)") %>%
-  column_spec(2, width = "45em")
+```{r v1-1-results, fig.width=8, fig.height=8}
+v1.1_positions_plot + v1.1_scores_plot + v1.1_distance_plot + plot_layout(nrow = 3)
 ```
 
-## Procedure
-
-(ref:training) Exact instructions given to participants in either training condition. The instructions differ in the first paragraph and in the sample gabors shown
-on the screen.
-
-```{r training, fig.width=8, fig.cap="(ref:training)"}
-gridExtra::grid.arrange(
-  crotchet::read_image("training_orientation", package = "gems"),
-  crotchet::read_image("training_spatial_frequency", package = "gems"),
-  nrow = 1
-)
-```
-
-(ref:training-trial) Training trial procedure. Participants received
-feedback in the form of relative changes in their score for each of
-the six stimuli on a trial.
-
-```{r training-trial, fig.width=8, fig.cap="(ref:training-trial)"}
-gridExtra::grid.arrange(
-  crotchet::read_image("training_trial", package = "gems"),
-  crotchet::read_image("training_trial_feedback", package = "gems"),
-  nrow = 1
-)
-```
-
-(ref:test-trial) Test trial procedure. Participants received feedback in the
-form of the relative change in their score after each selection.
-
-```{r test-trial, fig.width=8, fig.cap="(ref:test-trial)"}
-gridExtra::grid.arrange(
-  crotchet::read_image("test_trial", package = "gems"),
-  crotchet::read_image("test_trial_feedback", package = "gems"),
-  nrow = 1
-)
-```
-
-# Results {-}
-
-## First generation {-}
-
-(ref:gen1-results) Results of first generation problem solvers. Each line is a
-participant. **A. Position** on the solution landscape. **B. Distance** between current location and 2D peak. **C. Score** over trials.
-
-```{r gen1-results, fig.width=8, fig.height=10, fig.cap="(ref:gen1-results)"}
-gridExtra::grid.arrange(
-  gen1_positions_plot + ggtitle("A. Position"),
-  gen1_distance_plot + ggtitle("B. Distance"),
-  gen1_scores_plot + ggtitle("C. Score"),
-  nrow = 3
-)
-```
-
-(ref:gen1-final-scores) First generation performance by block.
-
-```{r gen1-final-scores, fig.width=6, fig.cap="(ref:gen1-final-scores)"}
-gridExtra::grid.arrange(
-  gen1_final_scores_plot + ggtitle("A. Final scores"),
-  gen1_final_distances_plot + ggtitle("B. Distance to peak"),
-  nrow = 1
-)
-```
-
-## Second generation {-}
-
-(ref:gen2-results) Second generation results.
-
-```{r gen2-results, fig.width=8, fig.height=10, fig.cap="(ref:gen2-results)"}
-gridExtra::grid.arrange(
-  gen2_positions_plot + ggtitle("A. Position"),
-  gen2_distance_plot + ggtitle("B. Distance"),
-  gen2_scores_plot + ggtitle("C. Score"),
-  nrow = 3
-)
-```
-
-(ref:gen2-final-scores) Second generation performance by block.
-
-```{r gen2-final-scores, fig.width=6, fig.cap="(ref:gen2-final-scores)"}
-gridExtra::grid.arrange(
-  gen2_final_scores_plot + ggtitle("A. Final scores"),
-  gen2_final_distances_plot + ggtitle("B. Distance to peak"),
-  nrow = 1
-)
-```
-
-## Handoff {-}
-
-(ref:gems-handoff) Handoff between first and second generation participants, showing
-isolated, congruent, and complementary conditions.
-
-```{r gems-generation2, fig.width=8, fig.cap="(ref:gems-handoff)"}
-Gems %>%
-  filter(subj_id == "GEMS120" | ancestor_id == "GEMS120",
-         landscape_ix != 0, team_trial <= 40) %>%
-  ggplot() +
-    aes(team_trial, score, group = subj_id, color = instructions) +
-    geom_line(aes(linetype = factor(generation))) +
-    facet_wrap("landscape_ix", nrow = 1) +
-    t_$theme +
-    theme(legend.position = "bottom")
-```
-
-## Post experiment survey {-}
-
-```{r survey}
-data("Survey")
-
-questions <- data_frame(question_text = colnames(Survey)) %>%
-  mutate(question_id = c("timestamp", "subj_id", "computer", "age", "gender", paste0("Q", 1:9))) %>%
-  select(question_id, question_text)
-
-get_question_text <- function(question_id) {
-  questions[questions$question_id == question_id, ]$question_text
-}
-
-colnames(Survey) <- questions$question_id
-
-predictable_plot <- ggplot(Survey) +
-  aes(Q7) +
-  geom_bar(stat = "count", width = 0.95) +
-  scale_x_continuous("", breaks = 1:5, labels = c("1\nRandom", 2, 3, 4, "5\nPredictable")) +
-  ggtitle(get_question_text("Q7")) +
-  coord_cartesian(expand = FALSE) +
-  t_$theme +
-  theme(panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank())
+```{r v1-1-final, fig.width=6}
+v1.1_final_scores_plot + v1.1_final_distances_plot
 ```
