@@ -12,6 +12,9 @@ read_chunk("R/inherited-instructions.R")
 library(patchwork)
 library(pander)
 panderOptions("table.alignment.default", "left")
+
+library(lme4)
+library(AICcmodavg)
 ```
 ```{r inherited-instructions, include=FALSE}
 ```
@@ -43,97 +46,136 @@ Participants are assigned to Generation 1 or Generation 2.
 
 # Results
 
-## V1.1
-
-```{r v1-1, include=FALSE}
+```{r results, fig.width=8, fig.height=8}
+positions_plot + scores_plot + distance_plot + plot_layout(nrow = 3)
 ```
 
-```{r v1-1-results, fig.width=8, fig.height=8}
-v1.1_positions_plot + v1.1_scores_plot + v1.1_distance_plot + plot_layout(nrow = 3)
-```
-
-```{r v1-1-final, fig.width=6}
-v1.1_final_scores_plot + v1.1_final_distances_plot
-```
-
-## Comparing V1.1 to V1.2 (Generation 1 only)
-
-```{r v1-v2-trials, fig.width=8}
-gridExtra::grid.arrange(
-  crotchet::read_image("img/trial-v1-1.png", width = 0.8),
-  crotchet::read_image("img/trial-v1-2.png", width = 0.8),
-  nrow = 1
-)
-```
-
-```{r v1-2, include=FALSE}
-```
-
-```{r v1-results, fig.width=8, fig.height=8}
-v1_positions_plot + v1_scores_plot + v1_distance_plot + plot_layout(nrow = 3)
-```
-
-```{r v1-final, fig.width=6}
-v1_final_scores_plot + v1_final_distances_plot
+```{r final, fig.width=6}
+final_scores_plot + final_distances_plot
 ```
 
 ## Instructions
 
-```{r instructions}
-data("Instructions")
-data("Survey")
-
-subj_map <- select(Gems, subj_id, version, generation) %>% unique() %>% drop_na()
-inheritance_map <- select(Gems, subj_id, version, generation, inherit_from) %>% unique() %>% drop_na()
-
-Survey <- left_join(Survey, subj_map)
-Instructions <- left_join(Instructions, subj_map) %>%
-  select(subj_id, version, generation, instructions)
-
-pander(Instructions, split.cells = c(1, 1, 1, 40))
-```
-
-\newpage
-
 ```{r gen1-gen2-instructions}
-V1.1_Gen1 <- Instructions %>%
-  filter(version == 1.1, generation == 1) %>%
+InstructionsGen1 <- Instructions %>%
+  filter(version == 1.2, generation == 1) %>%
   select(-version, -generation)
 
-V1.1_Gen2 <- Instructions %>%
-  filter(version == 1.1, generation == 2) %>%
+InstructionsGen2 <- Instructions %>%
+  filter(version == 1.2, generation == 2) %>%
   left_join(inheritance_map) %>%
   select(-version, -generation)
 
-left_join(V1.1_Gen1, V1.1_Gen2, by = c("subj_id" = "inherit_from"), suffix = c("_gen1", "_gen2")) %>%
+left_join(InstructionsGen1, InstructionsGen2, by = c("subj_id" = "inherit_from"), suffix = c("_gen1", "_gen2")) %>%
   pander(split.cells = c(5, 25, 5, 25))
 ```
 
 ## Survey
 
-```{r survey, fig.height=8}
-predictable <- ggplot(Survey) +
-  aes(predictable) +
-  geom_histogram(binwidth = 1, color = "white") +
-  facet_grid(version ~ generation) +
+### Predictability
+
+```{r predictability, fig.width=8}
+predictable_plot <- ggplot(Survey) +
+  aes(generation_f, predictable) +
+  geom_bar(aes(fill = generation_f, width = 0.8),
+           stat = "summary", fun.y = "mean",
+           alpha = 0.4) +
+  geom_point(aes(color = generation_f),
+             position = position_jitter(width = 0.1, height = 0.1)) +
   labs(title = "How predictable or random did you\nfeel the values of the gems were?") +
-  scale_x_continuous(breaks = 1:5) +
-  coord_cartesian(xlim = c(0.5,5.5))
+  coord_cartesian(xlim = c(0, 3), ylim = c(0.9, 5.1), expand = FALSE) +
+  theme(legend.position = "none")
 
-effort <- ggplot(Survey) +
-  aes(effort) +
-  geom_histogram(binwidth = 1, color = "white") +
-  facet_grid(version ~ generation) +
-  labs(title = "Please rate your overall effort\nin this experiment.") +
-  scale_x_continuous(breaks = 1:5) +
-  coord_cartesian(xlim = c(0.5,5.5))
+subj_predictabilities <- select(Survey, subj_id, predictable)
 
-predictable + effort + plot_layout(nrow = 2)
+predictable_final_plot <- ggplot(left_join(GemsFinal, subj_predictabilities)) +
+  aes(predictable, score) +
+  geom_point(aes(color = generation_f), position = position_jitter(width = 0.1, height = 0)) +
+  geom_smooth(method = "lm", color = NA)
+
+predictable_plot + predictable_final_plot + plot_layout(nrow = 1)
 ```
 
-## Generation 2
+### Effort
 
-1. How does the performance of Generation 1 participants in blocks 1 and 2
-   compare to the performance of Generation 2 participants in blocks 1 and 2?
-2. How does the performance of Generation 1 participants in blocks 3 and 4
-   compare to the performance of Generation 2 participants in blocks 1 and 2?
+```{r effort, fig.width=4}
+effort_plot <- ggplot(Survey) +
+  aes(generation_f, effort) +
+  geom_bar(aes(fill = generation_f, width = 0.8),
+           stat = "summary", fun.y = "mean",
+           alpha = 0.4) +
+  geom_point(aes(color = generation_f),
+             position = position_jitter(width = 0.1, height = 0.1)) +
+  labs(title = "Please rate your overall effort\nin this experiment.") +
+  coord_cartesian(xlim = c(0, 3), ylim = c(0.9, 5.1), expand = FALSE) +
+  theme(legend.position = "none")
+
+effort_plot
+```
+
+## Hypotheses
+
+\newpage
+
+### H1
+
+_How does the performance of Generation 1 participants in blocks 1 and 2
+compare to the performance of Generation 2 participants in blocks 1 and 2?_
+
+Generation 2, having benefitted from the instructions left by
+Generation 1, will exceed the performance of Generation 2 in the
+first two blocks.
+
+```{r first-blocks}
+FirstBlocks <- Gems %>%
+  filter(block_ix %in% 1:2) %>%
+  recode_trial()
+
+first_blocks_mod <- lmer(score ~ (trial_z + trial_z_sqr) * generation_c + (trial_z + trial_z_sqr|subj_id),
+                         data = FirstBlocks)
+
+first_blocks_preds <- expand.grid(trial = 0:40, generation_c = c(-0.5, 0.5)) %>%
+  recode_trial() %>%
+  cbind(., predictSE(first_blocks_mod, newdata = ., se = TRUE)) %>%
+  rename(score = fit, se = se.fit) %>%
+  recode_generation()
+
+ggplot(FirstBlocks) +
+  aes(trial, score) +
+  geom_point(aes(color = generation_f),
+             stat = "summary", fun.y = "mean") +
+  geom_smooth(aes(ymin = score - se, ymax = score + se, color = generation_f),
+              stat = "identity", data = first_blocks_preds)
+```
+
+\newpage
+
+### H2
+
+_How does the performance of Generation 1 participants in blocks 3 and 4
+compare to the performance of Generation 2 participants in blocks 1 and 2?_
+
+Generation 2 will benefit from the instructions left by Generation 1 in blocks 1 and 2
+more than Generation 1 in blocks 3 and 4.
+
+```{r post-instructions}
+PostInstructions <- Gems %>%
+  filter((generation == 1 & block_ix %in% c(3, 4)) | (generation == 2 & block_ix %in% c(1, 2))) %>%
+  recode_trial()
+
+post_instructions_mod <- lmer(score ~ (trial_z + trial_z_sqr) * generation_c + (trial_z + trial_z_sqr|subj_id),
+                              data = PostInstructions)
+
+post_instructions_preds <- expand.grid(trial = 0:40, generation_c = c(-0.5, 0.5)) %>%
+  recode_trial() %>%
+  cbind(., predictSE(post_instructions_mod, newdata = ., se = TRUE)) %>%
+  rename(score = fit, se = se.fit) %>%
+  recode_generation()
+
+ggplot(PostInstructions) +
+  aes(trial, score) +
+  geom_point(aes(color = generation_f),
+             stat = "summary", fun.y = "mean") +
+  geom_smooth(aes(ymin = score - se, ymax = score + se, color = generation_f),
+              stat = "identity", data = post_instructions_preds)
+```
