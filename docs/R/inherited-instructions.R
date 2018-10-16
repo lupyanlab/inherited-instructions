@@ -39,6 +39,15 @@ Bots <- Bots %>%
   rank_stims_in_trial() %>%
   filter(selected == gem_pos)
 
+BotsMirror <- bind_rows(
+  `2` = Bots,
+  `3` = Bots,
+  `4` = Bots,
+  .id = "block_ix_chr"
+) %>%
+  mutate(block_ix = as.integer(block_ix_chr)) %>%
+  select(-block_ix_chr)
+
 GemsFinal <- Gems %>%
   group_by(generation, subj_id, block_ix) %>%
   filter(trial == max(trial)) %>%
@@ -71,28 +80,19 @@ positions_plot <- ggplot(Gems) +
   coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
 
 # * scores ----
-
-BotsMirror <- bind_rows(
-  `2` = Bots,
-  `3` = Bots,
-  `4` = Bots,
-  .id = "block_ix_chr"
-) %>%
-  mutate(block_ix = as.integer(block_ix_chr)) %>%
-  select(-block_ix_chr)
-
 scores_plot <- ggplot(Gems) +
   aes(trial, score) +
   geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2,
             show.legend = FALSE) +
-  geom_line(aes(group = 1), stat = "summary", fun.y = "mean", color = "gray",
+  geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray",
             data = Bots, size = 2) +
-  geom_line(aes(group = 1), stat = "summary", fun.y = "mean", color = "gray", linetype = "twodash",
+  geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray", linetype = "twodash",
             data = BotsMirror, size = 1) +
   facet_wrap("block_ix", nrow = 1) +
   t_$theme +
   theme(legend.position = "top",
         panel.spacing.x = unit(1, "lines"))
+scores_plot
 
 # * distance ----
 distance_plot <- ggplot(Gems) +
@@ -100,9 +100,9 @@ distance_plot <- ggplot(Gems) +
   geom_line(aes(group = generation_f, color = generation_f),
             stat = "summary", fun.y = "mean",
             size = 2, show.legend = FALSE) +
-  geom_line(aes(group = 1), stat = "summary", fun.y = "mean", color = "gray",
+  geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray",
             data = Bots, size = 2) +
-  geom_line(aes(group = 1), stat = "summary", fun.y = "mean", color = "gray", linetype = "twodash",
+  geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray", linetype = "twodash",
             data = BotsMirror, size = 1) +
   geom_hline(yintercept = 0, linetype = 2) +
   facet_wrap("block_ix", nrow = 1) +
