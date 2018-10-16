@@ -6,6 +6,7 @@ data("Gems")
 data("SimpleHill")
 data("Survey")
 data("Instructions")
+data("Bots")
 
 t_ <- get_theme()
 
@@ -29,6 +30,14 @@ Gems <- Gems %>%
   rank_stims_in_trial() %>%
   filter(selected == gem_pos) %>%
   recode_generation()
+
+Bots <- Bots %>%
+  mutate_distance_2d() %>%
+  left_join(TestLandscapeCurrentScores) %>%
+  melt_trial_stims() %>%
+  left_join(TestLandscapeGemScores) %>%
+  rank_stims_in_trial() %>%
+  filter(selected == gem_pos)
 
 GemsFinal <- Gems %>%
   group_by(generation, subj_id, block_ix) %>%
@@ -62,11 +71,24 @@ positions_plot <- ggplot(Gems) +
   coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
 
 # * scores ----
+
+BotsMirror <- bind_rows(
+  `2` = Bots,
+  `3` = Bots,
+  `4` = Bots,
+  .id = "block_ix_chr"
+) %>%
+  mutate(block_ix = as.integer(block_ix_chr)) %>%
+  select(-block_ix_chr)
+
 scores_plot <- ggplot(Gems) +
   aes(trial, score) +
-  geom_line(aes(group = interaction(subj_id, block_ix), color = generation_f), size = 0.2) +
   geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2,
             show.legend = FALSE) +
+  geom_line(aes(group = 1), stat = "summary", fun.y = "mean", color = "gray",
+            data = Bots, size = 2) +
+  geom_line(aes(group = 1), stat = "summary", fun.y = "mean", color = "gray", linetype = "twodash",
+            data = BotsMirror, size = 1) +
   facet_wrap("block_ix", nrow = 1) +
   t_$theme +
   theme(legend.position = "top",
@@ -75,10 +97,13 @@ scores_plot <- ggplot(Gems) +
 # * distance ----
 distance_plot <- ggplot(Gems) +
   aes(trial, distance_2d) +
-  geom_line(aes(group = subj_id, color = generation_f), size = 0.25) +
   geom_line(aes(group = generation_f, color = generation_f),
             stat = "summary", fun.y = "mean",
             size = 2, show.legend = FALSE) +
+  geom_line(aes(group = 1), stat = "summary", fun.y = "mean", color = "gray",
+            data = Bots, size = 2) +
+  geom_line(aes(group = 1), stat = "summary", fun.y = "mean", color = "gray", linetype = "twodash",
+            data = BotsMirror, size = 1) +
   geom_hline(yintercept = 0, linetype = 2) +
   facet_wrap("block_ix", nrow = 1) +
   scale_y_reverse("distance to 2D peak", breaks = seq(-20, 50, by = 10)) +
