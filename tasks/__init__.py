@@ -39,6 +39,12 @@ def save_exp(ctx, no_subj_info=False, no_survey=False):
         os.mkdir(str(r_pkg_instructions_dir))
     ctx.run(f'cp {instructions_dir}/*.txt {r_pkg_instructions_dir}', echo=True)
 
+    simluations_dir = Path('experiment/data/simulations')
+    r_pkg_simulations_dir = Path('data/data-raw/simulations')
+    if not r_pkg_simulations_dir.is_dir():
+        os.mkdir(str(r_pkg_simulations_dir))
+    ctx.run(f'cp {simluations_dir}/*.csv {r_pkg_simulations_dir}', echo=True)
+
     if not no_subj_info:
         get_subj_info(move_to_r_pkg=True)
 
