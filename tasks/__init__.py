@@ -45,6 +45,8 @@ def save_exp(ctx, no_subj_info=False, no_survey=False):
         os.mkdir(str(r_pkg_simulations_dir))
     ctx.run(f'cp {simluations_dir}/*.csv {r_pkg_simulations_dir}', echo=True)
 
+    ctx.run(f'cp coding-instructions/instructions_coded.csv data/data-raw/instructions_coded.csv', echo=True)
+
     if not no_subj_info:
         get_subj_info(move_to_r_pkg=True)
 
@@ -94,9 +96,10 @@ def save_instructions(ctx):
             subj_id=instr.stem,
             instructions=open(instr, "r").read().strip()
         ))
-    (pandas.DataFrame(instructions)[["subj_id", "instructions"]]
-           .sort_values(by="subj_id")
-           .to_csv("coding-instructions/instructions.csv", index=False))
+    d = (pandas.DataFrame(instructions)[["subj_id", "instructions"]]
+               .sort_values(by="subj_id"))
+    d.insert(0, "row_ix", range(1, len(d)+1))
+    d.to_csv("coding-instructions/instructions.csv", index=False)
 
 ns = Collection()
 
