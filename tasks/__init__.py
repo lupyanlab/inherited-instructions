@@ -86,12 +86,25 @@ def make_doc(ctx, name, clear_cache=False, open_after=False):
         ctx.run(f'open {docs}/{output.name}', echo=True)
 
 
+@task
+def save_instructions(ctx):
+    instructions = []
+    for instr in Path("experiment/data/instructions").glob("*.txt"):
+        instructions.append(dict(
+            subj_id=instr.stem,
+            instructions=open(instr, "r").read().strip()
+        ))
+    (pandas.DataFrame(instructions)[["subj_id", "instructions"]]
+           .sort_values(by="subj_id")
+           .to_csv("coding-instructions/instructions.csv", index=False))
+
 ns = Collection()
 
 # Add tasks defined in this file
 ns.add_task(configure)
 ns.add_task(make_doc)
 ns.add_task(save_exp)
+ns.add_task(save_instructions)
 
 # Add tasks defined in other files
 
