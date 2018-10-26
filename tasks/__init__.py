@@ -45,7 +45,7 @@ def save_exp(ctx, no_subj_info=False, no_survey=False):
         os.mkdir(str(r_pkg_simulations_dir))
     ctx.run(f'cp {simluations_dir}/*.csv {r_pkg_simulations_dir}', echo=True)
 
-    ctx.run(f'cp coding-instructions/instructions_coded.csv data/data-raw/instructions_coded.csv', echo=True)
+    ctx.run(f'cp coding-instructions/instructions-*-coded.csv data/data-raw/', echo=True)
 
     if not no_subj_info:
         get_subj_info(move_to_r_pkg=True)
@@ -89,7 +89,7 @@ def make_doc(ctx, name, clear_cache=False, open_after=False):
 
 
 @task
-def save_instructions(ctx):
+def save_instructions(ctx, min_subj=None, max_subj=None):
     instructions = []
     for instr in Path("experiment/data/instructions").glob("*.txt"):
         instructions.append(dict(
@@ -98,8 +98,25 @@ def save_instructions(ctx):
         ))
     d = (pandas.DataFrame(instructions)[["subj_id", "instructions"]]
                .sort_values(by="subj_id"))
+
+    if min_subj or max_subj:
+        d["subj_num"] = d.subj_id.str.extract(r'(\d+)$').astype(int)
+        min_subj = int(min_subj) or d.subj_num.min()
+        max_subj = int(max_subj) or d.subj_num.max()
+        d = d[(d.subj_num >= min_subj) & (d.subj_num <= max_subj)]
+        del d["subj_num"]
+        output = "instructions-{}-{}.csv".format(min_subj, max_subj)
+    else:
+        output = "instructions.csv"
+    
     d.insert(0, "row_ix", range(1, len(d)+1))
-    d.to_csv("coding-instructions/instructions.csv", index=False)
+    d.to_csv("coding-instructions/{}".format(output), index=False)
+
+# @task
+# def save_coded(ctx, qualtrics_output, ):
+#     """Get coded instructions data from Qualtrics."""
+#     ctx.run("cd coding-instructions && pipenv run python get_coding_survey_results.py {}".format(qualtrics_output), echo=True)
+#     ctx.run("cd coding-instructions && pipenv run python parse_coding_survey_results.py", echo=True)
 
 ns = Collection()
 
@@ -108,6 +125,7 @@ ns.add_task(configure)
 ns.add_task(make_doc)
 ns.add_task(save_exp)
 ns.add_task(save_instructions)
+# ns.add_task(save_coded)
 
 # Add tasks defined in other files
 

@@ -1,14 +1,29 @@
 import pandas
+import argparse
 
-coded = pandas.read_csv("coded.csv", skiprows=[0, 2])
-coded = coded[["name"] + coded.columns[coded.columns.str.contains("instructions")].tolist()]
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
 
-coded = coded.melt(id_vars="name", var_name="qualtrics_col", value_name="score")
-coded = coded.join(coded.qualtrics_col.str.extract(r"instructions\ \((?P<row_ix>\d+)\)-(?P<dimension>Bar width|Orientation)"))
-del coded["qualtrics_col"]
-coded["row_ix"] = coded.row_ix.astype(int)
+    parser.add_argument("--qualtrics")
+    parser.add_argument("--coder-ixs", nargs="+", type=int)
+    parser.add_argument("--loop-merge")
+    parser.add_argument("--output")
 
-loop_merge = pandas.read_csv("instructions.csv")
-coded = coded.merge(loop_merge)
+    args = parser.parse_args()
 
-coded.to_csv("instructions_coded.csv", index=False)
+    coded = pandas.read_csv(args.qualtrics, skiprows=[0, 2])
+    coded = coded[["name"] + coded.columns[coded.columns.str.contains("instructions")].tolist()]
+    
+    if len(args.coder_ixs) == 0:
+        args.coder_ixs = coded.index.tolist()
+    coded = coded.loc[args.coder_ixs]
+    
+    coded = coded.melt(id_vars="name", var_name="qualtrics_col", value_name="score")
+    coded = coded.join(coded.qualtrics_col.str.extract(r"instructions\ \((?P<row_ix>\d+)\)-(?P<dimension>Bar width|Orientation)"))
+    del coded["qualtrics_col"]
+    coded["row_ix"] = coded.row_ix.astype(int)
+    
+    loop_merge = pandas.read_csv(args.loop_merge)
+    coded = coded.merge(loop_merge)
+    
+    coded.to_csv(args.output, index=False)

@@ -57,8 +57,13 @@ def export_qualtrics_responses(survey_name, survey_id, dst, use_labels=False):
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("output", default="coded.csv")
+    args = parser.parse_args()
+
     export_qualtrics_responses(
         survey_name="coding-instructions",
         survey_id="SV_5yY9fVIromzWXjf",
-        dst="coded.csv",
+        dst=args.output,
     )

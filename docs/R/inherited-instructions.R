@@ -16,12 +16,6 @@ TestLandscapeCurrentScores <- SimpleHill %>%
 TestLandscapeGemScores <- SimpleHill %>%
   transmute(gem_x = x, gem_y = y, gem_score = score)
 
-recode_generation <- function(frame) {
-  map <- data_frame(generation = 1:2, generation_f = factor(c(1, 2)), generation_c = c(-0.5, 0.5))
-  if(missing(frame)) return(map)
-  left_join(frame, map)
-}
-
 Gems <- Gems %>%
   filter(version == 1.3) %>%
   mutate_distance_2d() %>%
@@ -49,7 +43,7 @@ BotsMirror <- bind_rows(
 
 GemsFinal <- Gems %>%
   group_by(generation, subj_id, block_ix) %>%
-  filter(trial == 79) %>%
+  filter(trial == max(trial)) %>%
   ungroup()
 
 BotsFinal <- Bots %>%
@@ -93,7 +87,7 @@ scores_plot <- ggplot(Gems) +
             data = Bots, size = 2, linetype = "twodash") +
   facet_wrap("block_ix", nrow = 1) +
   t_$theme +
-  theme(legend.position = "top"),
+  theme(legend.position = "top",
         panel.spacing.x = unit(1, "lines"))
 
 # * distance ----
@@ -134,9 +128,9 @@ final_distances_plot <- ggplot(GemsFinal) +
   t_$theme +
   theme(legend.position = "bottom")
 
-
 # * coded-instructions ----
 InstructionsCodedSummarized <- InstructionsCoded %>%
+  filter(name == "pierce") %>%
   group_by(subj_id) %>%
   summarize(
     instructions_score = ifelse(sum(score) == -2, 0, ifelse(sum(score) == 4, 1, 0.5))
