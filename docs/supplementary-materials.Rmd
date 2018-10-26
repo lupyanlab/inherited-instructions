@@ -30,3 +30,19 @@ v1.1_positions_plot + v1.1_scores_plot + v1.1_distance_plot + plot_layout(nrow =
 ```{r v1-1-final, fig.width=6}
 v1.1_final_scores_plot + v1.1_final_distances_plot
 ```
+
+## V1.2
+
+```{r gen1-gen2-instructions}
+InstructionsGen1 <- Instructions %>%
+  filter(version == 1.2, generation == 1) %>%
+  select(-version, -generation)
+
+InstructionsGen2 <- Instructions %>%
+  filter(version == 1.2, generation == 2) %>%
+  left_join(inheritance_map) %>%
+  select(-version, -generation)
+
+left_join(InstructionsGen1, InstructionsGen2, by = c("subj_id" = "inherit_from"), suffix = c("_gen1", "_gen2")) %>%
+  pander(split.cells = c(5, 25, 5, 25))
+```

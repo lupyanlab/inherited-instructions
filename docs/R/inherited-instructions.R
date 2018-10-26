@@ -6,6 +6,7 @@ data("Gems")
 data("SimpleHill")
 data("Survey")
 data("Instructions")
+data("InstructionsCoded")
 data("Bots")
 
 t_ <- get_theme()
@@ -37,21 +38,28 @@ Bots <- Bots %>%
   melt_trial_stims() %>%
   left_join(TestLandscapeGemScores) %>%
   rank_stims_in_trial() %>%
-  filter(selected == gem_pos)
-
-BotsMirror <- bind_rows(
-  `2` = Bots,
-  `3` = Bots,
-  `4` = Bots,
-  .id = "block_ix_chr"
-) %>%
+  filter(selected == gem_pos) %>%
+  bind_rows(
+    `1` = .,
+    `2` = .,
+    `3` = .,
+    `4` = .,
+    .id = "block_ix_chr"
+  ) %>%
   mutate(block_ix = as.integer(block_ix_chr)) %>%
   select(-block_ix_chr)
 
 GemsFinal <- Gems %>%
   group_by(generation, subj_id, block_ix) %>%
-  filter(trial == max(trial)) %>%
+  filter(trial == 39) %>%
   ungroup()
+
+BotsFinal <- Bots %>%
+  filter(trial == 39) %>%
+  group_by(simulation_type, block_ix) %>%
+  summarize(score = mean(score)) %>%
+  ungroup()
+
 
 subj_map <- select(Gems, subj_id, version, generation) %>% unique() %>% drop_na()
 inheritance_map <- select(Gems, subj_id, version, generation, inherit_from) %>% unique() %>% drop_na()
@@ -85,14 +93,11 @@ scores_plot <- ggplot(Gems) +
   geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2,
             show.legend = FALSE) +
   geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray",
-            data = Bots, size = 2) +
-  geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray", linetype = "twodash",
-            data = BotsMirror, size = 1) +
+            data = Bots, size = 2, linetype = "twodash") +
   facet_wrap("block_ix", nrow = 1) +
   t_$theme +
   theme(legend.position = "top",
         panel.spacing.x = unit(1, "lines"))
-scores_plot
 
 # * distance ----
 distance_plot <- ggplot(Gems) +
@@ -100,10 +105,8 @@ distance_plot <- ggplot(Gems) +
   geom_line(aes(group = generation_f, color = generation_f),
             stat = "summary", fun.y = "mean",
             size = 2, show.legend = FALSE) +
-  geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray",
-            data = Bots, size = 2) +
   geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray", linetype = "twodash",
-            data = BotsMirror, size = 1) +
+            data = Bots, size = 1) +
   geom_hline(yintercept = 0, linetype = 2) +
   facet_wrap("block_ix", nrow = 1) +
   scale_y_reverse("distance to 2D peak", breaks = seq(-20, 50, by = 10)) +
@@ -113,11 +116,13 @@ distance_plot <- ggplot(Gems) +
         panel.spacing.x = unit(1, "lines"))
 
 # * final ----
+
 final_scores_plot <- ggplot(GemsFinal) +
   aes(block_ix, score) +
   geom_line(aes(group = subj_id, color = generation_f), size = 0.2) +
   geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2) +
-  geom_hline(yintercept = 100, linetype = 2) +
+  geom_line(aes(group = simulation_type),
+            data = BotsFinal, color = "gray", linetype = "twodash", size = 2) +
   xlab("block") +
   t_$theme +
   theme(legend.position = "bottom")
@@ -131,3 +136,20 @@ final_distances_plot <- ggplot(GemsFinal) +
   geom_hline(yintercept = 0, linetype = 2) +
   t_$theme +
   theme(legend.position = "bottom")
+
+
+# * coded-instructions ----
+InstructionsCodedSummarized <- InstructionsCoded %>%
+  group_by(subj_id) %>%
+  summarize(
+    instructions_score = ifelse(sum(score) == -2, 0, ifelse(sum(score) == 4, 1, 0.5))
+  )
+
+GemsCoded <- left_join(GemsFinal, InstructionsCodedSummarized)
+
+filter(GemsCoded, generation == 1, block_ix <= 2) %>%
+  ggplot() +
+  aes(instructions_score, score) +
+  geom_point() +
+  geom_point(stat = "summary", fun.y = "mean", size = 5)
+
