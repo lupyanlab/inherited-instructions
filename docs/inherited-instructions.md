@@ -33,13 +33,15 @@ blocks.
 
 ![](inherited-instructions_files/figure-gfm/results-1.png)<!-- -->
 
-![](inherited-instructions_files/figure-gfm/final-1.png)<!-- -->
+![](inherited-instructions_files/figure-gfm/results-final-1.png)<!-- -->
 
 ## Instructions
 
-|              |                        |                    |                        |
-| :----------- | :--------------------- | :----------------- | :--------------------- |
-| **subj\_id** | **instructions\_gen1** | **subj\_id\_gen2** | **instructions\_gen2** |
+![](inherited-instructions_files/figure-gfm/instructions-coded-1.png)<!-- -->
+
+![](inherited-instructions_files/figure-gfm/instructions-outcomes-1.png)<!-- -->
+
+![](inherited-instructions_files/figure-gfm/instructions-inherited-1.png)<!-- -->
 
 ## Survey
 

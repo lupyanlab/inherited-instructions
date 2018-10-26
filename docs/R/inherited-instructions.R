@@ -35,6 +35,7 @@ Bots <- Bots %>%
   filter(selected == gem_pos)
 
 BotsMirror <- bind_rows(
+  `1` = Bots,
   `2` = Bots,
   .id = "block_ix_chr"
 ) %>%
@@ -85,6 +86,7 @@ scores_plot <- ggplot(Gems) +
   geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2) +
   geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray",
             data = Bots, size = 2, linetype = "twodash") +
+  scale_color_discrete("Generation") +
   facet_wrap("block_ix", nrow = 1) +
   t_$theme +
   theme(legend.position = "top",
@@ -129,8 +131,13 @@ final_distances_plot <- ggplot(GemsFinal) +
   theme(legend.position = "bottom")
 
 # * coded-instructions ----
+InstructionsCoded <- InstructionsCoded %>%
+  filter(name == "pierce") %>%
+  drop_na(score)
+
 InstructionsCodedSummarized <- InstructionsCoded %>%
   filter(name == "pierce") %>%
+  drop_na(score) %>%
   group_by(subj_id) %>%
   summarize(instructions_score = sum(score))
 

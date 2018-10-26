@@ -78,16 +78,10 @@ ggplot(InstructionsCoded) +
 ```{r instructions-outcomes, fig.width=3, fig.height=3}
 InstructionsCodedSummarized <- InstructionsCoded %>%
   group_by(subj_id) %>%
-  summarize(
-    instructions_score = ifelse(sum(score) == -2, 0, ifelse(sum(score) == 4, 1, 0.5))
-  )
+  summarize(instructions_score = sum(score))
 
-GemsCoded <- left_join(GemsFinal, InstructionsCodedSummarized)
-
-GemsCoded %>%
-  filter(instructions_score == 0, score > 80) %>%
-  .$subj_id %>%
-  unique()
+GemsCoded <- left_join(GemsFinal, InstructionsCodedSummarized) %>%
+  drop_na(instructions_score)
 
 filter(GemsCoded, block_ix <= 2) %>%
   ggplot() +

@@ -1,6 +1,5 @@
 *.pyc
 *_cache/
-*_files/
 docs/*.pdf
 .pytest_cache/
 .Rproj.user
