@@ -3,6 +3,7 @@ title: Inherited knowledge
 output:
   bookdown::pdf_document2:
     toc: no
+  github_document: {}
 ---
 ```{r config, include=FALSE}
 library(knitr)
@@ -58,11 +59,11 @@ final_scores_plot + final_distances_plot
 
 ```{r gen1-gen2-instructions}
 InstructionsGen1 <- Instructions %>%
-  filter(version == 1.2, generation == 1) %>%
+  filter(version == 1.3, generation == 1) %>%
   select(-version, -generation)
 
 InstructionsGen2 <- Instructions %>%
-  filter(version == 1.2, generation == 2) %>%
+  filter(version == 1.3, generation == 2) %>%
   left_join(inheritance_map) %>%
   select(-version, -generation)
 
@@ -128,13 +129,13 @@ first two blocks.
 
 ```{r first-blocks}
 FirstBlocks <- Gems %>%
-  filter(block_ix %in% 1:2) %>%
+  filter(block_ix %in% 1) %>%
   recode_trial()
 
 first_blocks_mod <- lmer(score ~ (trial_z + trial_z_sqr) * generation_c + (trial_z + trial_z_sqr|subj_id),
                          data = FirstBlocks)
 
-first_blocks_preds <- expand.grid(trial = 0:40, generation_c = c(-0.5, 0.5)) %>%
+first_blocks_preds <- expand.grid(trial = 0:80, generation_c = c(-0.5, 0.5)) %>%
   recode_trial() %>%
   cbind(., predictSE(first_blocks_mod, newdata = ., se = TRUE)) %>%
   rename(score = fit, se = se.fit) %>%
@@ -143,30 +144,30 @@ first_blocks_preds <- expand.grid(trial = 0:40, generation_c = c(-0.5, 0.5)) %>%
 ggplot(FirstBlocks) +
   aes(trial, score) +
   geom_point(aes(color = generation_f),
-             stat = "summary", fun.y = "mean") +
-  geom_smooth(aes(ymin = score - se, ymax = score + se, color = generation_f),
-              stat = "identity", data = first_blocks_preds)
+             stat = "summary", fun.y = "mean")
+  # geom_smooth(aes(ymin = score - se, ymax = score + se, color = generation_f),
+  #             stat = "identity", data = first_blocks_preds)
 ```
 
 \newpage
 
 ### H2
 
-_How does the performance of Generation 1 participants in blocks 3 and 4
-compare to the performance of Generation 2 participants in blocks 1 and 2?_
+_How does the performance of Generation 1 participants in block 2
+compare to the performance of Generation 2 participants in block 1?_
 
-Generation 2 will benefit from the instructions left by Generation 1 in blocks 1 and 2
-more than Generation 1 in blocks 3 and 4.
+Generation 2 will benefit from the instructions left by Generation 1 in block 1
+more than Generation 1 in block 2.
 
 ```{r post-instructions}
 PostInstructions <- Gems %>%
-  filter((generation == 1 & block_ix %in% c(3, 4)) | (generation == 2 & block_ix %in% c(1, 2))) %>%
+  filter((generation == 1 & block_ix == 2) | (generation == 2 & block_ix == 1)) %>%
   recode_trial()
 
 post_instructions_mod <- lmer(score ~ (trial_z + trial_z_sqr) * generation_c + (trial_z + trial_z_sqr|subj_id),
                               data = PostInstructions)
 
-post_instructions_preds <- expand.grid(trial = 0:40, generation_c = c(-0.5, 0.5)) %>%
+post_instructions_preds <- expand.grid(trial = 0:80, generation_c = c(-0.5, 0.5)) %>%
   recode_trial() %>%
   cbind(., predictSE(post_instructions_mod, newdata = ., se = TRUE)) %>%
   rename(score = fit, se = se.fit) %>%
@@ -175,7 +176,7 @@ post_instructions_preds <- expand.grid(trial = 0:40, generation_c = c(-0.5, 0.5)
 ggplot(PostInstructions) +
   aes(trial, score) +
   geom_point(aes(color = generation_f),
-             stat = "summary", fun.y = "mean") +
-  geom_smooth(aes(ymin = score - se, ymax = score + se, color = generation_f),
-              stat = "identity", data = post_instructions_preds)
+             stat = "summary", fun.y = "mean")
+  # geom_smooth(aes(ymin = score - se, ymax = score + se, color = generation_f),
+  #             stat = "identity", data = post_instructions_preds)
 ```

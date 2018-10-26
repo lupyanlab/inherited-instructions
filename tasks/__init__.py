@@ -72,7 +72,7 @@ def make_doc(ctx, name, clear_cache=False, open_after=False):
     output = Path(name)
 
     try:
-      output_format = {'.pdf': 'bookdown::pdf_document2'}[output.suffix]
+      output_format = {'.pdf': 'bookdown::pdf_document2', '.md': 'github_document'}[output.suffix]
     except KeyError:
       raise AssertionError(f'output format "{output.suffix}" not defined')
 

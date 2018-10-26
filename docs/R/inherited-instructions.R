@@ -22,7 +22,7 @@ recode_generation <- function(frame) {
 }
 
 Gems <- Gems %>%
-  filter(version == 1.2) %>%
+  filter(version == 1.3) %>%
   mutate_distance_2d() %>%
   left_join(TestLandscapeCurrentScores) %>%
   melt_trial_stims() %>%
@@ -41,8 +41,6 @@ Bots <- Bots %>%
 
 BotsMirror <- bind_rows(
   `2` = Bots,
-  `3` = Bots,
-  `4` = Bots,
   .id = "block_ix_chr"
 ) %>%
   mutate(block_ix = as.integer(block_ix_chr)) %>%
@@ -58,12 +56,12 @@ inheritance_map <- select(Gems, subj_id, version, generation, inherit_from) %>% 
 
 Survey <- Survey %>%
   left_join(subj_map) %>%
-  filter(version == 1.2) %>%
+  filter(version == 1.3) %>%
   recode_generation()
 
 Instructions <- left_join(Instructions, subj_map) %>%
   select(subj_id, version, generation, instructions) %>%
-  filter(version == 1.2)
+  filter(version == 1.3)
 
 # * positions ----
 positions_plot <- ggplot(Gems) +
@@ -82,17 +80,14 @@ positions_plot <- ggplot(Gems) +
 # * scores ----
 scores_plot <- ggplot(Gems) +
   aes(trial, score) +
-  geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2,
-            show.legend = FALSE) +
+  geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2) +
   geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray",
             data = Bots, size = 2) +
   geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray", linetype = "twodash",
             data = BotsMirror, size = 1) +
   facet_wrap("block_ix", nrow = 1) +
   t_$theme +
-  theme(legend.position = "top",
-        panel.spacing.x = unit(1, "lines"))
-scores_plot
+  theme(legend.position = "top")
 
 # * distance ----
 distance_plot <- ggplot(Gems) +
