@@ -47,12 +47,12 @@ Participants are assigned to Generation 1 or Generation 2.
 
 # Results
 
-```{r results, fig.width=8, fig.height=8}
-positions_plot + scores_plot + distance_plot + plot_layout(nrow = 3)
+```{r results, fig.width=6, fig.height=3}
+scores_plot
 ```
 
-```{r final, fig.width=6}
-final_scores_plot + final_distances_plot
+```{r results-final, fig.width=3, fig.height=3}
+final_scores_plot
 ```
 
 ## Instructions
@@ -66,9 +66,58 @@ InstructionsGen2 <- Instructions %>%
   filter(version == 1.3, generation == 2) %>%
   left_join(inheritance_map) %>%
   select(-version, -generation)
+```
 
-left_join(InstructionsGen1, InstructionsGen2, by = c("subj_id" = "inherit_from"), suffix = c("_gen1", "_gen2")) %>%
-  pander(split.cells = c(5, 25, 5, 25))
+```{r instructions-coded}
+ggplot(InstructionsCoded) +
+  aes(dimension) +
+  geom_bar(aes(fill = factor(score)), stat = "count", position = "stack") +
+  scale_fill_discrete("", labels = c("Didn't mention", "Incomplete or inaccurate", "Correct"))
+```
+
+```{r instructions-outcomes, fig.width=3, fig.height=3}
+InstructionsCodedSummarized <- InstructionsCoded %>%
+  group_by(subj_id) %>%
+  summarize(
+    instructions_score = ifelse(sum(score) == -2, 0, ifelse(sum(score) == 4, 1, 0.5))
+  )
+
+GemsCoded <- left_join(GemsFinal, InstructionsCodedSummarized)
+
+GemsCoded %>%
+  filter(instructions_score == 0, score > 80) %>%
+  .$subj_id %>%
+  unique()
+
+filter(GemsCoded, block_ix <= 2) %>%
+  ggplot() +
+  aes(instructions_score, score) +
+  geom_point() +
+  geom_point(stat = "summary", fun.y = "mean", size = 5)
+```
+
+```{r instructions-inherited, fig.width=6, fig.height=3}
+generation_map <- select(Gems, subj_id, generation, inherit_from) %>% unique()
+instructions_with_generations <- left_join(generation_map, InstructionsCodedSummarized)
+
+gen1 <- instructions_with_generations %>%
+  filter(generation == 1) %>%
+  select(-inherit_from, -generation) %>%
+  rename(inherit_from = subj_id)
+
+gen2 <- instructions_with_generations %>%
+  filter(generation == 2) %>%
+  select(-instructions_score)
+
+map <- left_join(gen2, gen1)
+
+Gems %>%
+  left_join(map) %>%
+  filter(generation == 2) %>%
+  drop_na(instructions_score) %>%
+  ggplot() +
+  aes(trial, score, color = factor(instructions_score)) +
+  geom_line(stat = "summary", fun.y = "mean")
 ```
 
 ## Survey
