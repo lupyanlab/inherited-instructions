@@ -132,13 +132,11 @@ final_distances_plot <- ggplot(GemsFinal) +
 InstructionsCodedSummarized <- InstructionsCoded %>%
   filter(name == "pierce") %>%
   group_by(subj_id) %>%
-  summarize(
-    instructions_score = ifelse(sum(score) == -2, 0, ifelse(sum(score) == 4, 1, 0.5))
-  )
+  summarize(instructions_score = sum(score))
 
 GemsCoded <- left_join(GemsFinal, InstructionsCodedSummarized)
 
-filter(GemsCoded, generation == 1, block_ix <= 2) %>%
+filter(GemsCoded, generation == 1, block_ix == 1) %>%
   ggplot() +
   aes(instructions_score, score) +
   geom_point() +
