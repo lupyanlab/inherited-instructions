@@ -10,30 +10,40 @@ generations to exceed previous generations?
 
 # Methods
 
+Participants had to learn to categorize visual stimuli on the basis of
+two visual dimensions. The stimuli were sinusoidal gabor patches that
+varied in orientation and spatial frequency. Participants were told to
+think of each gabor patch as a “gem” and that their task was to find the
+most valuable gems. Finding the most valuable gems required integrating
+along both the orientation and spatial frequency dimensions.
+
+Participants were assigned to Generation 1 or Generation 2. Generation 1
+participants completed the task naively, without any instructions about
+what makes some gems more valuable. After 1 block of trials, these
+participants wrote down a description of what makes some gems more
+valuable so as to be helpful to the next generation. Generation 2
+participants inherit these instructions, and read them before completing
+the trials. After 1 block of trials, Generation 2 participants write
+down their description of what makes some gems more valuable, and
+complete the second block of trials.
+
 ## Procedure
 
-On each trial, participants see 6 gabor patches (“gems”) that vary in
-orientation and bar width and they select the one they think is most
-valuable.
-
-Unbeknownst to the participants, the 6 gabors they see on each trial are
-sampled from within a certain radius in stimulus space of their last
-trial.
-
-Participants are assigned to Generation 1 or Generation 2.
-
-  - Generation 1 participants complete 2 blocks, then they type out
-    instructions for the next generation, then they complete 2 more
-    blocks.
-  - Generation 2 participants read the instructions from Generation 1,
-    then complete 4
-blocks.
+On each trial, participants are presented 6 gabor patches (“gems”) that
+vary in orientation and spatial frequency. They have to select one they
+think will be most valuable. After selecting a gem, they receive
+feedback about its value relative to the value of the gem they selected
+on the previous trial. For example, a participant might learn that the
+gem they selected that was worth +3 more than their previous one. They
+are also shown their new total score, a number between 0 and 100.
 
 # Results
 
-![](inherited-instructions_files/figure-gfm/results-1.png)<!-- -->
+(ref:scores) Score over trials and blocks. Gray lines show simulated
+performance of optimal and random walk
+agents.
 
-![](inherited-instructions_files/figure-gfm/results-final-1.png)<!-- -->
+![(ref:scores)](inherited-instructions_files/figure-gfm/scores-1.png)
 
 ## Instructions
 
@@ -41,38 +51,21 @@ blocks.
 
 ![](inherited-instructions_files/figure-gfm/instructions-outcomes-1.png)<!-- -->
 
-![](inherited-instructions_files/figure-gfm/instructions-inherited-1.png)<!-- -->
+## The effects of inherited instructions
 
-## Survey
+### Are instructions better than no instructions?
 
-### Predictability
+Participants in Generation 2 will benefit from accurate instructions in
+block 1 relative to naive participants in Generation 1, block
+1.
 
-![](inherited-instructions_files/figure-gfm/predictability-1.png)<!-- -->
+![](inherited-instructions_files/figure-gfm/instructions-v-no-instructions-1.png)<!-- -->
 
-### Effort
+### Are instructions better than 1 block of training?
 
-![](inherited-instructions_files/figure-gfm/effort-1.png)<!-- -->
+Participants in Generation 2 will benefit from accurate instructions
+relative to how participants in Generation 1 perform *after* generating
+the
+instructions.
 
-## Hypotheses
-
-### H1
-
-*How does the performance of Generation 1 participants in blocks 1 and 2
-compare to the performance of Generation 2 participants in blocks 1 and
-2?*
-
-Generation 2, having benefitted from the instructions left by Generation
-1, will exceed the performance of Generation 2 in the first two blocks.
-
-![](inherited-instructions_files/figure-gfm/first-blocks-1.png)<!-- -->
-
-### H2
-
-*How does the performance of Generation 1 participants in block 2
-compare to the performance of Generation 2 participants in block 1?*
-
-Generation 2 will benefit from the instructions left by Generation 1 in
-block 1 more than Generation 1 in block
-2.
-
-![](inherited-instructions_files/figure-gfm/post-instructions-1.png)<!-- -->
+![](inherited-instructions_files/figure-gfm/instructions-v-one-block-1.png)<!-- -->

@@ -27,6 +27,7 @@ Gems <- Gems %>%
   recode_generation()
 
 Bots <- Bots %>%
+  filter(trial < 80) %>%
   mutate_distance_2d() %>%
   left_join(TestLandscapeCurrentScores) %>%
   melt_trial_stims() %>%
@@ -53,6 +54,44 @@ BotsFinal <- Bots %>%
   summarize(score = mean(score)) %>%
   ungroup()
 
+InstructionsCoded <- InstructionsCoded %>%
+  filter(name == "pierce") %>%
+  drop_na(score)
+
+InstructionsSummarized <- InstructionsCoded %>%
+  filter(name == "pierce") %>%
+  group_by(subj_id) %>%
+  summarize(instructions_score = sum(score)) %>%
+  recode_instructions_score()
+
+GemsCoded <- left_join(GemsFinal, InstructionsSummarized) %>%
+  drop_na(instructions_score)
+
+InheritanceMap <- select(Gems, subj_id, generation, inherit_from) %>% unique()
+InheritanceMap <- left_join(InheritanceMap, InstructionsSummarized)
+
+Gen1 <- InheritanceMap %>%
+  filter(generation == 1) %>%
+  select(-inherit_from, -generation) %>%
+  rename(inherit_from = subj_id)
+
+Gen2 <- InheritanceMap %>%
+  filter(generation == 2) %>%
+  select(-instructions_score, -instructions_label)
+
+InheritanceMap <- left_join(Gen1, Gen2) %>%
+  recode_instructions_score()
+
+Gen2Block1 <- Gems %>%
+  filter(generation == 2, block_ix == 1) %>%
+  left_join(InheritanceMap) %>%
+  drop_na(instructions_score)
+
+Gen1Block1 <- Gems %>%
+  filter(generation == 1, block_ix == 1)
+
+Gen1Block2 <- Gems %>%
+  filter(generation == 1, block_ix == 2)
 
 subj_map <- select(Gems, subj_id, version, generation) %>% unique() %>% drop_na()
 inheritance_map <- select(Gems, subj_id, version, generation, inherit_from) %>% unique() %>% drop_na()
@@ -85,7 +124,7 @@ scores_plot <- ggplot(Gems) +
   aes(trial, score) +
   geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2) +
   geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray",
-            data = Bots, size = 2, linetype = "twodash") +
+            data = BotsMirror, size = 1, linetype = "twodash") +
   scale_color_discrete("Generation") +
   facet_wrap("block_ix", nrow = 1) +
   t_$theme +
@@ -105,18 +144,20 @@ distance_plot <- ggplot(Gems) +
   scale_y_reverse("distance to 2D peak", breaks = seq(-20, 50, by = 10)) +
   coord_cartesian(expand = FALSE) +
   t_$theme +
-  theme(legend.position = "top",
+  theme(legend.position = "bottom",
         panel.spacing.x = unit(1, "lines"))
 
 # * final ----
 
 final_scores_plot <- ggplot(GemsFinal) +
-  aes(block_ix, score) +
+  aes(factor(block_ix), score) +
   geom_line(aes(group = subj_id, color = generation_f), size = 0.2) +
   geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2) +
   geom_line(aes(group = simulation_type),
             data = BotsFinal, color = "gray", linetype = "twodash", size = 2) +
+  scale_color_discrete("Generation") +
   xlab("block") +
+  ylab("final score") +
   t_$theme +
   theme(legend.position = "bottom")
 
@@ -130,21 +171,38 @@ final_distances_plot <- ggplot(GemsFinal) +
   t_$theme +
   theme(legend.position = "bottom")
 
-# * coded-instructions ----
-InstructionsCoded <- InstructionsCoded %>%
-  filter(name == "pierce") %>%
-  drop_na(score)
+# * instructions ----
+instructions_coded_plot <- ggplot(InstructionsCoded) +
+  aes(factor(dimension)) +
+  geom_bar(aes(fill = factor(score)), stat = "count", position = "stack") +
+  scale_fill_discrete("Instructions score", labels = c("Didn't mention", "Incomplete or inaccurate", "Correct")) +
+  xlab("")
 
-InstructionsCodedSummarized <- InstructionsCoded %>%
-  filter(name == "pierce") %>%
-  drop_na(score) %>%
-  group_by(subj_id) %>%
-  summarize(instructions_score = sum(score))
+instructions_summarized_plot <- ggplot(InstructionsSummarized) +
+  aes(instructions_label, y = ..count..) +
+  geom_bar(aes(fill = instructions_label)) +
+  scale_x_discrete("") +
+  scale_y_continuous("") +
+  coord_flip()
 
-GemsCoded <- left_join(GemsFinal, InstructionsCodedSummarized)
+instruction_quality_and_performance_plot <- ggplot(filter(GemsCoded, generation == 1, block_ix == 1)) +
+  aes(instructions_label, score) +
+  geom_point(aes(color = instructions_label), position = position_jitter(width = 0.1))
 
-filter(GemsCoded, generation == 1, block_ix == 1) %>%
-  ggplot() +
-  aes(instructions_score, score) +
-  geom_point() +
-  geom_point(stat = "summary", fun.y = "mean", size = 5)
+# * versus no instructions ----
+instructions_versus_no_instructions_plot <- ggplot() +
+  aes(trial, score) +
+  geom_line(aes(color = instructions_label), data = Gen2Block1,
+            stat = "summary", fun.y = "mean") +
+  geom_line(aes(group = 1), data = Gen1Block1, stat = "summary", fun.y = "mean") +
+  scale_color_discrete("") +
+  guides(color = guide_legend(reverse = TRUE))
+
+# * versus one block ----
+instructions_versus_one_block_plot <- ggplot() +
+  aes(trial, score) +
+  geom_line(aes(color = instructions_label), data = Gen2Block1,
+            stat = "summary", fun.y = "mean") +
+  geom_line(aes(group = 1), data = Gen1Block2, stat = "summary", fun.y = "mean") +
+  scale_color_discrete("") +
+  guides(color = guide_legend(reverse = TRUE))

@@ -89,7 +89,12 @@ def make_doc(ctx, name, clear_cache=False, open_after=False):
 
 
 @task
-def save_instructions(ctx, min_subj=None, max_subj=None):
+def collect_instructions(ctx, min_subj=None, max_subj=None):
+    """Compile instructions into a csv for coding.
+    
+    The csv that is created can be used in a loop and merge block
+    in Qualtrics.
+    """
     instructions = []
     for instr in Path("experiment/data/instructions").glob("*.txt"):
         instructions.append(dict(
@@ -124,13 +129,9 @@ ns = Collection()
 ns.add_task(configure)
 ns.add_task(make_doc)
 ns.add_task(save_exp)
-ns.add_task(save_instructions)
+ns.add_task(collect_instructions)
 # ns.add_task(save_coded)
 
 # Add tasks defined in other files
-
-from data import tasks as data_tasks
-ns.add_collection(data_tasks, 'R')
-
-# from bots import tasks as bots_tasks
-# ns.add_collection(bots_tasks, 'bots')
+from data import tasks as R_tasks
+ns.add_collection(R_tasks, 'R')
