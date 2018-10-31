@@ -61,6 +61,8 @@ between 0 and 100.
 
 # Results
 
+## Scores
+
 (ref:scores) Score over trials and blocks. Gray lines show simulated performance
 of optimal and random walk agents.
 
@@ -68,18 +70,23 @@ of optimal and random walk agents.
 scores_plot + final_scores_plot
 ```
 
+## Reaction times
+
+```{r rts, fig.width=5, fig.height=4}
+rts_plot
+```
+
 ## Instructions
 
-```{r instructions-coded, fig.width=5, fig.height=6}
-instructions_coded_plot + instructions_summarized_plot + plot_layout(nrow = 2)
+```{r instructions-coded, fig.width=8, fig.height=3}
+instructions_coded_plot + instructions_summarized_plot + plot_layout(nrow = 1)
 ```
 
-```{r instructions-outcomes, fig.width=3, fig.height=3, fig.caption="Correlation between final score in block 1 and instruction quality. Participants who generated better instructions tended to do better in the task."}
-instruction_quality_and_performance_plot +
-  labs(x = "", y = "final score in block 1") +
-  theme(legend.position = "none",
-        axis.text.x = element_text(angle=45, hjust=1))
+```{r instructions-outcomes, fig.width=6, fig.height=4, fig.caption="Correlation between score in block 1 and instruction quality. Participants who generated better instructions tended to do better in the task."}
+instruction_quality_and_performance_plot + instruction_quality_and_final_performance_plot
 ```
+
+\newpage
 
 ## The effects of inherited instructions
 
@@ -91,6 +98,8 @@ in block 1 relative to naive participants in Generation 1, block 1.
 ```{r instructions-v-no-instructions}
 instructions_versus_no_instructions_plot
 ```
+
+\newpage
 
 ### Are instructions better than 1 block of training?
 

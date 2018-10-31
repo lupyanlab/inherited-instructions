@@ -64,7 +64,10 @@ InstructionsSummarized <- InstructionsCoded %>%
   summarize(instructions_score = sum(score)) %>%
   recode_instructions_score()
 
-GemsCoded <- left_join(GemsFinal, InstructionsSummarized) %>%
+GemsCoded <- left_join(Gems, InstructionsSummarized) %>%
+  drop_na(instructions_score)
+
+GemsFinalCoded <- left_join(GemsFinal, InstructionsSummarized) %>%
   drop_na(instructions_score)
 
 InheritanceMap <- select(Gems, subj_id, generation, inherit_from) %>% unique()
@@ -128,6 +131,17 @@ scores_plot <- ggplot(Gems) +
   scale_color_discrete("Generation") +
   facet_wrap("block_ix", nrow = 1) +
   t_$theme +
+  theme(legend.position = "bottom",
+        panel.spacing.x = unit(1, "lines"))
+
+# * rts ----
+rts_plot <- ggplot(Gems) +
+  aes(trial, rt) +
+  geom_point(aes(color = generation_f), stat = "summary", fun.y = "mean") +
+  geom_smooth(aes(group = generation_f, color = generation_f), se = FALSE, method = "lm") +
+  scale_color_discrete("Generation") +
+  facet_wrap("block_ix", nrow = 1) +
+  t_$theme +
   theme(legend.position = "top",
         panel.spacing.x = unit(1, "lines"))
 
@@ -183,11 +197,24 @@ instructions_summarized_plot <- ggplot(InstructionsSummarized) +
   geom_bar(aes(fill = instructions_label)) +
   scale_x_discrete("") +
   scale_y_continuous("") +
-  coord_flip()
+  coord_flip() +
+  theme(legend.position = "none")
 
-instruction_quality_and_performance_plot <- ggplot(filter(GemsCoded, generation == 1, block_ix == 1)) +
+instruction_quality_and_performance_plot <- ggplot(filter(GemsCoded, generation == 1)) +
+  aes(trial, score, color = instructions_label) +
+  geom_line(stat = "summary", fun.y = "mean") +
+  scale_color_discrete("") +
+  guides(color = guide_legend(reverse = TRUE)) +
+  t_$theme +
+  theme(legend.position = c(0.8, 0.25))
+
+instruction_quality_and_final_performance_plot <- ggplot(filter(GemsFinalCoded, generation == 1, block_ix == 1)) +
   aes(instructions_label, score) +
-  geom_point(aes(color = instructions_label), position = position_jitter(width = 0.1))
+  geom_point(aes(color = instructions_label), position = position_jitter(width = 0.1)) +
+  labs(x = "", y = "final score in block 1") +
+  t_$theme +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle=45, hjust=1))
 
 # * versus no instructions ----
 instructions_versus_no_instructions_plot <- ggplot() +

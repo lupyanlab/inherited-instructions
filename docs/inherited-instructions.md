@@ -39,11 +39,17 @@ are also shown their new total score, a number between 0 and 100.
 
 # Results
 
+## Scores
+
 (ref:scores) Score over trials and blocks. Gray lines show simulated
 performance of optimal and random walk
 agents.
 
 ![(ref:scores)](inherited-instructions_files/figure-gfm/scores-1.png)
+
+## Reaction times
+
+![](inherited-instructions_files/figure-gfm/rts-1.png)<!-- -->
 
 ## Instructions
 
