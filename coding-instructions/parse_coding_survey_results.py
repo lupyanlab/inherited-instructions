@@ -15,12 +15,12 @@ if __name__ == "__main__":
     coded = pandas.read_csv(args.qualtrics, skiprows=[0, 2])
     coded = coded[["name"] + coded.columns[coded.columns.str.contains("instructions")].tolist()]
 
-    if len(args.coder_ixs) == 0:
+    if args.coder_ixs is None:
         args.coder_ixs = coded.index.tolist()
     coded = coded.loc[args.coder_ixs]
 
     coded = coded.melt(id_vars="name", var_name="qualtrics_col", value_name="score")
-    coded = coded.join(coded.qualtrics_col.str.extract(r"instructions\ -\ (?P<row_ix>\d+)\ -\ (?P<dimension>Bar width|Orientation)"))
+    coded = coded.join(coded.qualtrics_col.str.extract(r"instructions\ \((?P<row_ix>\d+)\)-(?P<dimension>Bar width|Orientation)"))
     del coded["qualtrics_col"]
     coded["row_ix"] = coded.row_ix.astype(int)
 
