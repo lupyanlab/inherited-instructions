@@ -10,32 +10,33 @@ generations to exceed previous generations?
 
 # Methods
 
-Participants had to learn to categorize visual stimuli on the basis of
-two visual dimensions. The stimuli were sinusoidal gabor patches that
-varied in orientation and spatial frequency. Participants were told to
-think of each gabor patch as a “gem” and that their task was to find the
-most valuable gems. Finding the most valuable gems required integrating
-along both the orientation and spatial frequency dimensions.
+Participants learned to categorize visual stimuli on the basis of two
+visual dimensions. The stimuli were sinusoidal gabor patches that varied
+in orientation and spatial frequency. Participants were told to think of
+each gabor patch as a “gem” and that their task was to find the most
+valuable gems. The value of each gem was determined by its orientation
+and spatial frequency.
 
-Participants were assigned to Generation 1 or Generation 2. Generation 1
-participants completed the task naively, without any instructions about
-what makes some gems more valuable. After 1 block of trials, these
-participants wrote down a description of what makes some gems more
-valuable so as to be helpful to the next generation. Generation 2
-participants inherit these instructions, and read them before completing
-the trials. After 1 block of trials, Generation 2 participants write
-down their description of what makes some gems more valuable, and
-complete the second block of trials.
+Participants were assigned to the first or second generation of a
+two-generation transmission chain. Generation 1 participants completed
+the task naively, without receiving instructions about what makes some
+gems more valuable. After one block of trials, these participants wrote
+down a description of what makes some gems more valuable that would be
+helpful to the next generation. Participants assigned to the second
+generation inherited these instructions, and read them before completing
+their trials. After one block of trials, participants in generation 2
+wrote down a description of what makes some gems more valuable, and
+completed a second block of trials.
 
 ## Procedure
 
 On each trial, participants are presented 6 gabor patches (“gems”) that
-vary in orientation and spatial frequency. They have to select one they
-think will be most valuable. After selecting a gem, they receive
-feedback about its value relative to the value of the gem they selected
-on the previous trial. For example, a participant might learn that the
-gem they selected that was worth +3 more than their previous one. They
-are also shown their new total score, a number between 0 and 100.
+vary in orientation and spatial frequency, and they select one expected
+to be the most valuable. After selecting a gem, they receive feedback
+about its value relative to the value of the gem they selected on the
+previous trial. For example, a participant might learn that the gem they
+selected was worth +3 more than their previous one. They are also shown
+their new total score, a number between 0 and 100.
 
 # Results
 

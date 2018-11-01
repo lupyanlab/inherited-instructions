@@ -17,7 +17,7 @@ TestLandscapeGemScores <- SimpleHill %>%
   transmute(gem_x = x, gem_y = y, gem_score = score)
 
 Gems <- Gems %>%
-  filter(version == 1.3) %>%
+  filter(version %in% c(1.3, 1.4)) %>%
   mutate_distance_2d() %>%
   left_join(TestLandscapeCurrentScores) %>%
   melt_trial_stims() %>%
@@ -90,6 +90,11 @@ Gen2Block1 <- Gems %>%
   left_join(InheritanceMap) %>%
   drop_na(instructions_score)
 
+Gen2Block2 <- Gems %>%
+  filter(generation == 2, block_ix == 2) %>%
+  left_join(InheritanceMap) %>%
+  drop_na(instructions_score)
+
 Gen1Block1 <- Gems %>%
   filter(generation == 1, block_ix == 1)
 
@@ -101,89 +106,12 @@ inheritance_map <- select(Gems, subj_id, version, generation, inherit_from) %>% 
 
 Survey <- Survey %>%
   left_join(subj_map) %>%
-  filter(version == 1.3) %>%
+  filter(version %in% c(1.3, 1.4)) %>%
   recode_generation()
 
 Instructions <- left_join(Instructions, subj_map) %>%
   select(subj_id, version, generation, instructions) %>%
-  filter(version == 1.3)
-
-# * positions ----
-positions_plot <- ggplot(Gems) +
-  aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y) +
-  geom_segment(aes(group = subj_id, color = generation_f)) +
-  facet_wrap("block_ix", nrow = 1) +
-  scale_x_continuous(breaks = seq(0, 70, by = 10)) +
-  scale_y_continuous(breaks = seq(0, 70, by = 10)) +
-  annotate("point", x = 50, y = 50, shape = 4, size = 3) +
-  t_$theme +
-  theme(legend.position = "top",
-        panel.spacing.x = unit(1, "lines")) +
-  labs(x = "orientation", y = "bar width") +
-  coord_cartesian(xlim = c(0, 70), ylim = c(0, 70), expand = FALSE)
-
-# * scores ----
-scores_plot <- ggplot(Gems) +
-  aes(trial, score) +
-  geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2) +
-  geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray",
-            data = BotsMirror, size = 1, linetype = "twodash") +
-  scale_color_discrete("Generation") +
-  facet_wrap("block_ix", nrow = 1) +
-  t_$theme +
-  theme(legend.position = "bottom",
-        panel.spacing.x = unit(1, "lines"))
-
-# * rts ----
-rts_plot <- ggplot(Gems) +
-  aes(trial, rt) +
-  geom_point(aes(color = generation_f), stat = "summary", fun.y = "mean") +
-  geom_smooth(aes(group = generation_f, color = generation_f), se = FALSE, method = "lm") +
-  scale_color_discrete("Generation") +
-  facet_wrap("block_ix", nrow = 1) +
-  t_$theme +
-  theme(legend.position = "top",
-        panel.spacing.x = unit(1, "lines"))
-
-# * distance ----
-distance_plot <- ggplot(Gems) +
-  aes(trial, distance_2d) +
-  geom_line(aes(group = generation_f, color = generation_f),
-            stat = "summary", fun.y = "mean",
-            size = 2, show.legend = FALSE) +
-  geom_line(aes(group = simulation_type), stat = "summary", fun.y = "mean", color = "gray", linetype = "twodash",
-            data = Bots, size = 1) +
-  geom_hline(yintercept = 0, linetype = 2) +
-  facet_wrap("block_ix", nrow = 1) +
-  scale_y_reverse("distance to 2D peak", breaks = seq(-20, 50, by = 10)) +
-  coord_cartesian(expand = FALSE) +
-  t_$theme +
-  theme(legend.position = "bottom",
-        panel.spacing.x = unit(1, "lines"))
-
-# * final ----
-
-final_scores_plot <- ggplot(GemsFinal) +
-  aes(factor(block_ix), score) +
-  geom_line(aes(group = subj_id, color = generation_f), size = 0.2) +
-  geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2) +
-  geom_line(aes(group = simulation_type),
-            data = BotsFinal, color = "gray", linetype = "twodash", size = 2) +
-  scale_color_discrete("Generation") +
-  xlab("block") +
-  ylab("final score") +
-  t_$theme +
-  theme(legend.position = "bottom")
-
-final_distances_plot <- ggplot(GemsFinal) +
-  aes(block_ix, distance_2d) +
-  geom_line(aes(group = subj_id, color = generation_f), size = 0.2) +
-  geom_line(aes(group = generation_f, color = generation_f), stat = "summary", fun.y = "mean", size = 2) +
-  xlab("block") +
-  scale_y_reverse("distance to 2d peak") +
-  geom_hline(yintercept = 0, linetype = 2) +
-  t_$theme +
-  theme(legend.position = "bottom")
+  filter(version %in% c(1.3, 1.4))
 
 # * instructions ----
 instructions_coded_plot <- ggplot(InstructionsCoded) +
@@ -203,10 +131,11 @@ instructions_summarized_plot <- ggplot(InstructionsSummarized) +
 instruction_quality_and_performance_plot <- ggplot(filter(GemsCoded, generation == 1)) +
   aes(trial, score, color = instructions_label) +
   geom_line(stat = "summary", fun.y = "mean") +
+  xlab("") +
   scale_color_discrete("") +
   guides(color = guide_legend(reverse = TRUE)) +
   t_$theme +
-  theme(legend.position = c(0.8, 0.25))
+  theme(legend.position = c(0.8, 0.28))
 
 instruction_quality_and_final_performance_plot <- ggplot(filter(GemsFinalCoded, generation == 1, block_ix == 1)) +
   aes(instructions_label, score) +
@@ -217,6 +146,82 @@ instruction_quality_and_final_performance_plot <- ggplot(filter(GemsFinalCoded, 
         axis.text.x = element_text(angle=45, hjust=1))
 
 # * versus no instructions ----
+
+library(lme4)
+recode_block <- function(frame) {
+  map <- data_frame(block_ix = c(1, 2), block_c = c(-0.5, 0.5))
+  if(missing(frame)) return(map)
+  left_join(frame, map)
+}
+
+recode_trial_poly <- function(frame) {
+  map <- data_frame(
+    trial = 1:79,
+    trial_z = (trial - mean(trial))/sd(trial),
+    trial_z_sqr = trial_z^2,
+    trial_z_cub = trial_z^3
+  )
+  if(missing(frame)) return(map)
+  left_join(frame, map)
+}
+
+Gems <- Gems %>%
+  recode_block() %>%
+  recode_trial_poly()
+
+block1_mod <- lmer(score ~ generation_c * (trial_z + trial_z_sqr + trial_z_cub) + 
+                     (trial_z + trial_z_sqr + trial_z_cub|subj_id),
+                   data = filter(Gems, block_ix == 1))
+
+block1_preds <- expand.grid(generation = c(1, 2), trial = 1:78) %>%
+  recode_trial_poly() %>%
+  recode_generation() %>%
+  cbind(., AICcmodavg::predictSE(block1_mod, newdata = ., se = TRUE)) %>%
+  rename(score = fit, se = se.fit)
+
+block2_mod <- lmer(score ~ generation_c * (trial_z + trial_z_sqr + trial_z_cub) + (trial_z + trial_z_sqr + trial_z_cub|subj_id),
+                   data = filter(Gems, block_ix == 2))
+
+block2_preds <- expand.grid(generation = c(1, 2), trial = 1:78) %>%
+  recode_trial_poly() %>%
+  recode_generation() %>%
+  cbind(., AICcmodavg::predictSE(block2_mod, newdata = ., se = TRUE)) %>%
+  rename(score = fit, se = se.fit)
+
+labels <- Gems %>%
+  filter(trial == 79) %>%
+  group_by(generation, block_ix) %>%
+  summarize(score = mean(score)) %>%
+  ungroup() %>%
+  mutate(
+    trial = 80,
+    label = c("Gen1Block1", "Gen1Block2", "Gen2Block1", "Gen2Block2"),
+    generation = c(1, 1, 2, 2),
+    block_ix = c(1, 2, 1, 2)
+  ) %>%
+  recode_generation()
+
+score_by_generation_plot <- ggplot(Gems) +
+  aes(trial, score) +
+  geom_line(aes(group = interaction(generation, block_ix),
+                color = generation_f,
+                linetype = factor(block_ix)),
+            stat = "summary", fun.y = "mean") +
+  geom_smooth(aes(ymin = score - se, ymax = score + se, group = generation_f, fill = generation_f),
+              data = block1_preds, stat = "identity", color = NA, show.legend = FALSE) +
+  # geom_smooth(aes(ymin = score - se, ymax = score + se, group = generation_f, fill = generation_f),
+  #             data = block2_preds, stat = "identity", color = NA, show.legend = FALSE,
+  #             alpha = 0.2) +
+  geom_text(aes(label = label, color = generation_f), data = labels, hjust = 0,
+            show.legend = FALSE) +
+  scale_x_continuous(breaks = seq(0, 80, by = 10)) +
+  scale_color_discrete("Generation") +
+  scale_linetype_manual("Block", values = c("solid", "longdash")) +
+  coord_cartesian(xlim = c(0, 100)) +
+  theme(
+    legend.position = c(0.8, 0.3)
+  )
+
 instructions_versus_no_instructions_plot <- ggplot() +
   aes(trial, score) +
   geom_line(aes(color = instructions_label), data = Gen2Block1,
@@ -224,12 +229,4 @@ instructions_versus_no_instructions_plot <- ggplot() +
   geom_line(aes(group = 1), data = Gen1Block1, stat = "summary", fun.y = "mean") +
   scale_color_discrete("") +
   guides(color = guide_legend(reverse = TRUE))
-
-# * versus one block ----
-instructions_versus_one_block_plot <- ggplot() +
-  aes(trial, score) +
-  geom_line(aes(color = instructions_label), data = Gen2Block1,
-            stat = "summary", fun.y = "mean") +
-  geom_line(aes(group = 1), data = Gen1Block2, stat = "summary", fun.y = "mean") +
-  scale_color_discrete("") +
-  guides(color = guide_legend(reverse = TRUE))
+instructions_versus_no_instructions_plot
