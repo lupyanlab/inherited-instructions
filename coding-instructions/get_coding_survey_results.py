@@ -62,14 +62,20 @@ if __name__ == "__main__":
     parser.add_argument("--output", required=False, default="qualtrics.csv")
     args = parser.parse_args()
 
-    export_qualtrics_responses(
-        survey_name="coding-instructions",
-        survey_id="SV_5yY9fVIromzWXjf",
-        dst=args.output,
-    )
+    # export_qualtrics_responses(
+    #     survey_name="coding-instructions",
+    #     survey_id="SV_5yY9fVIromzWXjf",
+    #     dst=args.output,
+    # )
+    #
+    # export_qualtrics_responses(
+    #     survey_name="coding-instructions-209-233",
+    #     survey_id="SV_a8GbQkhXVxvAyA5",
+    #     dst="qualtrics-209-233.csv"
+    # )
 
     export_qualtrics_responses(
-        survey_name="coding-instructions-209-233",
-        survey_id="SV_a8GbQkhXVxvAyA5",
-        dst="qualtrics-209-233.csv"
+        survey_name="coding-instructions-177-257",
+        survey_id="SV_eJAkaCZxznq1qCx",
+        dst="qualtrics-177-257.csv"
     )
