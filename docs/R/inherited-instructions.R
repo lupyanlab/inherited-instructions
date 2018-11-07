@@ -55,11 +55,11 @@ BotsFinal <- Bots %>%
   ungroup()
 
 InstructionsCoded <- InstructionsCoded %>%
-  filter(name == "pierce") %>%
+  filter(name == "Annie") %>%
   drop_na(score)
 
 InstructionsSummarized <- InstructionsCoded %>%
-  filter(name == "pierce") %>%
+  filter(name == "Annie") %>%
   group_by(subj_id) %>%
   summarize(instructions_score = sum(score)) %>%
   recode_instructions_score()
@@ -229,4 +229,31 @@ instructions_versus_no_instructions_plot <- ggplot() +
   geom_line(aes(group = 1), data = Gen1Block1, stat = "summary", fun.y = "mean") +
   scale_color_discrete("") +
   guides(color = guide_legend(reverse = TRUE))
-instructions_versus_no_instructions_plot
+
+Block1Diff <- bind_rows(
+  left_join(Gen1Block1, InstructionsSummarized),
+  Gen2Block1
+) %>%
+  group_by(generation, instructions_label, trial) %>%
+  summarize(score = mean(score)) %>%
+  ungroup() %>%
+  group_by(instructions_label, trial) %>%
+  summarize(diff = score[generation == 2] - score[generation == 1]) %>%
+  ungroup()
+
+diff_plot <- ggplot(Block1Diff) +
+  aes(trial, diff) +
+  geom_line(aes(color = instructions_label)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  scale_color_discrete("") +
+  guides(color = guide_legend(reverse = TRUE))
+
+overall_diff_plot <- ggplot(Block1Diff) +
+  aes(instructions_label, diff) +
+  geom_bar(aes(fill = instructions_label), stat = "summary", fun.y = "mean", alpha = 0.3,
+           show.legend = FALSE) +
+  geom_point(aes(color = instructions_label), position = position_jitter(width=0.1, height=0)) +
+  geom_hline(yintercept = 0, linetype = "dotted") +
+  scale_x_discrete("") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(angle = 45))

@@ -91,6 +91,10 @@ score_by_generation_plot
 instructions_versus_no_instructions_plot
 ```
 
+```{r diff, fig.width=5, fig.height=6}
+diff_plot + overall_diff_plot + plot_layout(nrow = 2)
+```
+
 # Discussion
 
 # References
