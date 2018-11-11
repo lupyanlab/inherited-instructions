@@ -17,7 +17,7 @@ TestLandscapeGemScores <- SimpleHill %>%
   transmute(gem_x = x, gem_y = y, gem_score = score)
 
 Gems <- Gems %>%
-  filter(version %in% c(1.3, 1.4)) %>%
+  filter(version %in% c(1.3, 1.4), landscape_name == "SimpleHill") %>%
   mutate_distance_2d() %>%
   left_join(TestLandscapeCurrentScores) %>%
   melt_trial_stims() %>%
@@ -54,12 +54,7 @@ BotsFinal <- Bots %>%
   summarize(score = mean(score)) %>%
   ungroup()
 
-InstructionsCoded <- InstructionsCoded %>%
-  filter(name == "Annie") %>%
-  drop_na(score)
-
 InstructionsSummarized <- InstructionsCoded %>%
-  filter(name == "Annie") %>%
   group_by(subj_id) %>%
   summarize(instructions_score = sum(score)) %>%
   recode_instructions_score()
