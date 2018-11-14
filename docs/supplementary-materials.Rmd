@@ -14,6 +14,7 @@ opts_chunk$set(echo=FALSE, cache=TRUE, message=FALSE, warning=FALSE,
 read_chunk("R/supplemental-v1-1.R")
 read_chunk("R/supplemental-v1-2.R")
 read_chunk("R/supplemental-v1-3.R")
+read_chunk("R/supplemental-v1-4.R")
 
 library(patchwork)
 library(pander)
@@ -122,4 +123,59 @@ effort_plot
 
 ```{r bots-asymptote}
 bots_asymptote_plot
+```
+
+## V1.4
+
+```{r v1-4, include=FALSE}
+```
+
+### Instructions
+
+```{r orientation-landscape-instructions}
+InstructionsGen1 <- Instructions %>%
+  filter(generation == 1) %>%
+  select(-generation)
+
+InstructionsGen2 <- Instructions %>%
+  filter(generation == 2) %>%
+  left_join(inheritance_map) %>%
+  select(-generation)
+
+left_join(InstructionsGen1, InstructionsGen2, by = c("subj_id" = "inherit_from"), suffix = c("_gen1", "_gen2")) %>%
+  pander(split.cells = c(5, 25, 5, 25))
+```
+
+### Performance
+
+## 1D landscape
+
+```{r}
+data("Gems")
+
+GemsOrientation <- Gems %>%
+  filter(landscape_name == "Orientation")
+```
+
+```{r 1d-participants, results="asis"}
+GemsOrientation %>%
+  select(subj_id, generation) %>%
+  unique() %>%
+  count(generation) %>%
+  pandoc.table()
+```
+
+```{r}
+data("Gems")
+Gems %>%
+  filter(block_ix == 1) %>%
+  group_by(landscape_name, trial) %>%
+  summarize(current_x = mean(current_x, na.rm = TRUE),
+            current_y = mean(current_y, na.rm = TRUE),
+            selected_x = mean(selected_x, na.rm = TRUE),
+            selected_y = mean(selected_y, na.rm = TRUE)) %>%
+  ggplot() +
+  aes(x = current_x, y = current_y, xend = selected_x, yend = selected_y) +
+  geom_segment(aes(color = landscape_name), lineend = "round") +
+  labs(x = "orientation", y = "bar width")
 ```
