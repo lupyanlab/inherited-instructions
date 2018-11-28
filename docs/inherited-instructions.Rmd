@@ -12,6 +12,8 @@ output:
 library(knitr)
 opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, cache=TRUE)
 read_chunk("R/inherited-instructions.R")
+read_chunk("R/supplemental-v1-4.R")
+read_chunk("R/supplemental-v1-5.R")
 
 library(patchwork)
 library(pander)
@@ -118,6 +120,23 @@ instructions_versus_no_instructions_plot
 
 ```{r diff, fig.width=6, fig.height=6}
 diff_plot + overall_diff_plot + plot_layout(nrow = 2)
+```
+
+## 1D landscape
+
+```{r v1-4, include=FALSE}
+```
+
+```{r v1-4-positions, fig.width=6, fig.height=4}
+```
+
+```{r v1-4-scores, fig.width=6, fig.height=4}
+```
+
+
+## Optimal instructions
+
+```{r v1-5, fig.width=8}
 ```
 
 # Discussion
